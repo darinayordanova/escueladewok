@@ -11,6 +11,19 @@ export const homepageQuery = groq`
   }
 `;
 
+// ─── Shared timeSlots projection ──────────────────────────────────────────────
+// Dates are sorted ascending within each slot so the first date is always
+// the soonest. Expansion + future-filtering is done client-side.
+const timeSlotsProjection = groq`
+  "timeSlots": timeSlots[] {
+    _key,
+    startTime,
+    "dates": dates[] | order(@)
+  }
+`;
+
+// ─── Queries ──────────────────────────────────────────────────────────────────
+
 export const featuredCoursesQuery = groq`
   *[_type == "course" && featured == true] | order(_createdAt desc) {
     _id,
@@ -24,6 +37,7 @@ export const featuredCoursesQuery = groq`
     difficulty,
     instructor,
     featured,
+    ${timeSlotsProjection}
   }
 `;
 
@@ -39,6 +53,7 @@ export const allCoursesQuery = groq`
     duration,
     difficulty,
     instructor,
+    ${timeSlotsProjection}
   }
 `;
 
@@ -54,8 +69,8 @@ export const courseBySlugQuery = groq`
     duration,
     maxParticipants,
     difficulty,
-    schedule,
     instructor,
+    ${timeSlotsProjection}
   }
 `;
 

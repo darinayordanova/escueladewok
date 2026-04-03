@@ -30,6 +30,12 @@ export interface SanityImage {
 // ─── Content models ───────────────────────────────────────────────────────────
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
 
+export interface TimeSlot {
+  _key: string;
+  startTime: string; // "HH:MM"
+  dates: string[];   // "YYYY-MM-DD"[]
+}
+
 export interface Course {
   _id: string;
   _type: 'course';
@@ -42,9 +48,24 @@ export interface Course {
   duration: number;
   maxParticipants: number;
   difficulty: DifficultyLevel;
-  schedule?: string[];
+  timeSlots?: TimeSlot[];
   instructor?: LocaleString;
   featured?: boolean;
+}
+
+/** A single expanded occurrence: one course on one specific date at one time */
+export interface CourseOccurrence {
+  course: Course;
+  date: string;       // "YYYY-MM-DD"
+  startTime: string;  // "HH:MM"
+  endTime: string;    // "HH:MM" — derived from course.duration
+}
+
+/** Flat date entry used on the detail page dropdown */
+export interface DateEntry {
+  date: string;       // "YYYY-MM-DD"
+  startTime: string;  // "HH:MM"
+  endTime: string;    // "HH:MM"
 }
 
 export interface Homepage {

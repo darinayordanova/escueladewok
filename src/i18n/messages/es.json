@@ -23,16 +23,20 @@
     "duration": "{duration} min",
     "spotsAvailable": "{spots} plazas disponibles",
     "bookNow": "Reservar",
-    "from": "Desde"
+    "from": "Desde",
+    "noCourses": "No hay próximos cursos por el momento. ¡Vuelve pronto!"
   },
   "courseDetail": {
     "about": "Sobre este curso",
-    "schedule": "Horario",
+    "schedule": "Fechas disponibles",
     "maxParticipants": "Máx. {count} participantes",
     "bookThisCourse": "Reservar este curso",
     "notFound": "Curso no encontrado",
-    "instructor": "Instructor"
-
+    "instructor": "Instructor",
+    "chooseDate": "Elige una fecha",
+    "noDatesAvailable": "No hay fechas disponibles próximamente",
+    "timeRange": "de {start} a {end}",
+    "duration": "{duration} min"
   },
   "common": {
     "loading": "Cargando...",

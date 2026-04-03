@@ -94,6 +94,27 @@
   @include line-clamp(3);
 }
 
+.dateLabel {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  margin-bottom: $spacing-3;
+  padding-bottom: $spacing-3;
+  border-bottom: 1px solid $color-border-light;
+
+  time {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+}
+
+.timeRange {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
 .meta {
   display: flex;
   align-items: center;

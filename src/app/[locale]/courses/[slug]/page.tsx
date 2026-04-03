@@ -1,9 +1,11 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import Button from '@/components/ui/Button/Button';
+import BookingCard from '@/components/sections/BookingCard/BookingCard';
+import { getFutureDateEntries } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
 import { courseBySlugQuery, courseSlugParams } from '@/lib/sanity/queries';
@@ -41,7 +43,9 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   }
 
   const l = locale as Locale;
-  const { title, description, image, price, currency, duration, maxParticipants, difficulty, schedule, instructor } = course;
+  const { title, description, image, price, currency, duration, maxParticipants, difficulty, instructor } = course;
+
+  const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
 
   return (
     <article className={styles.page}>
@@ -79,44 +83,25 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                 <p className={styles.description}>{description[l]}</p>
               </section>
             )}
-
-            {schedule && schedule.length > 0 && (
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>{t('schedule')}</h2>
-                <ul className={styles.scheduleList}>
-                  {schedule.map((date) => (
-                    <li key={date} className={styles.scheduleItem}>
-                      {new Date(date).toLocaleDateString(locale, {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
           </div>
 
           <aside className={styles.sidebar}>
-            <div className={styles.bookingCard}>
-              <p className={styles.price}>
-                {price} {currency}
-              </p>
-              <ul className={styles.details}>
-                <li>{duration} min</li>
-                {maxParticipants && <li>{t('maxParticipants', { count: maxParticipants })}</li>}
-              </ul>
-              <Button fullWidth size="lg">
-                {t('bookThisCourse')}
-              </Button>
-            </div>
+            <Suspense fallback={<BookingCardSkeleton />}>
+              <BookingCard
+                dateEntries={dateEntries}
+                price={price}
+                currency={currency}
+                maxParticipants={maxParticipants}
+                locale={l}
+              />
+            </Suspense>
           </aside>
         </div>
       </div>
     </article>
   );
+}
+
+function BookingCardSkeleton() {
+  return <div className={styles.bookingCardSkeleton} aria-hidden="true" />;
 }

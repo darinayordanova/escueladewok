@@ -23,15 +23,20 @@
     "duration": "{duration} min",
     "spotsAvailable": "{spots} spots left",
     "bookNow": "Book Now",
-    "from": "From"
+    "from": "From",
+    "noCourses": "No upcoming courses at the moment. Check back soon!"
   },
   "courseDetail": {
     "about": "About this course",
-    "schedule": "Schedule",
+    "schedule": "Available Dates",
     "maxParticipants": "Max {count} participants",
     "bookThisCourse": "Book this course",
-    "notFound": "Course not found", 
-    "instructor": "Instructor"
+    "notFound": "Course not found",
+    "instructor": "Instructor",
+    "chooseDate": "Choose a date",
+    "noDatesAvailable": "No upcoming dates available",
+    "timeRange": "from {start} to {end}",
+    "duration": "{duration} min"
   },
   "common": {
     "loading": "Loading...",

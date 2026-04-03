@@ -81,10 +81,11 @@ export const course = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'schedule',
-      title: 'Upcoming Dates',
+      name: 'timeSlots',
+      title: 'Time Slots',
       type: 'array',
-      of: [{ type: 'datetime' }],
+      of: [{ type: 'timeSlot' }],
+      description: 'Add a slot for each distinct start time, then add the dates within it',
     }),
     defineField({
       name: 'instructor',

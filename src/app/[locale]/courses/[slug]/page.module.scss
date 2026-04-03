@@ -112,31 +112,9 @@
   }
 }
 
-.bookingCard {
-  background-color: $color-background;
-  border: 1px solid $color-border;
+.bookingCardSkeleton {
+  height: 300px;
+  background-color: $color-background-alt;
   border-radius: $radius-lg;
-  padding: $spacing-8;
-  box-shadow: $shadow-md;
-}
-
-.price {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: $color-primary;
-  margin-bottom: $spacing-4;
-}
-
-.details {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-  margin-bottom: $spacing-6;
-  font-size: $font-size-sm;
-  color: $color-text-light;
-
-  li::before {
-    content: '• ';
-    color: $color-primary;
-  }
+  border: 1px solid $color-border;
 }

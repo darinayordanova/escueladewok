@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
+import { expandOccurrences } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { allCoursesQuery } from '@/lib/sanity/queries';
 import type { Course, Locale } from '@/types';
@@ -23,6 +24,7 @@ export default async function CoursesPage({ params }: CoursesPageProps) {
   const t = await getTranslations({ locale, namespace: 'courses' });
 
   const courses = await sanityClient.fetch<Course[]>(allCoursesQuery);
+  const occurrences = expandOccurrences(courses ?? []);
 
   return (
     <div className={styles.page}>
@@ -31,7 +33,12 @@ export default async function CoursesPage({ params }: CoursesPageProps) {
           <h1 className={styles.title}>{t('pageTitle')}</h1>
           <p className={styles.description}>{t('pageDescription')}</p>
         </header>
-        <CourseGrid courses={courses ?? []} locale={locale as Locale} />
+
+        {occurrences.length > 0 ? (
+          <CourseGrid occurrences={occurrences} locale={locale as Locale} />
+        ) : (
+          <p className={styles.empty}>{t('noCourses')}</p>
+        )}
       </div>
     </div>
   );

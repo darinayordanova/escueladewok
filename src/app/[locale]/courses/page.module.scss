@@ -27,3 +27,10 @@
   max-width: 600px;
   margin-inline: auto;
 }
+
+.empty {
+  text-align: center;
+  font-size: $font-size-lg;
+  color: $color-text-muted;
+  padding: $spacing-16 0;
+}
