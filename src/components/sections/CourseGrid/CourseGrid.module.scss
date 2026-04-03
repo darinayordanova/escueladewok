@@ -1,0 +1,16 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-8;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

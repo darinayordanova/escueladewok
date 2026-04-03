@@ -1,0 +1,89 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  background-color: $color-background;
+  border-bottom: 1px solid $color-border;
+  box-shadow: $shadow-sm;
+}
+
+.container {
+  @include container;
+  @include flex-between;
+
+  height: 64px;
+}
+
+.logo {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+
+  &:hover {
+    text-decoration: none;
+    color: $color-primary-dark;
+  }
+}
+
+.nav {
+  display: none;
+
+  @include respond-to('md') {
+    display: block;
+  }
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+}
+
+.navLink {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-primary;
+    text-decoration: none;
+  }
+
+  @include focus-ring;
+}
+
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+}
+
+.langButton {
+  padding: $spacing-1 $spacing-2;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-light;
+  border-radius: $radius-sm;
+  transition:
+    color $transition-fast,
+    background-color $transition-fast;
+
+  @include focus-ring;
+
+  &:hover {
+    color: $color-primary;
+    background-color: $color-background-alt;
+  }
+}
+
+.langButtonActive {
+  color: $color-primary;
+  font-weight: $font-weight-bold;
+}

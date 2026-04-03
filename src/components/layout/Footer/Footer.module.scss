@@ -1,0 +1,55 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.footer {
+  background-color: $color-background-dark;
+  color: #fff;
+  padding: $spacing-12 0;
+  margin-top: auto;
+}
+
+.container {
+  @include container;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-6;
+  text-align: center;
+
+  @include respond-to('md') {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.brand {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-primary-light;
+}
+
+.links {
+  display: flex;
+  gap: $spacing-6;
+}
+
+.link {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  @include focus-ring($color: #fff);
+}
+
+.copy {
+  font-size: $font-size-xs;
+  color: rgba(255, 255, 255, 0.4);
+}

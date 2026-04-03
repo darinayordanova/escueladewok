@@ -1,0 +1,142 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.page {
+  padding-bottom: $spacing-20;
+}
+
+.container {
+  @include container;
+}
+
+.hero {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background-color: $color-background-alt;
+  margin-bottom: $spacing-12;
+  border-radius: 0 0 $radius-lg $radius-lg;
+}
+
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-12;
+
+  @include respond-to('lg') {
+    grid-template-columns: 1fr 340px;
+  }
+}
+
+.main {
+  min-width: 0;
+}
+
+.header {
+  margin-bottom: $spacing-10;
+}
+
+.difficulty {
+  display: inline-block;
+  padding: $spacing-1 $spacing-3;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-full;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: $spacing-4;
+}
+
+.title {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-4;
+}
+
+.instructor {
+  font-size: $font-size-base;
+  color: $color-text-light;
+}
+
+.section {
+  margin-bottom: $spacing-10;
+}
+
+.sectionTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-4;
+  padding-bottom: $spacing-3;
+  border-bottom: 2px solid $color-border;
+}
+
+.description {
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  color: $color-text-light;
+  white-space: pre-line;
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.scheduleItem {
+  padding: $spacing-3 $spacing-4;
+  background-color: $color-background-alt;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  border-left: 3px solid $color-primary;
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+.sidebar {
+  @include respond-to('lg') {
+    position: sticky;
+    top: calc(64px + $spacing-6);
+    height: fit-content;
+  }
+}
+
+.bookingCard {
+  background-color: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-8;
+  box-shadow: $shadow-md;
+}
+
+.price {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  margin-bottom: $spacing-4;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  margin-bottom: $spacing-6;
+  font-size: $font-size-sm;
+  color: $color-text-light;
+
+  li::before {
+    content: '• ';
+    color: $color-primary;
+  }
+}

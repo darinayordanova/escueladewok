@@ -1,0 +1,96 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+// ─── Reset ────────────────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: $font-sans;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-base;
+  color: $color-text;
+  background-color: $color-background;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ─── Typography ───────────────────────────────────────────────────────────────
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  color: $color-text;
+}
+
+p {
+  line-height: $line-height-base;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ─── Media ────────────────────────────────────────────────────────────────────
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// ─── Lists ────────────────────────────────────────────────────────────────────
+ul,
+ol {
+  list-style: none;
+}
+
+// ─── Forms ────────────────────────────────────────────────────────────────────
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+// ─── Layout utility ───────────────────────────────────────────────────────────
+.container {
+  @include container;
+}
+
+// ─── Accessibility ────────────────────────────────────────────────────────────
+.sr-only {
+  @include visually-hidden;
+}
+
+:focus-visible {
+  @include focus-ring;
+}

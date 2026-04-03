@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "title": "Escuela de Wok",
+    "description": "Discover the art of Chinese cooking. Fun, hands-on classes for all levels."
+  },
+  "navigation": {
+    "home": "Home",
+    "courses": "Courses",
+    "about": "About"
+  },
+  "home": {
+    "featuredCourses": "Featured Courses",
+    "viewAllCourses": "View All Courses"
+  },
+  "courses": {
+    "pageTitle": "Our Courses",
+    "pageDescription": "Explore our range of Chinese cooking classes for all skill levels.",
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "duration": "{duration} min",
+    "spotsAvailable": "{spots} spots left",
+    "bookNow": "Book Now",
+    "from": "From"
+  },
+  "courseDetail": {
+    "about": "About this course",
+    "schedule": "Schedule",
+    "maxParticipants": "Max {count} participants",
+    "bookThisCourse": "Book this course",
+    "notFound": "Course not found", 
+    "instructor": "Instructor"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "backToHome": "Back to Home"
+  }
+}

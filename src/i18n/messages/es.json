@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "title": "Escuela de Wok",
+    "description": "Descubre el arte de la cocina china. Clases prácticas y divertidas para todos los niveles."
+  },
+  "navigation": {
+    "home": "Inicio",
+    "courses": "Cursos",
+    "about": "Sobre nosotros"
+  },
+  "home": {
+    "featuredCourses": "Cursos Destacados",
+    "viewAllCourses": "Ver todos los cursos"
+  },
+  "courses": {
+    "pageTitle": "Nuestros Cursos",
+    "pageDescription": "Explora nuestra oferta de clases de cocina china para todos los niveles.",
+    "difficulty": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    },
+    "duration": "{duration} min",
+    "spotsAvailable": "{spots} plazas disponibles",
+    "bookNow": "Reservar",
+    "from": "Desde"
+  },
+  "courseDetail": {
+    "about": "Sobre este curso",
+    "schedule": "Horario",
+    "maxParticipants": "Máx. {count} participantes",
+    "bookThisCourse": "Reservar este curso",
+    "notFound": "Curso no encontrado",
+    "instructor": "Instructor"
+
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "backToHome": "Volver al inicio"
+  }
+}

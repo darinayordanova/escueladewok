@@ -1,0 +1,70 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.hero {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  background-color: $color-background-dark;
+
+  @include respond-to('lg') {
+    min-height: 680px;
+  }
+}
+
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.container {
+  @include container;
+
+  position: relative;
+  z-index: $z-raised;
+}
+
+.content {
+  max-width: 600px;
+}
+
+.title {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: #fff;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-6;
+
+  @include respond-to('lg') {
+    font-size: $font-size-5xl;
+  }
+}
+
+.subtitle {
+  font-size: $font-size-lg;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: $line-height-relaxed;
+  margin-bottom: $spacing-8;
+
+  @include respond-to('md') {
+    font-size: $font-size-xl;
+  }
+}
+
+.cta {
+  display: flex;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+}

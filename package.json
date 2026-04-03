@@ -1,0 +1,40 @@
+{
+  "name": "escueladewok",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sanity/image-url": "^2.1.1",
+    "next": "16.2.2",
+    "next-intl": "^4.9.0",
+    "next-sanity": "^12.2.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "resend": "^6.10.0",
+    "sanity": "^5.19.0",
+    "sass": "^1.99.0"
+  },
+  "devDependencies": {
+    "@sanity/vision": "^5.19.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
+    "@typescript-eslint/parser": "^8.58.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "prettier": "^3.8.1",
+    "typescript": "^5"
+  }
+}
