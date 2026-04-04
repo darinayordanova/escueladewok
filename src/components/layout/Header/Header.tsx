@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 
 import styles from './Header.module.scss';
 import LanguageSwitcher from './LanguageSwitcher';
+import MobileMenu from './MobileMenu';
 
 export default function Header() {
   const t = useTranslations('navigation');
@@ -15,6 +16,7 @@ export default function Header() {
           Escuela de Wok
         </Link>
 
+        {/* Desktop nav — hidden on mobile */}
         <nav className={styles.nav} aria-label="Main navigation">
           <ul className={styles.navList}>
             <li>
@@ -27,10 +29,26 @@ export default function Header() {
                 {t('courses')}
               </Link>
             </li>
+            <li>
+              <Link href="/about" className={styles.navLink}>
+                {t('about')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className={styles.navLink}>
+                {t('contact')}
+              </Link>
+            </li>
           </ul>
         </nav>
 
-        <LanguageSwitcher />
+        {/* Desktop language switcher */}
+        <div className={styles.desktopLang}>
+          <LanguageSwitcher />
+        </div>
+
+        {/* Mobile burger + drawer */}
+        <MobileMenu />
       </div>
     </header>
   );

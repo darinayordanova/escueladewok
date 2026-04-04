@@ -70,7 +70,88 @@ export const courseBySlugQuery = groq`
     maxParticipants,
     difficulty,
     instructor,
-    ${timeSlotsProjection}
+    ${timeSlotsProjection},
+    "about": about[] {
+      ...,
+      _type == "imageSection" => {
+        ...,
+        image { ..., asset-> }
+      },
+      _type == "imageGallery" => {
+        ...,
+        images[] { ..., asset-> }
+      }
+    },
+    "menu": menu[] {
+      _key,
+      name,
+      description,
+      image { ..., asset-> }
+    }
+  }
+`;
+
+/**
+ * Returns confirmed attendee counts per date/time for a course.
+ * Used to build the BookingCountMap on the detail page.
+ */
+export const confirmedBookingsForCourseQuery = groq`
+  *[_type == "courseSession" && courseSlug == $courseSlug] {
+    date,
+    startTime,
+    "confirmedCount": count(attendees[status == "confirmed"])
+  }
+`;
+
+export const aboutPageQuery = groq`
+  *[_type == "aboutPage"][0] {
+    _id,
+    title,
+    subtitle,
+    "content": content[] {
+      ...,
+      _type == "imageSection" => { ..., image { ..., asset-> } },
+      _type == "imageGallery" => { ..., images[] { ..., asset-> } }
+    },
+    teamTitle,
+    team[] {
+      _key,
+      name,
+      role,
+      bio,
+      image { ..., asset-> }
+    }
+  }
+`;
+
+export const contactPageQuery = groq`
+  *[_type == "contactPage"][0] {
+    _id,
+    title,
+    subtitle,
+    email,
+    phone,
+    address,
+    formTitle,
+    successMessage,
+  }
+`;
+
+export const termsPageQuery = groq`
+  *[_type == "termsPage"][0] {
+    _id,
+    title,
+    lastUpdated,
+    content
+  }
+`;
+
+export const privacyPageQuery = groq`
+  *[_type == "privacyPage"][0] {
+    _id,
+    title,
+    lastUpdated,
+    content
   }
 `;
 

@@ -6,6 +6,7 @@ import styles from './Footer.module.scss';
 
 export default function Footer() {
   const t = useTranslations('navigation');
+  const tLegal = useTranslations('legal');
   const year = new Date().getFullYear();
 
   return (
@@ -22,6 +23,16 @@ export default function Footer() {
             <li>
               <Link href="/courses" className={styles.link}>
                 {t('courses')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className={styles.link}>
+                {tLegal('terms')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className={styles.link}>
+                {tLegal('privacy')}
               </Link>
             </li>
           </ul>

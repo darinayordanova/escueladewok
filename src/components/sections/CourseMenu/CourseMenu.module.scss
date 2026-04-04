@@ -1,0 +1,81 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  margin-bottom: $spacing-10;
+}
+
+.title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-4;
+  padding-bottom: $spacing-3;
+  border-bottom: 2px solid $color-border;
+}
+
+// ─── Dish grid ────────────────────────────────────────────────────────────────
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-4;
+
+  @include respond-to('sm') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: $color-background;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 1px solid $color-border-light;
+  box-shadow: $shadow-sm;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-color: $color-background-alt;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform $transition-slow;
+
+  .card:hover & {
+    transform: scale(1.05);
+  }
+}
+
+.body {
+  padding: $spacing-3;
+}
+
+.name {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  line-height: $line-height-snug;
+  margin-bottom: $spacing-1;
+}
+
+.description {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  line-height: $line-height-base;
+  @include line-clamp(2);
+}

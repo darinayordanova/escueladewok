@@ -1,0 +1,101 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.page {
+  padding: $spacing-16 0 $spacing-20;
+}
+
+.container {
+  @include container;
+
+  max-width: $max-width-narrow;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: $spacing-12;
+  padding-bottom: $spacing-8;
+  border-bottom: 3px solid $color-primary;
+}
+
+.title {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-3;
+
+  @include respond-to('lg') {
+    font-size: $font-size-5xl;
+  }
+}
+
+.lastUpdated {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+// Portable Text prose
+.prose {
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  color: $color-text-light;
+
+  p {
+    margin-bottom: $spacing-4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h2 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-text;
+    margin: $spacing-10 0 $spacing-4;
+  }
+
+  h3 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+    margin: $spacing-6 0 $spacing-3;
+  }
+
+  ul,
+  ol {
+    padding-left: $spacing-6;
+    margin-bottom: $spacing-4;
+
+    li {
+      margin-bottom: $spacing-2;
+    }
+  }
+
+  ul li {
+    list-style: disc;
+  }
+
+  ol li {
+    list-style: decimal;
+  }
+
+  strong {
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  a {
+    color: $color-primary;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: $color-primary-dark;
+    }
+  }
+}

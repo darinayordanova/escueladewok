@@ -88,6 +88,24 @@ export const course = defineType({
       description: 'Add a slot for each distinct start time, then add the dates within it',
     }),
     defineField({
+      name: 'about',
+      title: 'About this Course',
+      type: 'array',
+      of: [
+        { type: 'textSection' },
+        { type: 'imageSection' },
+        { type: 'imageGallery' },
+      ],
+      description: 'Build the course detail page — add text, images or galleries in any order',
+    }),
+    defineField({
+      name: 'menu',
+      title: 'Course Menu',
+      type: 'array',
+      of: [{ type: 'menuItem' }],
+      description: 'The dishes students will learn to cook in this course',
+    }),
+    defineField({
       name: 'instructor',
       title: 'Instructor',
       type: 'localeString',

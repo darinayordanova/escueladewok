@@ -7,13 +7,13 @@ export async function POST(request: Request) {
   try {
     const body: ConfirmationEmailData = await request.json();
 
-    const { to, recipientName, courseName, courseDate, amount, currency } = body;
+    const { to, recipientName, courseName, courseDate, timeRange, amount, currency } = body;
 
     if (!to || !recipientName || !courseName || !courseDate || !amount || !currency) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    await sendConfirmationEmail({ to, recipientName, courseName, courseDate, amount, currency });
+    await sendConfirmationEmail({ to, recipientName, courseName, courseDate, timeRange: timeRange ?? '', amount, currency });
 
     return NextResponse.json({ success: true });
   } catch (error) {

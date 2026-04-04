@@ -1,0 +1,150 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-10;
+}
+
+// ─── Text block ───────────────────────────────────────────────────────────────
+
+.textBlock {
+  // no extra wrapper styles needed
+}
+
+.blockHeading {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-4;
+  color: $color-text;
+}
+
+// Portable Text renders standard HTML elements — style them here
+.prose {
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  color: $color-text-light;
+
+  p {
+    margin-bottom: $spacing-4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  h2 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $color-text;
+    margin: $spacing-8 0 $spacing-4;
+  }
+
+  h3 {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+    margin: $spacing-6 0 $spacing-3;
+  }
+
+  ul,
+  ol {
+    padding-left: $spacing-6;
+    margin-bottom: $spacing-4;
+
+    li {
+      margin-bottom: $spacing-2;
+    }
+  }
+
+  ul li {
+    list-style: disc;
+  }
+
+  ol li {
+    list-style: decimal;
+  }
+
+  strong {
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  a {
+    color: $color-primary;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: $color-primary-dark;
+    }
+  }
+}
+
+// ─── Image block ──────────────────────────────────────────────────────────────
+
+.imageBlock {
+  margin: 0;
+}
+
+.imageWrapper {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: $radius-lg;
+  background-color: $color-background-alt;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.caption {
+  margin-top: $spacing-3;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  text-align: center;
+  font-style: italic;
+}
+
+// ─── Gallery block ────────────────────────────────────────────────────────────
+
+.galleryBlock {
+  // wrapper
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-3;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.galleryItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.galleryImageWrapper {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: $radius-md;
+  background-color: $color-background-alt;
+}
+
+.galleryCaption {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  text-align: center;
+  font-style: italic;
+}

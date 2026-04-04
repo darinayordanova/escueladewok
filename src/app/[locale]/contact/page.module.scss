@@ -1,0 +1,108 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.page {
+  padding: $spacing-16 0 $spacing-20;
+  min-height: 70vh;
+}
+
+.container {
+  @include container;
+  max-width: 1000px;
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-12;
+}
+
+.title {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-4;
+}
+
+.subtitle {
+  font-size: $font-size-lg;
+  color: $color-text-light;
+  max-width: 560px;
+  margin-inline: auto;
+  line-height: $line-height-relaxed;
+}
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-12;
+
+  @include respond-to('md') {
+    grid-template-columns: 280px 1fr;
+    align-items: start;
+  }
+}
+
+.layoutCentered {
+  max-width: 620px;
+  margin-inline: auto;
+}
+
+// ─── Contact info ─────────────────────────────────────────────────────────────
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+
+  @include respond-to('md') {
+    position: sticky;
+    top: calc(64px + $spacing-6);
+  }
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.infoLabel {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $color-text-muted;
+}
+
+.infoLink {
+  font-size: $font-size-base;
+  color: $color-primary;
+  text-decoration: none;
+  font-weight: $font-weight-medium;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-primary-dark;
+    text-decoration: underline;
+  }
+}
+
+.infoText {
+  font-size: $font-size-base;
+  color: $color-text-light;
+  line-height: $line-height-relaxed;
+  white-space: pre-line;
+}
+
+// ─── Form wrapper ─────────────────────────────────────────────────────────────
+
+.formWrapper {
+  background-color: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-8;
+  box-shadow: $shadow-sm;
+}

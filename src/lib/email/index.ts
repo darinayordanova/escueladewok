@@ -6,13 +6,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@escueladewok.com';
 
 export async function sendConfirmationEmail(data: ConfirmationEmailData) {
-  const { to, recipientName, courseName, courseDate, amount, currency } = data;
+  const { to, recipientName, courseName, courseDate, timeRange, amount, currency } = data;
 
   const { data: result, error } = await resend.emails.send({
     from: FROM_EMAIL,
     to,
     subject: `Booking confirmed: ${courseName}`,
-    html: buildConfirmationHtml({ recipientName, courseName, courseDate, amount, currency }),
+    html: buildConfirmationHtml({ recipientName, courseName, courseDate, timeRange, amount, currency }),
   });
 
   if (error) {
@@ -26,6 +26,7 @@ function buildConfirmationHtml({
   recipientName,
   courseName,
   courseDate,
+  timeRange,
   amount,
   currency,
 }: Omit<ConfirmationEmailData, 'to'>) {
@@ -62,6 +63,7 @@ function buildConfirmationHtml({
               <table>
                 <tr><td>Course</td><td>${courseName}</td></tr>
                 <tr><td>Date</td><td>${courseDate}</td></tr>
+                <tr><td>Time</td><td>${timeRange}</td></tr>
                 <tr><td>Amount paid</td><td>${amount} ${currency}</td></tr>
               </table>
             </div>

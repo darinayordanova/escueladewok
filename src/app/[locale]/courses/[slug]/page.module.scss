@@ -82,27 +82,6 @@
   border-bottom: 2px solid $color-border;
 }
 
-.description {
-  font-size: $font-size-base;
-  line-height: $line-height-relaxed;
-  color: $color-text-light;
-  white-space: pre-line;
-}
-
-.scheduleList {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-3;
-}
-
-.scheduleItem {
-  padding: $spacing-3 $spacing-4;
-  background-color: $color-background-alt;
-  border-radius: $radius-md;
-  font-size: $font-size-sm;
-  border-left: 3px solid $color-primary;
-}
-
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 .sidebar {
   @include respond-to('lg') {

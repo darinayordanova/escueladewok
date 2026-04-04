@@ -1,0 +1,101 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+.title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-2;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+}
+
+%input-base {
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background-color: $color-background;
+  font-size: $font-size-base;
+  color: $color-text;
+  font-family: inherit;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.input {
+  @extend %input-base;
+}
+
+.textarea {
+  @extend %input-base;
+  resize: vertical;
+  min-height: 140px;
+  line-height: $line-height-relaxed;
+}
+
+.error {
+  font-size: $font-size-sm;
+  color: #c0392b;
+  background-color: rgba(#c0392b, 0.08);
+  border-radius: $radius-md;
+  padding: $spacing-3 $spacing-4;
+}
+
+// ─── Success state ────────────────────────────────────────────────────────────
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-6;
+  background-color: rgba(#27ae60, 0.08);
+  border: 1px solid rgba(#27ae60, 0.3);
+  border-radius: $radius-lg;
+  color: #1e8449;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+}
+
+.successIcon {
+  width: 36px;
+  height: 36px;
+  background-color: #27ae60;
+  color: #fff;
+  border-radius: $radius-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-lg;
+  flex-shrink: 0;
+}

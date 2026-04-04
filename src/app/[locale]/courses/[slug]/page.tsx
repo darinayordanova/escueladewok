@@ -5,11 +5,13 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import BookingCard from '@/components/sections/BookingCard/BookingCard';
+import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
+import CourseMenu from '@/components/sections/CourseMenu/CourseMenu';
 import { getFutureDateEntries } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
-import { courseBySlugQuery, courseSlugParams } from '@/lib/sanity/queries';
-import type { Course, Locale } from '@/types';
+import { confirmedBookingsForCourseQuery, courseBySlugQuery, courseSlugParams } from '@/lib/sanity/queries';
+import type { BookingCountMap, Course, Locale } from '@/types';
 
 import styles from './page.module.scss';
 
@@ -36,20 +38,31 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: 'courseDetail' });
 
-  const course = await sanityClient.fetch<Course>(courseBySlugQuery, { slug });
+  const [course, sessionCounts] = await Promise.all([
+    sanityClient.fetch<Course>(courseBySlugQuery, { slug }),
+    sanityClient.fetch<{ date: string; startTime: string; confirmedCount: number }[]>(
+      confirmedBookingsForCourseQuery,
+      { courseSlug: slug },
+    ),
+  ]);
 
-  if (!course) {
-    notFound();
-  }
+  if (!course) notFound();
 
   const l = locale as Locale;
-  const { title, description, image, price, currency, duration, maxParticipants, difficulty, instructor } = course;
+  const { _id, title, image, price, currency, duration, maxParticipants, difficulty, instructor, about, menu } = course;
 
   const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
+
+  // Build a map of "YYYY-MM-DD|HH:MM" -> confirmedCount for the client component
+  const bookingCounts: BookingCountMap = {};
+  for (const s of sessionCounts ?? []) {
+    bookingCounts[`${s.date}|${s.startTime}`] = s.confirmedCount;
+  }
 
   return (
     <article className={styles.page}>
       <div className={styles.container}>
+        {/* ── Hero image ── */}
         <div className={styles.hero}>
           {image && (
             <div className={styles.imageWrapper}>
@@ -67,6 +80,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
         <div className={styles.layout}>
           <div className={styles.main}>
+            {/* ── Header ── */}
             <header className={styles.header}>
               <span className={styles.difficulty}>{difficulty}</span>
               <h1 className={styles.title}>{title[l]}</h1>
@@ -77,21 +91,33 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
               )}
             </header>
 
-            {description?.[l] && (
+            {/* ── Page builder: about sections ── */}
+            {about && about.length > 0 && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>{t('about')}</h2>
-                <p className={styles.description}>{description[l]}</p>
+                <CourseAbout sections={about} locale={l} />
               </section>
+            )}
+
+            {/* ── Menu: dishes students will cook ── */}
+            {menu && menu.length > 0 && (
+              <CourseMenu items={menu} locale={l} />
             )}
           </div>
 
+          {/* ── Sidebar: booking card ── */}
           <aside className={styles.sidebar}>
-            <Suspense fallback={<BookingCardSkeleton />}>
+            <Suspense fallback={<div className={styles.bookingCardSkeleton} aria-hidden="true" />}>
               <BookingCard
+                courseId={_id}
+                courseSlug={slug}
+                courseTitle={title[l]}
+                duration={duration}
                 dateEntries={dateEntries}
+                bookingCounts={bookingCounts}
+                maxParticipants={maxParticipants}
                 price={price}
                 currency={currency}
-                maxParticipants={maxParticipants}
                 locale={l}
               />
             </Suspense>
@@ -100,8 +126,4 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       </div>
     </article>
   );
-}
-
-function BookingCardSkeleton() {
-  return <div className={styles.bookingCardSkeleton} aria-hidden="true" />;
 }

@@ -1,0 +1,113 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  padding: $spacing-16 0;
+  background-color: $color-background-alt;
+}
+
+.container {
+  @include container;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  background-color: $color-background;
+  border-radius: $radius-lg;
+  padding: $spacing-12 $spacing-10;
+  box-shadow: $shadow-lg;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+}
+
+// ─── Icon ─────────────────────────────────────────────────────────────────────
+
+.icon {
+  width: 64px;
+  height: 64px;
+  background-color: #27ae60;
+  color: #fff;
+  font-size: $font-size-3xl;
+  border-radius: $radius-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto $spacing-6;
+  line-height: 1;
+}
+
+// ─── Text ─────────────────────────────────────────────────────────────────────
+
+.title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-2;
+}
+
+.subtitle {
+  font-size: $font-size-lg;
+  color: $color-text-light;
+  margin-bottom: $spacing-8;
+}
+
+// ─── Booking details ──────────────────────────────────────────────────────────
+
+.details {
+  background-color: $color-background-alt;
+  border-radius: $radius-md;
+  padding: $spacing-6;
+  margin-bottom: $spacing-6;
+  text-align: left;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-2 0;
+  border-bottom: 1px solid $color-border-light;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  dt {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-text-light;
+    flex-shrink: 0;
+  }
+
+  dd {
+    font-size: $font-size-sm;
+    color: $color-text;
+    text-align: right;
+    word-break: break-word;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.emailNote {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  margin-bottom: $spacing-8;
+}
+
+.backLink {
+  display: inline-block;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-primary-dark;
+  }
+}

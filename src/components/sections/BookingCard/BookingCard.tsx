@@ -1,47 +1,65 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import Button from '@/components/ui/Button/Button';
 import { formatDate } from '@/lib/courses/timeslots';
-import type { DateEntry, Locale } from '@/types';
+import type { BookingCountMap, DateEntry, Locale } from '@/types';
 
 import styles from './BookingCard.module.scss';
 
 interface BookingCardProps {
+  courseId: string;
+  courseSlug: string;
+  courseTitle: string;
+  duration: number;
   dateEntries: DateEntry[];
+  bookingCounts: BookingCountMap;
+  maxParticipants: number;
   price: number;
   currency: string;
-  maxParticipants?: number;
   locale: Locale;
 }
 
 export default function BookingCard({
+  courseId,
+  courseSlug,
+  courseTitle,
+  duration,
   dateEntries,
+  bookingCounts,
+  maxParticipants,
   price,
   currency,
-  maxParticipants,
   locale,
 }: BookingCardProps) {
   const t = useTranslations('courseDetail');
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Derive selected value from URL params, fall back to first entry
+  // ── Date selection ─────────────────────────────────────────────────────────
   const paramDate = searchParams.get('date');
   const paramTime = searchParams.get('time');
-  const selectedValue =
+  const initialValue =
     paramDate && paramTime && dateEntries.some((e) => e.date === paramDate && e.startTime === paramTime)
       ? `${paramDate}|${paramTime}`
-      : (dateEntries[0] ? `${dateEntries[0].date}|${dateEntries[0].startTime}` : '');
+      : dateEntries[0]
+        ? `${dateEntries[0].date}|${dateEntries[0].startTime}`
+        : '';
 
-  const selected = dateEntries.find(
-    (e) => `${e.date}|${e.startTime}` === selectedValue,
-  );
+  const [selectedValue, setSelectedValue] = useState(initialValue);
 
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const [date, time] = e.target.value.split('|');
+  const selected = dateEntries.find((e) => `${e.date}|${e.startTime}` === selectedValue);
+
+  const confirmedCount = selected ? (bookingCounts[`${selected.date}|${selected.startTime}`] ?? 0) : 0;
+  const spotsLeft = selected ? Math.max(0, maxParticipants - confirmedCount) : 0;
+  const isSoldOut = selected ? spotsLeft === 0 : false;
+
+  function handleDateChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value;
+    const [date, time] = value.split('|');
+    setSelectedValue(value);
     router.replace(`?date=${date}&time=${time}`, { scroll: false });
   }
 
@@ -61,10 +79,14 @@ export default function BookingCard({
               id="date-select"
               className={styles.select}
               value={selectedValue}
-              onChange={handleChange}
+              onChange={handleDateChange}
+              disabled={false}
             >
               {dateEntries.map((entry) => (
-                <option key={`${entry.date}|${entry.startTime}`} value={`${entry.date}|${entry.startTime}`}>
+                <option
+                  key={`${entry.date}|${entry.startTime}`}
+                  value={`${entry.date}|${entry.startTime}`}
+                >
                   {formatDate(entry.date, locale, {
                     weekday: 'short',
                     year: 'numeric',
@@ -79,24 +101,28 @@ export default function BookingCard({
           </div>
 
           {selected && (
-            <p className={styles.timeRange}>
-              {t('timeRange', { start: selected.startTime, end: selected.endTime })}
-            </p>
+            <div className={styles.meta}>
+              <p className={styles.timeRange}>
+                {t('timeRange', { start: selected.startTime, end: selected.endTime })}
+              </p>
+              <p className={isSoldOut ? styles.soldOut : styles.spotsLeft}>
+                {isSoldOut
+                  ? t('soldOut')
+                  : spotsLeft === 1
+                    ? t('spotsLeft', { count: spotsLeft })
+                    : t('spotsLeftPlural', { count: spotsLeft })}
+              </p>
+            </div>
           )}
+
+          <div className={styles.comingSoon}>
+            <p className={styles.comingSoonTitle}>{t('paymentComingSoon')}</p>
+            <p className={styles.comingSoonSub}>{t('paymentComingSoonSub')}</p>
+          </div>
         </>
       ) : (
         <p className={styles.noDates}>{t('noDatesAvailable')}</p>
       )}
-
-      <ul className={styles.details}>
-        {maxParticipants && (
-          <li>{t('maxParticipants', { count: maxParticipants })}</li>
-        )}
-      </ul>
-
-      <Button fullWidth size="lg" disabled={dateEntries.length === 0}>
-        {t('bookThisCourse')}
-      </Button>
     </div>
   );
 }

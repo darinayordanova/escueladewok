@@ -6,7 +6,8 @@
   "navigation": {
     "home": "Inicio",
     "courses": "Cursos",
-    "about": "Sobre nosotros"
+    "about": "Nosotros",
+    "contact": "Contacto"
   },
   "home": {
     "featuredCourses": "Cursos Destacados",
@@ -36,11 +37,69 @@
     "chooseDate": "Elige una fecha",
     "noDatesAvailable": "No hay fechas disponibles próximamente",
     "timeRange": "de {start} a {end}",
-    "duration": "{duration} min"
+    "duration": "{duration} min",
+    "menuTitle": "Lo que aprenderás a cocinar",
+    "spotsLeft": "{count} plaza disponible",
+    "spotsLeftPlural": "{count} plazas disponibles",
+    "soldOut": "Completo",
+    "paymentComingSoon": "Reserva online próximamente",
+    "paymentComingSoonSub": "Para reservar tu plaza, contáctanos directamente.",
+    "proceedToPayment": "Continuar al pago",
+    "processing": "Redirigiendo al pago…",
+    "checkout": {
+      "title": "Tus datos",
+      "name": "Nombre completo",
+      "namePlaceholder": "Ana García",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "ana@ejemplo.com",
+      "phone": "Teléfono",
+      "phonePlaceholder": "+34 600 000 000",
+      "cancel": "Cancelar"
+    }
+  },
+  "bookingSuccess": {
+    "title": "¡Reserva confirmada!",
+    "subtitle": "Estamos deseando cocinar contigo.",
+    "course": "Curso",
+    "date": "Fecha",
+    "time": "Horario",
+    "name": "Nombre",
+    "email": "Email",
+    "amountPaid": "Importe pagado",
+    "emailNote": "Se ha enviado una confirmación a tu correo.",
+    "backToCourses": "Ver más cursos"
+  },
+  "about": {
+    "team": "Conoce al equipo"
+  },
+  "contact": {
+    "pageTitle": "Contacto",
+    "pageDescription": "Escríbenos, nos encantará saber de ti.",
+    "emailLabel": "Email",
+    "phoneLabel": "Teléfono",
+    "addressLabel": "Dirección",
+    "form": {
+      "title": "Envíanos un mensaje",
+      "name": "Tu nombre",
+      "namePlaceholder": "Ana García",
+      "email": "Tu correo",
+      "emailPlaceholder": "ana@ejemplo.com",
+      "message": "Mensaje",
+      "messagePlaceholder": "¿En qué podemos ayudarte?",
+      "submit": "Enviar mensaje",
+      "sending": "Enviando…",
+      "success": "¡Mensaje enviado! Te responderemos pronto.",
+      "error": "Algo salió mal. Por favor, inténtalo de nuevo."
+    }
   },
   "common": {
     "loading": "Cargando...",
     "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
     "backToHome": "Volver al inicio"
+  },
+  "legal": {
+    "terms": "Términos de Servicio",
+    "privacy": "Política de Privacidad",
+    "lastUpdated": "Última actualización: {date}"
   }
 }

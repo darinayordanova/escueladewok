@@ -6,7 +6,8 @@
   "navigation": {
     "home": "Home",
     "courses": "Courses",
-    "about": "About"
+    "about": "About",
+    "contact": "Contact"
   },
   "home": {
     "featuredCourses": "Featured Courses",
@@ -36,11 +37,69 @@
     "chooseDate": "Choose a date",
     "noDatesAvailable": "No upcoming dates available",
     "timeRange": "from {start} to {end}",
-    "duration": "{duration} min"
+    "duration": "{duration} min",
+    "menuTitle": "What you'll learn to cook",
+    "spotsLeft": "{count} spot left",
+    "spotsLeftPlural": "{count} spots left",
+    "soldOut": "Sold out",
+    "paymentComingSoon": "Online booking coming soon",
+    "paymentComingSoonSub": "To reserve your spot, please get in touch with us directly.",
+    "proceedToPayment": "Proceed to payment",
+    "processing": "Redirecting to payment…",
+    "checkout": {
+      "title": "Your details",
+      "name": "Full name",
+      "namePlaceholder": "Jane Smith",
+      "email": "Email address",
+      "emailPlaceholder": "jane@example.com",
+      "phone": "Phone number",
+      "phonePlaceholder": "+34 600 000 000",
+      "cancel": "Cancel"
+    }
+  },
+  "bookingSuccess": {
+    "title": "Booking confirmed!",
+    "subtitle": "We look forward to cooking with you.",
+    "course": "Course",
+    "date": "Date",
+    "time": "Time",
+    "name": "Name",
+    "email": "Email",
+    "amountPaid": "Amount paid",
+    "emailNote": "A confirmation has been sent to your email.",
+    "backToCourses": "Browse more courses"
+  },
+  "about": {
+    "team": "Meet the team"
+  },
+  "contact": {
+    "pageTitle": "Contact Us",
+    "pageDescription": "Get in touch — we'd love to hear from you.",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "addressLabel": "Address",
+    "form": {
+      "title": "Send us a message",
+      "name": "Your name",
+      "namePlaceholder": "Jane Smith",
+      "email": "Your email",
+      "emailPlaceholder": "jane@example.com",
+      "message": "Message",
+      "messagePlaceholder": "How can we help you?",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "success": "Message sent! We'll get back to you soon.",
+      "error": "Something went wrong. Please try again."
+    }
   },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",
     "backToHome": "Back to Home"
+  },
+  "legal": {
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "lastUpdated": "Last updated: {date}"
   }
 }
