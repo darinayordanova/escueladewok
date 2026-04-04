@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
 import { formatDate } from '@/lib/courses/timeslots';
-import { stripe } from '@/lib/stripe/client';
+import { getStripe } from '@/lib/stripe/client';
 import type { Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -30,7 +30,7 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
 
   let session;
   try {
-    session = await stripe.checkout.sessions.retrieve(session_id);
+    session = await getStripe().checkout.sessions.retrieve(session_id);
   } catch {
     notFound();
   }

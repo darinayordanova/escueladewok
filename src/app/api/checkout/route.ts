@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { addMinutesToTime } from '@/lib/courses/timeslots';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
-import { stripe } from '@/lib/stripe/client';
+import { getStripe } from '@/lib/stripe/client';
 
 interface CheckoutBody {
   courseId: string;
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     // ── Create Stripe Checkout Session ───────────────────────────────────────
     const origin = request.headers.get('origin') ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
-    const stripeSession = await stripe.checkout.sessions.create({
+    const stripeSession = await getStripe().checkout.sessions.create({
       mode: 'payment',
       line_items: [
         {

@@ -3,7 +3,7 @@ import type Stripe from 'stripe';
 
 import { sendConfirmationEmail } from '@/lib/email';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
-import { stripe } from '@/lib/stripe/client';
+import { getStripe } from '@/lib/stripe/client';
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
+    event = getStripe().webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('Stripe webhook signature verification failed:', message);
