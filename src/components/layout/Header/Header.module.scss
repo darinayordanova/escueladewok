@@ -15,6 +15,7 @@
   @include flex-between;
 
   height: 64px;
+  position: relative;
 }
 
 .logo {
@@ -23,12 +24,15 @@
   color: $color-primary;
   text-decoration: none;
   letter-spacing: -0.02em;
+  flex-shrink: 0;
 
   &:hover {
     text-decoration: none;
     color: $color-primary-dark;
   }
 }
+
+// ─── Desktop nav ──────────────────────────────────────────────────────────────
 
 .nav {
   display: none;
@@ -59,6 +63,8 @@
   @include focus-ring;
 }
 
+// ─── Language switcher ────────────────────────────────────────────────────────
+
 .languageSwitcher {
   display: flex;
   align-items: center;
@@ -86,4 +92,126 @@
 .langButtonActive {
   color: $color-primary;
   font-weight: $font-weight-bold;
+}
+
+.desktopLang {
+  display: none;
+
+  @include respond-to('md') {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// ─── Burger button ────────────────────────────────────────────────────────────
+
+.burgerButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: $spacing-2;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  @include focus-ring;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+.burgerBar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: $color-text;
+  border-radius: 2px;
+  transition:
+    transform $transition-base,
+    opacity $transition-base;
+  transform-origin: center;
+}
+
+.burgerBarTop {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.burgerBarMid {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.burgerBarBot {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+// ─── Mobile overlay ───────────────────────────────────────────────────────────
+
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: $z-sticky - 1;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+// ─── Mobile menu drawer ───────────────────────────────────────────────────────
+
+.mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: $color-background;
+  border-bottom: 1px solid $color-border;
+  box-shadow: $shadow-md;
+  z-index: $z-sticky;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height $transition-base;
+  pointer-events: none;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+.mobileMenuOpen {
+  max-height: 400px;
+  pointer-events: auto;
+}
+
+.mobileNavList {
+  padding: $spacing-4 0;
+  border-bottom: 1px solid $color-border;
+}
+
+.mobileNavLink {
+  display: block;
+  padding: $spacing-3 $spacing-6;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+  text-decoration: none;
+  transition: background-color $transition-fast, color $transition-fast;
+
+  &:hover {
+    background-color: $color-background-alt;
+    color: $color-primary;
+    text-decoration: none;
+  }
+
+  @include focus-ring;
+}
+
+.mobileLang {
+  padding: $spacing-4 $spacing-6;
 }
