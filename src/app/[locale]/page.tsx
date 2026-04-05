@@ -2,9 +2,6 @@ import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
-export const dynamic = 'force-dynamic';
-
-
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
 import Hero from '@/components/sections/Hero/Hero';
 import { Link } from '@/i18n/navigation';
@@ -13,6 +10,8 @@ import { featuredCoursesQuery, homepageQuery } from '@/lib/sanity/queries';
 import type { Course, Homepage, Locale } from '@/types';
 
 import styles from './page.module.scss';
+
+export const dynamic = 'force-dynamic';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
