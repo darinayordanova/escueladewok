@@ -12,10 +12,13 @@ export async function GET() {
   const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production';
   const token = process.env.SANITY_API_TOKEN;
 
-  const url = `https://api.sanity.io/v2025-01-01/data/query/${dataset}?query=${encodeURIComponent(homepageQuery)}`;
+  const url = `https://${projectId}.api.sanity.io/v2025-01-01/data/query/${dataset}?query=${encodeURIComponent(homepageQuery)}`;
 
   const rawResponse = await fetch(url, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      'Cache-Control': 'no-cache',
+    },
     cache: 'no-store',
   });
   const rawJson = await rawResponse.json();
