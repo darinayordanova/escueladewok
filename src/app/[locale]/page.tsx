@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
+export const dynamic = 'force-dynamic';
+
 
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
 import Hero from '@/components/sections/Hero/Hero';
