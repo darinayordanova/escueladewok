@@ -1,56 +1,32 @@
 import { revalidatePath } from 'next/cache';
 import { type NextRequest, NextResponse } from 'next/server';
 
-/**
- * Called by a Sanity webhook whenever content is published.
- * Clears Next.js data cache for all content-driven pages.
- *
- * Protect with SANITY_REVALIDATE_SECRET set in both:
- *   - Vercel environment variables
- *   - Sanity webhook HTTP header (as "x-revalidate-secret")
- */
 export async function POST(request: NextRequest) {
   const secret = request.headers.get('x-revalidate-secret');
 
+  if (!process.env.SANITY_REVALIDATE_SECRET) {
+    console.error('[revalidate] SANITY_REVALIDATE_SECRET env var is not set');
+    return NextResponse.json({ message: 'Server misconfiguration' }, { status: 500 });
+  }
+
   if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
+    console.warn('[revalidate] Invalid secret received:', secret?.slice(0, 6));
     return NextResponse.json({ message: 'Invalid secret' }, { status: 401 });
   }
 
-  // Parse which document type was published so we only revalidate what changed
   let body: { _type?: string } = {};
   try {
     body = await request.json();
   } catch {
-    // body is optional — revalidate everything if we can't parse it
+    // no body — revalidate everything
   }
 
   const type = body._type;
+  console.log('[revalidate] Triggered for type:', type ?? 'all');
 
-  if (!type || type === 'homepage') {
-    revalidatePath('/[locale]', 'page');
-  }
+  // Revalidate the root layout — this clears cached data for every page at once
+  revalidatePath('/', 'layout');
 
-  if (!type || type === 'course') {
-    revalidatePath('/[locale]/courses', 'page');
-    revalidatePath('/[locale]/courses/[slug]', 'page');
-    revalidatePath('/[locale]', 'page'); // homepage shows featured courses
-  }
-
-  if (!type || type === 'aboutPage') {
-    revalidatePath('/[locale]/about', 'page');
-  }
-
-  if (!type || type === 'contactPage') {
-    revalidatePath('/[locale]/contact', 'page');
-  }
-
-  if (!type || type === 'termsPage') {
-    revalidatePath('/[locale]/terms', 'page');
-  }
-
-  if (!type || type === 'privacyPage') {
-    revalidatePath('/[locale]/privacy', 'page');
-  }
-
+  console.log('[revalidate] Done');
   return NextResponse.json({ revalidated: true, type: type ?? 'all' });
 }
