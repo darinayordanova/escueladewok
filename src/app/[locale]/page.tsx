@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
@@ -11,8 +12,6 @@ import type { Course, Homepage, Locale } from '@/types';
 
 import styles from './page.module.scss';
 
-export const dynamic = 'force-dynamic';
-
 interface HomePageProps {
   params: Promise<{ locale: string }>;
 }
@@ -24,6 +23,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 }
 
 export default async function HomePage({ params }: HomePageProps) {
+  await connection();
   const { locale } = await params;
 
   const [homepage, featuredCourses] = await Promise.all([
