@@ -11,5 +11,5 @@ const client = createClient({
 // which persists stale data even after Sanity publishes new content.
 export const sanityClient = {
   fetch: <T>(query: string, params?: QueryParams): Promise<T> =>
-    client.fetch<T>(query, params, { cache: 'no-store' }),
+    client.fetch<T>(query, params ?? {}, { cache: 'no-store' }),
 };
