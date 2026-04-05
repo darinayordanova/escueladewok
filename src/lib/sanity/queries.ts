@@ -1,7 +1,7 @@
 import { groq } from 'next-sanity';
 
 export const homepageQuery = groq`
-  *[_type == "homepage"][0] {
+  *[_type == "homepage" && _id == "homepage"][0] {
     _id,
     heroEyebrow,
     heroTitle,
