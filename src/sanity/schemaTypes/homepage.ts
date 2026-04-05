@@ -6,6 +6,12 @@ export const homepage = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'heroEyebrow',
+      title: 'Hero Eyebrow',
+      description: 'Small label shown above the main title (e.g. "Chinese Cooking School")',
+      type: 'localeString',
+    }),
+    defineField({
       name: 'heroTitle',
       title: 'Hero Title',
       type: 'localeString',

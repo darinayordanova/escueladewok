@@ -3,6 +3,7 @@ import { groq } from 'next-sanity';
 export const homepageQuery = groq`
   *[_type == "homepage"][0] {
     _id,
+    heroEyebrow,
     heroTitle,
     heroSubtitle,
     heroCtaLabel,

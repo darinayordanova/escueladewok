@@ -11,7 +11,11 @@
   },
   "home": {
     "featuredCourses": "Featured Courses",
-    "viewAllCourses": "View All Courses"
+    "viewAllCourses": "View All Courses",
+    "heroAboutLink": "About us",
+    "pill1": "Small groups",
+    "pill2": "All levels",
+    "pill3": "Hands-on"
   },
   "courses": {
     "pageTitle": "Our Courses",
