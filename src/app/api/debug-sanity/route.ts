@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import { rawClient } from '@/lib/sanity/client';
 import { homepageQuery } from '@/lib/sanity/queries';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   // Bypass our wrapper entirely — call the raw client directly
   // with an explicit fetch using no caching whatsoever
