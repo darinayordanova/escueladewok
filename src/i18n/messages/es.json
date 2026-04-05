@@ -12,10 +12,7 @@
   "home": {
     "featuredCourses": "Cursos Destacados",
     "viewAllCourses": "Ver todos los cursos",
-    "heroAboutLink": "Sobre nosotros",
-    "pill1": "Grupos reducidos",
-    "pill2": "Todos los niveles",
-    "pill3": "Taller práctico"
+    "heroAboutLink": "Sobre nosotros"
   },
   "courses": {
     "pageTitle": "Nuestros Cursos",

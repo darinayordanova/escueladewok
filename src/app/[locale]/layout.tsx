@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer/Footer';
 import Header from '@/components/layout/Header/Header';
 import { routing } from '@/i18n/routing';
 import type { Locale } from '@/types';
+import styles from './layout.module.scss';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -43,7 +44,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   return (
     <NextIntlClientProvider locale={locale as Locale} messages={messages}>
       <Header />
-      <main>{children}</main>
+      <main className={styles.main}>{children}</main>
       <Footer />
     </NextIntlClientProvider>
   );

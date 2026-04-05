@@ -3,11 +3,9 @@ import { groq } from 'next-sanity';
 export const homepageQuery = groq`
   *[_type == "homepage" && _id == "homepage"][0] {
     _id,
-    heroEyebrow,
     heroTitle,
     heroSubtitle,
     heroCtaLabel,
-    heroImage,
     featuredCoursesTitle,
   }
 `;

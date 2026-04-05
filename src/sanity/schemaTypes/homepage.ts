@@ -5,12 +5,7 @@ export const homepage = defineType({
   title: 'Homepage',
   type: 'document',
   fields: [
-    defineField({
-      name: 'heroEyebrow',
-      title: 'Hero Eyebrow',
-      description: 'Small label shown above the main title (e.g. "Chinese Cooking School")',
-      type: 'localeString',
-    }),
+   
     defineField({
       name: 'heroTitle',
       title: 'Hero Title',
@@ -27,19 +22,7 @@ export const homepage = defineType({
       title: 'Hero CTA Button Label',
       type: 'localeString',
     }),
-    defineField({
-      name: 'heroImage',
-      title: 'Hero Image',
-      type: 'image',
-      options: { hotspot: true },
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alt text',
-          type: 'localeString',
-        }),
-      ],
-    }),
+   
     defineField({
       name: 'featuredCoursesTitle',
       title: 'Featured Courses Section Title',

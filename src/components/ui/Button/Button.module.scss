@@ -7,7 +7,7 @@
   justify-content: center;
   gap: $spacing-2;
   font-weight: $font-weight-semibold;
-  border-radius: $radius-md;
+  border-radius: $radius-full;
   transition:
     background-color $transition-fast,
     border-color $transition-fast,
@@ -15,6 +15,10 @@
     box-shadow $transition-fast,
     transform $transition-fast;
   white-space: nowrap;
+  
+  &:hover {
+    text-decoration: none;
+  }
 
   @include focus-ring;
 

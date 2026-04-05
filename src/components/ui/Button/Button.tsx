@@ -1,23 +1,38 @@
 import type { ButtonHTMLAttributes } from 'react';
 
+import { Link } from '@/i18n/navigation';
+import type { ComponentPropsWithoutRef } from 'react';
+
 import styles from './Button.module.scss';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type BaseProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  isLoading?: boolean;
   fullWidth?: boolean;
-}
+};
+
+type AsButton = BaseProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    href?: undefined;
+    isLoading?: boolean;
+  };
+
+type AsLink = BaseProps &
+  ComponentPropsWithoutRef<typeof Link> & {
+    href: string;
+    isLoading?: never;
+    disabled?: never;
+  };
+
+type ButtonProps = AsButton | AsLink;
 
 export default function Button({
   variant = 'primary',
   size = 'md',
-  isLoading = false,
   fullWidth = false,
-  disabled,
   children,
   className,
   ...props
@@ -27,14 +42,27 @@ export default function Button({
     styles[variant],
     styles[size],
     fullWidth ? styles.fullWidth : '',
-    isLoading ? styles.loading : '',
     className ?? '',
   ]
     .filter(Boolean)
     .join(' ');
 
+  if (props.href !== undefined) {
+    const { href, ...linkProps } = props as AsLink;
+    return (
+      <Link href={href} className={classes} {...linkProps}>
+        <span>{children}</span>
+      </Link>
+    );
+  }
+
+  const { isLoading, disabled, ...buttonProps } = props as AsButton;
   return (
-    <button className={classes} disabled={disabled || isLoading} {...props}>
+    <button
+      className={`${classes}${isLoading ? ` ${styles.loading}` : ''}`}
+      disabled={disabled || isLoading}
+      {...buttonProps}
+    >
       {isLoading && <span className={styles.spinner} aria-hidden="true" />}
       <span>{children}</span>
     </button>

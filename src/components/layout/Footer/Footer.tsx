@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@/i18n/navigation';
@@ -12,7 +13,9 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <p className={styles.brand}>Escuela de Wok</p>
+        <Link href="/" className={styles.brand}>
+          <Image src="/logo-footer.svg" alt="Escuela de Wok" width={100} height={60} />
+        </Link>
         <nav aria-label="Footer navigation">
           <ul className={styles.links}>
             <li>

@@ -5,17 +5,24 @@
   position: sticky;
   top: 0;
   z-index: $z-sticky;
-  background-color: $color-background;
-  border-bottom: 1px solid $color-border;
-  box-shadow: $shadow-sm;
+  
+
+  &.scrolled {
+    background-color: $color-background;
+    box-shadow: $shadow-sm;
+  }
 }
 
 .container {
   @include container;
   @include flex-between;
 
-  height: 64px;
+  height: $header-height-sm;
   position: relative;
+
+  @include respond-to('md') {
+    height: $header-height;
+  }
 }
 
 .logo {

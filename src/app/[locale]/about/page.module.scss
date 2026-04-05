@@ -19,13 +19,13 @@
 }
 
 .title {
-  font-size: $font-size-4xl;
+  font-size: $font-size-h3;
   font-weight: $font-weight-bold;
   line-height: $line-height-tight;
   margin-bottom: $spacing-5;
 
   @include respond-to('lg') {
-    font-size: $font-size-5xl;
+    font-size: $font-size-h2;
   }
 }
 
@@ -51,7 +51,7 @@
 }
 
 .teamTitle {
-  font-size: $font-size-3xl;
+  font-size: $font-size-h4;
   font-weight: $font-weight-bold;
   margin-bottom: $spacing-10;
 }

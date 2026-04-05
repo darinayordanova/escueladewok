@@ -1,3 +1,8 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@/i18n/navigation';
@@ -8,12 +13,20 @@ import MobileMenu from './MobileMenu';
 
 export default function Header() {
   const t = useTranslations('navigation');
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 0);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
-          Escuela de Wok
+          <Image src="/logo.svg" alt="Escuela de Wok" width={100} height={60} priority />
         </Link>
 
         {/* Desktop nav — hidden on mobile */}

@@ -12,10 +12,7 @@
   "home": {
     "featuredCourses": "Featured Courses",
     "viewAllCourses": "View All Courses",
-    "heroAboutLink": "About us",
-    "pill1": "Small groups",
-    "pill2": "All levels",
-    "pill3": "Hands-on"
+    "heroAboutLink": "About us"
   },
   "courses": {
     "pageTitle": "Our Courses",

@@ -1,34 +1,36 @@
 // ─── Colors ───────────────────────────────────────────────────────────────────
-$color-primary: #c0392b;
-$color-primary-dark: #922b21;
-$color-primary-light: #e74c3c;
-$color-secondary: #f39c12;
-$color-secondary-dark: #d68910;
+$color-primary: #860A15;
+$color-primary-dark: #5C0A10;
+$color-primary-light: #D43040;
+$color-secondary: #B87E18;
+$color-secondary-dark: #E2A830;
 
-$color-text: #1a1a1a;
-$color-text-light: #666;
-$color-text-muted: #999;
+$color-text: #1A0E0E;
+$color-text-light: #3D2B2B;
+$color-text-muted: #7A5C5C;
 
 $color-background: #fff;
-$color-background-alt: #f9f5f0;
-$color-background-dark: #1a1a1a;
+$color-background-alt: #F5F0F0;
+$color-background-dark: #1A0E0E;
 
-$color-border: #e0e0e0;
-$color-border-light: #f0f0f0;
+$color-border: #C4AEAE;
+$color-border-light: #C4AEAE;
 
 // ─── Typography ───────────────────────────────────────────────────────────────
 $font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 $font-serif: Georgia, 'Times New Roman', serif;
 
-$font-size-xs: 0.75rem;   // 12px
-$font-size-sm: 0.875rem;  // 14px
-$font-size-base: 1rem;    // 16px
-$font-size-lg: 1.125rem;  // 18px
-$font-size-xl: 1.25rem;   // 20px
-$font-size-2xl: 1.5rem;   // 24px
-$font-size-3xl: 1.875rem; // 30px
-$font-size-4xl: 2.25rem;  // 36px
-$font-size-5xl: 3rem;     // 48px
+$font-size-xs: 12px;   // 12px
+$font-size-sm: 14px;  // 14px
+$font-size-base: 16px;    // 16px
+$font-size-lg: 18px;  // 18px
+$font-size-xl: 20px;   // 20px
+$font-size-h6: 22px;   // 22px
+$font-size-h5: 26px; // 26px
+$font-size-h4: 32px;  // 32px
+$font-size-h3: 38px;     // 38px
+$font-size-h2: 48px;   // 48px
+$font-size-h1: 58px;     // 58px
 
 $font-weight-normal: 400;
 $font-weight-medium: 500;
@@ -92,3 +94,6 @@ $z-sticky: 200;
 $z-overlay: 300;
 $z-modal: 400;
 $z-toast: 500;
+
+$header-height: 80px;
+$header-height-sm: 60px;

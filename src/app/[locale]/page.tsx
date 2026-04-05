@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { connection } from 'next/server';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
@@ -23,7 +22,6 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 }
 
 export default async function HomePage({ params }: HomePageProps) {
-  await connection();
   const { locale } = await params;
 
   const [homepage, featuredCourses] = await Promise.all([

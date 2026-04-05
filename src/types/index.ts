@@ -162,11 +162,9 @@ export interface ContactPage {
 export interface Homepage {
   _id: string;
   _type: 'homepage';
-  heroEyebrow?: LocaleString;
   heroTitle: LocaleString;
   heroSubtitle: LocaleText;
   heroCtaLabel: LocaleString;
-  heroImage?: SanityImage;
   featuredCoursesTitle: LocaleString;
 }
 
