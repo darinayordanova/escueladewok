@@ -10,18 +10,13 @@ import CourseMenu from '@/components/sections/CourseMenu/CourseMenu';
 import { getFutureDateEntries } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
-import { confirmedBookingsForCourseQuery, courseBySlugQuery, courseSlugParams } from '@/lib/sanity/queries';
+import { confirmedBookingsForCourseQuery, courseBySlugQuery } from '@/lib/sanity/queries';
 import type { BookingCountMap, Course, Locale } from '@/types';
 
 import styles from './page.module.scss';
 
 interface CourseDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = await sanityClient.fetch<{ slug: string }[]>(courseSlugParams);
-  return slugs.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: CourseDetailPageProps): Promise<Metadata> {
