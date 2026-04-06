@@ -1,0 +1,76 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// ─── Spacing scale ────────────────────────────────────────────────────────────
+// Maps token names to values from _variables.scss
+$spacing-scale: (
+  '0':  0,
+  '1':  $spacing-1,
+  '2':  $spacing-2,
+  '3':  $spacing-3,
+  '4':  $spacing-4,
+  '5':  $spacing-5,
+  '6':  $spacing-6,
+  '8':  $spacing-8,
+  '10': $spacing-10,
+  '12': $spacing-12,
+  '16': $spacing-16,
+  '20': $spacing-20,
+  '24': $spacing-24,
+);
+
+// ─── Property map ─────────────────────────────────────────────────────────────
+// Shorthand → (CSS property, sides)
+$spacing-props: (
+  'p':  ('padding',         ''),
+  'pt': ('padding-top',     ''),
+  'pr': ('padding-right',   ''),
+  'pb': ('padding-bottom',  ''),
+  'pl': ('padding-left',    ''),
+  'px': ('padding-inline',  ''),
+  'py': ('padding-block',   ''),
+  'm':  ('margin',          ''),
+  'mt': ('margin-top',      ''),
+  'mr': ('margin-right',    ''),
+  'mb': ('margin-bottom',   ''),
+  'ml': ('margin-left',     ''),
+  'mx': ('margin-inline',   ''),
+  'my': ('margin-block',    ''),
+);
+
+// ─── Generator ────────────────────────────────────────────────────────────────
+@mixin generate-spacing($bp: null) {
+  @each $prop, $def in $spacing-props {
+    $css-prop: nth($def, 1);
+
+    @each $key, $value in $spacing-scale {
+      $class: if($bp, '.#{$prop}-#{$bp}-#{$key}', '.#{$prop}-#{$key}');
+
+      #{$class} {
+        #{$css-prop}: $value;
+      }
+    }
+
+    // mx-auto / my-auto — only for margins
+    @if $prop == 'mx' or $prop == 'ml' or $prop == 'mr' {
+      $class: if($bp, '.#{$prop}-#{$bp}-auto', '.#{$prop}-auto');
+      #{$class} { #{$css-prop}: auto; }
+    }
+
+    // p-no / m-no — remove all padding or margin on a side/axis
+    $class: if($bp, '.#{$prop}-#{$bp}-no', '.#{$prop}-no');
+    #{$class} { #{$css-prop}: 0 !important; }
+  }
+}
+
+// ─── Base (all breakpoints) ───────────────────────────────────────────────────
+@include generate-spacing;
+
+// ─── Responsive overrides ─────────────────────────────────────────────────────
+$breakpoints: ('sm', 'md', 'lg', 'xl');
+
+@each $bp in $breakpoints {
+  @include respond-to($bp) {
+    @include generate-spacing($bp);
+  }
+}

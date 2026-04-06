@@ -79,7 +79,7 @@ export interface MenuItem {
 }
 
 // ─── Content models ───────────────────────────────────────────────────────────
-export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
+export type CuisineType = 'chinese' | 'korean' | 'japanese' | 'thai' | 'vietnamese';
 
 export interface TimeSlot {
   _key: string;
@@ -98,7 +98,8 @@ export interface Course {
   currency: string;
   duration: number;
   maxParticipants: number;
-  difficulty: DifficultyLevel;
+  cuisine: CuisineType;
+  corporateEvent?: boolean;
   timeSlots?: TimeSlot[];
   about?: CourseSection[];
   menu?: MenuItem[];

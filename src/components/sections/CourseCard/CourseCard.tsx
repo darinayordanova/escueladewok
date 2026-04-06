@@ -22,7 +22,7 @@ interface CourseCardProps {
 
 export default function CourseCard({ course, locale, occurrence }: CourseCardProps) {
   const t = useTranslations('courses');
-  const { title, slug, description, image, price, currency, duration, difficulty } = course;
+  const { title, slug, description, image, price, currency, duration, cuisine } = course;
 
   const href = occurrence
     ? `/courses/${slug.current}?date=${occurrence.date}&time=${occurrence.startTime}`
@@ -43,7 +43,7 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
           ) : (
             <div className={styles.imagePlaceholder} aria-hidden="true" />
           )}
-          <span className={styles.difficulty}>{t(`difficulty.${difficulty}`)}</span>
+          {cuisine && <span className={styles.cuisine}>{t(`cuisine.${cuisine}`)}</span>}
         </div>
       </Link>
 

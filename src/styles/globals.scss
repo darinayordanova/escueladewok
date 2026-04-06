@@ -1,5 +1,7 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
+@use '@/styles/grid';
+@use '@/styles/spacing';
 // ─── Reset ────────────────────────────────────────────────────────────────────
 *,
 *::before,

@@ -54,7 +54,7 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
+      <div className="container">
         <div className={styles.card}>
           <div className={styles.icon} aria-hidden="true">✓</div>
           <h1 className={styles.title}>{t('title')}</h1>

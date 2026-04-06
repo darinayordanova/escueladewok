@@ -6,10 +6,6 @@
   background-color: $color-background-alt;
 }
 
-.container {
-  @include container;
-}
-
 .sectionTitle {
   font-size: $font-size-h4;
   font-weight: $font-weight-bold;

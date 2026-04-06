@@ -1,0 +1,135 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  @include container;
+  position: relative;
+  z-index: $z-raised;
+  width: 100%;
+}
+
+// ─── Grid container ───────────────────────────────────────────────────────────
+// Usage: <div class="grid">
+.grid {
+  @include grid;
+}
+
+// Auto-fit variant — children fill available space equally, space-between feel
+// Usage: <div class="grid grid--auto">  (no .col-* needed on children)
+.grid--auto {
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+// Vertical alignment variants
+// Usage: <div class="grid grid--center">
+.grid--center  { align-items: center; }
+.grid--start   { align-items: start; }
+.grid--end     { align-items: end; }
+.grid--stretch { align-items: stretch; } // default
+
+// Dense variant — auto-fills gaps left by uneven spans
+// Usage: <div class="grid grid--dense">
+.grid--dense {
+  grid-auto-flow: dense;
+}
+
+// Custom gap overrides
+// Usage: <div class="grid grid--gap-sm">
+.grid--gap-sm  { gap: $spacing-4; }
+.grid--gap-lg  { gap: $spacing-8; }
+.grid--no-gap  { gap: 0; }
+
+// ─── Column spans ─────────────────────────────────────────────────────────────
+// Mobile-first: .col-{n} applies at all sizes.
+// Override per breakpoint: .col-sm-{n} .col-md-{n} .col-lg-{n} .col-xl-{n}
+//
+// Usage:
+//   <div class="col-12 col-md-6 col-lg-4">...</div>
+
+@for $i from 1 through $grid-columns {
+  .col-#{$i} {
+    grid-column: span #{$i};
+  }
+}
+
+// .col-auto — size to content, don't span fixed columns
+.col-auto { grid-column: auto; }
+
+// Responsive overrides
+$breakpoints: ('sm', 'md', 'lg', 'xl');
+
+@each $bp in $breakpoints {
+  @include respond-to($bp) {
+    @for $i from 1 through $grid-columns {
+      .col-#{$bp}-#{$i} {
+        grid-column: span #{$i};
+      }
+    }
+
+    .col-#{$bp}-auto {
+      grid-column: auto;
+    }
+  }
+}
+
+// ─── Column offsets ───────────────────────────────────────────────────────────
+// Pushes a column N steps from the left.
+// Usage: <div class="col-6 col-offset-3">  (centered 6-col block)
+
+@for $i from 1 through $grid-columns - 1 {
+  .col-offset-#{$i} {
+    grid-column-start: #{$i + 1};
+  }
+}
+
+@each $bp in $breakpoints {
+  @include respond-to($bp) {
+    @for $i from 1 through $grid-columns - 1 {
+      .col-#{$bp}-offset-#{$i} {
+        grid-column-start: #{$i + 1};
+      }
+    }
+
+    // Reset offset at a breakpoint
+    .col-#{$bp}-offset-0 {
+      grid-column-start: auto;
+    }
+  }
+}
+
+// ─── Row utilities ────────────────────────────────────────────────────────────
+// Force a cell to span multiple rows
+// Usage: <div class="col-4 row-span-2">
+
+@for $i from 2 through 6 {
+  .row-span-#{$i} {
+    grid-row: span #{$i};
+  }
+}
+
+.relative { position: relative; }
+
+.absolute { position: absolute; }
+
+.flex { display: flex; }
+
+.flex-justify-center { justify-content: center; }
+.flex-justify-between { justify-content: space-between; }
+.flex-justify-end { justify-content: flex-end; }
+.flex-align-center { align-items: center; }
+
+// ─── Text alignment ───────────────────────────────────────────────────────────
+// Usage: <p class="text-center text-md-left">
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+$breakpoints: ('sm', 'md', 'lg', 'xl');
+
+@each $bp in $breakpoints {
+  @include respond-to($bp) {
+    .text-#{$bp}-left   { text-align: left; }
+    .text-#{$bp}-center { text-align: center; }
+    .text-#{$bp}-right  { text-align: right; }
+  }
+}

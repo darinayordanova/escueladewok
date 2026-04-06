@@ -24,9 +24,9 @@ export default function Header() {
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
-      <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
-          <Image src="/logo.svg" alt="Escuela de Wok" width={100} height={60} priority />
+      <div className={`container flex flex-justify-between flex-align-center ${styles.container} py-1 py-md-2`}>
+        <Link href="/" >
+          <Image src="/logo.svg" className={styles.logo} alt="Escuela de Wok" width={100} height={60} priority />
         </Link>
 
         {/* Desktop nav — hidden on mobile */}

@@ -12,7 +12,7 @@ export default function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.container}>
+      <div className="container">
         <Link href="/" className={styles.brand}>
           <Image src="/logo-footer.svg" alt="Escuela de Wok" width={100} height={60} />
         </Link>

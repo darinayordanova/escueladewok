@@ -30,7 +30,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
+      <div className="container">
         <header className={styles.header}>
           <h1 className={styles.title}>
             {page?.title?.[l] ?? t('terms')}

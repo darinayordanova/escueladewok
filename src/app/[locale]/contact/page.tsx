@@ -34,7 +34,7 @@ export default async function ContactPageRoute({ params }: ContactPageProps) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
+      <div className="container">
         {/* ── Header ── */}
         <header className={styles.header}>
           <h1 className={styles.title}>{page?.title?.[l] ?? t('pageTitle')}</h1>

@@ -20,8 +20,8 @@ export default function Hero({ data, locale }: HeroProps) {
   return (
     <section className={styles.hero}>
       {/* Content */}
-      <div className={styles.container}>
-        <div className={styles.content}>
+      <div className={`container grid py-20 pb-md-20 pb-no`}>
+        <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left`}>
 
           <h1 className={styles.title}>{heroTitle[locale]}</h1>
 
@@ -37,18 +37,21 @@ export default function Hero({ data, locale }: HeroProps) {
             </Link>
           </div>
         </div>
+        <div className={`col-12 col-lg-5 col-md-6 relative`}>
+      <div className={styles.redBox} />
+
          <Image
     src={heroImage}         
     alt="..."
     priority                
-    placeholder="blur"      
     width={548}
     height={593}
     className={styles.image}
   />
+  </div>
+
       </div>
 
-      <div className={styles.redBox} />
     </section>
   );
 }

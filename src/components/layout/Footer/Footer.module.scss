@@ -8,22 +8,6 @@
   margin-top: auto;
 }
 
-.container {
-  @include container;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: $spacing-6;
-  text-align: center;
-
-  @include respond-to('md') {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
-  }
-}
-
 .brand {
   display: flex;
   align-items: center;

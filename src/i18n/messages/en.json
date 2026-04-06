@@ -17,10 +17,12 @@
   "courses": {
     "pageTitle": "Our Courses",
     "pageDescription": "Explore our range of Chinese cooking classes for all skill levels.",
-    "difficulty": {
-      "beginner": "Beginner",
-      "intermediate": "Intermediate",
-      "advanced": "Advanced"
+    "cuisine": {
+      "chinese": "Chinese",
+      "korean": "Korean",
+      "japanese": "Japanese",
+      "thai": "Thai",
+      "vietnamese": "Vietnamese"
     },
     "duration": "{duration} min",
     "spotsAvailable": "{spots} spots left",

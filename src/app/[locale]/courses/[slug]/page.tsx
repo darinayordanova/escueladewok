@@ -61,7 +61,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
   return (
     <article className={styles.page}>
-      <div className={styles.container}>
+      <div className="container">
         {/* ── Hero image ── */}
         <div className={styles.hero}>
           {image && (

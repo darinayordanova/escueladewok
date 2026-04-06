@@ -33,7 +33,8 @@ export const featuredCoursesQuery = groq`
     price,
     currency,
     duration,
-    difficulty,
+    cuisine,
+    corporateEvent,
     instructor,
     featured,
     ${timeSlotsProjection}
@@ -50,7 +51,8 @@ export const allCoursesQuery = groq`
     price,
     currency,
     duration,
-    difficulty,
+    cuisine,
+    corporateEvent,
     instructor,
     ${timeSlotsProjection}
   }
@@ -67,7 +69,8 @@ export const courseBySlugQuery = groq`
     currency,
     duration,
     maxParticipants,
-    difficulty,
+    cuisine,
+    corporateEvent,
     instructor,
     ${timeSlotsProjection},
     "about": about[] {

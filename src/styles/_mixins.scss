@@ -79,6 +79,41 @@
   }
 }
 
+// ─── Grid ─────────────────────────────────────────────────────────────────────
+
+// Grid container — sets up the 12-col CSS Grid
+@mixin grid($gutter: $grid-gutter) {
+  display: grid;
+  grid-template-columns: repeat(#{$grid-columns}, 1fr);
+  gap: $grid-row-gap $grid-gutter-mobile;
+
+  @include respond-to('md') {
+    gap: $grid-row-gap $gutter;
+  }
+}
+
+// Span N columns (1–12). Use inside CSS Modules for component-level control.
+@mixin grid-col($span, $bp: null) {
+  @if $bp {
+    @include respond-to($bp) {
+      grid-column: span #{$span};
+    }
+  } @else {
+    grid-column: span #{$span};
+  }
+}
+
+// Offset N columns from the start
+@mixin grid-offset($offset, $bp: null) {
+  @if $bp {
+    @include respond-to($bp) {
+      grid-column-start: #{$offset + 1};
+    }
+  } @else {
+    grid-column-start: #{$offset + 1};
+  }
+}
+
 // ─── Interaction ──────────────────────────────────────────────────────────────
 @mixin hover-lift {
   transition: transform $transition-base, box-shadow $transition-base;

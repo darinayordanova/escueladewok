@@ -17,10 +17,12 @@
   "courses": {
     "pageTitle": "Nuestros Cursos",
     "pageDescription": "Explora nuestra oferta de clases de cocina china para todos los niveles.",
-    "difficulty": {
-      "beginner": "Principiante",
-      "intermediate": "Intermedio",
-      "advanced": "Avanzado"
+    "cuisine": {
+      "chinese": "Chino",
+      "korean": "Coreano",
+      "japanese": "Japonés",
+      "thai": "Tailandés",
+      "vietnamese": "Vietnamita"
     },
     "duration": "{duration} min",
     "spotsAvailable": "{spots} plazas disponibles",

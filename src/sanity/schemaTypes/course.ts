@@ -67,18 +67,26 @@ export const course = defineType({
       validation: (rule) => rule.required().min(1),
     }),
     defineField({
-      name: 'difficulty',
-      title: 'Difficulty Level',
+      name: 'cuisine',
+      title: 'Cuisine',
       type: 'string',
       options: {
         list: [
-          { title: 'Beginner', value: 'beginner' },
-          { title: 'Intermediate', value: 'intermediate' },
-          { title: 'Advanced', value: 'advanced' },
+          { title: 'Chinese', value: 'chinese' },
+          { title: 'Korean', value: 'korean' },
+          { title: 'Japanese', value: 'japanese' },
+          { title: 'Thai', value: 'thai' },
+          { title: 'Vietnamese', value: 'vietnamese' },
         ],
         layout: 'radio',
       },
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'corporateEvent',
+      title: 'Corporate Event',
+      type: 'boolean',
+      initialValue: false,
     }),
     defineField({
       name: 'timeSlots',
@@ -120,7 +128,7 @@ export const course = defineType({
   preview: {
     select: {
       title: 'title.en',
-      subtitle: 'difficulty',
+      subtitle: 'cuisine',
       media: 'image',
     },
   },

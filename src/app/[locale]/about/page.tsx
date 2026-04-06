@@ -32,7 +32,7 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.container}>
+      <div className="container">
         {/* ── Page header ── */}
         <header className={styles.header}>
           {page?.title?.[l] && <h1 className={styles.title}>{page.title[l]}</h1>}

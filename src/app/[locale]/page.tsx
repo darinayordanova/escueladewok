@@ -34,7 +34,7 @@ export default async function HomePage({ params }: HomePageProps) {
       {homepage && <Hero data={homepage} locale={locale as Locale} />}
 
       <section className={styles.featured}>
-        <div className={styles.container}>
+        <div className="container">
           <FeaturedSection
             homepage={homepage}
             courses={featuredCourses}

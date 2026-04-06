@@ -14,6 +14,19 @@
   }
 }
 
+@keyframes imageRevealMobile {
+  from {
+    top: 100%;
+    opacity: 0;
+    transform: translate(-42%, -49%) rotate(-50deg) scale(0.85);
+  }
+  to {
+    top: 30%;
+    opacity: 1;
+    transform: translate(-42%, -49%) rotate(0deg) scale(1);
+  }
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -30,31 +43,25 @@
 .hero {
   position: relative;
   min-height: 100vh; 
-  min-height: 100vh;  
   display: flex;
   align-items: center;
   overflow: hidden;
+
+  @include respond-to('md') {
+  min-height: auto; 
+
+  height: 800px;
+
+  }
 }
 
-// ─── Container & content ──────────────────────────────────────────────────────
 
-.container {
-  @include container;
 
-  position: relative;
-  z-index: $z-raised;
-  width: 100%;
-  padding: $spacing-20 0;
-}
-
-.content {
-  max-width: 640px;
-}
 
 // ─── Title ────────────────────────────────────────────────────────────────────
 
 .title {
-  font-size: $font-size-h4;
+  font-size: $font-size-h3;
   font-weight: $font-weight-bold;
   color: $color-text;
   line-height: $line-height-tight;
@@ -83,7 +90,6 @@
   color: $color-text-light;
   line-height: $line-height-snug;
   margin-bottom: $spacing-10;
-  max-width: 520px;
 
   @include respond-to('md') {
     font-size: $font-size-xl;
@@ -102,9 +108,10 @@
 .cta {
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: $spacing-5;
   flex-wrap: wrap;
-  margin-bottom: $spacing-10;
+  margin-bottom: $spacing-20;
 
   animation: fadeUp 0.6s ease-out both;
   animation-delay: 0.46s;
@@ -112,34 +119,76 @@
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+
+  @include respond-to('md'){
+  flex-direction: row;
+  }
 }
 
 .redBox {
-  position: absolute;
-  top: 20%;
-  left: 55%;
+  position: relative;
+  width: 80vw;
+  aspect-ratio: 2/1;
+  background-color: $color-primary;
+  background-image: url('/images/pattern.svg');
+  background-repeat: repeat;
+  background-size: 60px;
+  border-radius: 60px 60px 0 0;
+  margin: $spacing-16 auto 0;
+
+@include respond-to('md') {
+    position: absolute;
+  top: 0%;
+  left: 10%;
   width: 50vw;
   height: 50vh;
+  min-height: 300px;
+  max-height: 400px;
   background-color: $color-primary;
   background-image: url('/images/pattern.svg');
   background-repeat: repeat;
   background-size: 60px;
   border-radius: 120px 0 0 120px;
+  margin: 0;
+  }
 }
 
 .image {
-  width: 40vw;
+  pointer-events: none;
+  width: 80vw;
+  max-width: 400px;
   height: auto;
   position: absolute;
-  top: 60%;
+  top: auto;
+  bottom: 0;
   left: 50%;
-  transform: translate(0%, -50%);
+  transform: translate(-50%, 0%);
+  transform-origin: 42% 49%;
   opacity: 0;
 
-  animation: imageReveal 0.9s ease-in-out forwards;
+  animation: imageRevealMobile 0.9s ease-in-out forwards;
   animation-delay: 0.3s;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+
+  
+
+@include respond-to('md') {
+  animation: imageReveal 0.9s ease-in-out forwards;
+  max-width: 600px;
+
+  width: 70vw;
+  top: 60%;
+  bottom: auto;
+  left: -5%;}
+
+  @include respond-to('lg') {
+  animation: imageReveal 0.9s ease-in-out forwards;
+
+  width: 70vw;
+  top: 60%;
+  bottom: auto;
+  left: -15%;}
 }

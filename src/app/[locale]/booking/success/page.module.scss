@@ -9,11 +9,7 @@
   background-color: $color-background-alt;
 }
 
-.container {
-  @include container;
-  display: flex;
-  justify-content: center;
-}
+
 
 .card {
   background-color: $color-background;

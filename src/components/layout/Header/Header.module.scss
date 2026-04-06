@@ -14,11 +14,7 @@
 }
 
 .container {
-  @include container;
-  @include flex-between;
-
   height: $header-height-sm;
-  position: relative;
 
   @include respond-to('md') {
     height: $header-height;
@@ -26,16 +22,11 @@
 }
 
 .logo {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
-  color: $color-primary;
-  text-decoration: none;
-  letter-spacing: -0.02em;
-  flex-shrink: 0;
+  height: calc($header-height-sm - $spacing-6);
+  width: auto;
 
-  &:hover {
-    text-decoration: none;
-    color: $color-primary-dark;
+  @include respond-to('md') {
+    height: calc($header-height - $spacing-6);
   }
 }
 
@@ -178,8 +169,6 @@
   left: 0;
   right: 0;
   background-color: $color-background;
-  border-bottom: 1px solid $color-border;
-  box-shadow: $shadow-md;
   z-index: $z-sticky;
   overflow: hidden;
   max-height: 0;
