@@ -49,7 +49,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   if (!course) notFound();
 
   const l = locale as Locale;
-  const { _id, title, image, price, currency, duration, maxParticipants, difficulty, instructor, about, menu } = course;
+  const { _id, title, image, price, currency, duration, maxParticipants, instructor, about, menu, cuisine } = course;
 
   const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
 
@@ -82,7 +82,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           <div className={styles.main}>
             {/* ── Header ── */}
             <header className={styles.header}>
-              <span className={styles.difficulty}>{difficulty}</span>
+              <span className={styles.difficulty}>{cuisine}</span>
               <h1 className={styles.title}>{title[l]}</h1>
               {instructor && (
                 <p className={styles.instructor}>
