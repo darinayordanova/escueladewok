@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import ContactForm from '@/components/sections/ContactForm/ContactForm';
+import Map from '@/components/ui/Map/Map';
 import { sanityClient } from '@/lib/sanity/client';
 import { contactPageQuery } from '@/lib/sanity/queries';
 import type { ContactPage, Locale } from '@/types';
@@ -67,6 +68,7 @@ export default async function ContactPageRoute({ params }: ContactPageProps) {
                 <div className={styles.infoItem}>
                   <p className={styles.infoLabel}>{t('addressLabel')}</p>
                   <p className={styles.infoText}>{page.address[l]}</p>
+                  <Map lat={40.4241} lng={-3.7137} label="C. del Conde Duque, 10, Madrid" />
                 </div>
               )}
             </aside>

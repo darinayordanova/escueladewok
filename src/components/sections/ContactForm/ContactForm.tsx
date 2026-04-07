@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 import Button from '@/components/ui/Button/Button';
+import Input from '@/components/ui/Input/Input';
+import Textarea from '@/components/ui/Textarea/Textarea';
 
 import styles from './ContactForm.module.scss';
 
@@ -25,16 +27,13 @@ export default function ContactForm({ title, successMessage }: ContactFormProps)
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus('sending');
-
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
       if (!res.ok) throw new Error('Request failed');
-
       setStatus('success');
       setForm({ name: '', email: '', message: '' });
     } catch {
@@ -55,56 +54,45 @@ export default function ContactForm({ title, successMessage }: ContactFormProps)
     <form onSubmit={handleSubmit} className={styles.form} noValidate>
       {title && <h2 className={styles.title}>{title}</h2>}
 
-      <div className={styles.field}>
-        <label htmlFor="contact-name" className={styles.label}>{t('name')}</label>
-        <input
-          id="contact-name"
-          name="name"
-          type="text"
-          className={styles.input}
-          placeholder={t('namePlaceholder')}
-          value={form.name}
-          onChange={handleChange}
-          required
-          disabled={status === 'sending'}
-          autoComplete="name"
-        />
-      </div>
+      <Input
+        id="contact-name"
+        label={t('name')}
+        name="name"
+        type="text"
+        placeholder={t('namePlaceholder')}
+        value={form.name}
+        onChange={handleChange}
+        required
+        disabled={status === 'sending'}
+        autoComplete="name"
+      />
 
-      <div className={styles.field}>
-        <label htmlFor="contact-email" className={styles.label}>{t('email')}</label>
-        <input
-          id="contact-email"
-          name="email"
-          type="email"
-          className={styles.input}
-          placeholder={t('emailPlaceholder')}
-          value={form.email}
-          onChange={handleChange}
-          required
-          disabled={status === 'sending'}
-          autoComplete="email"
-        />
-      </div>
+      <Input
+        id="contact-email"
+        label={t('email')}
+        name="email"
+        type="email"
+        placeholder={t('emailPlaceholder')}
+        value={form.email}
+        onChange={handleChange}
+        required
+        disabled={status === 'sending'}
+        autoComplete="email"
+      />
 
-      <div className={styles.field}>
-        <label htmlFor="contact-message" className={styles.label}>{t('message')}</label>
-        <textarea
-          id="contact-message"
-          name="message"
-          className={styles.textarea}
-          placeholder={t('messagePlaceholder')}
-          value={form.message}
-          onChange={handleChange}
-          required
-          rows={5}
-          disabled={status === 'sending'}
-        />
-      </div>
+      <Textarea
+        id="contact-message"
+        label={t('message')}
+        name="message"
+        placeholder={t('messagePlaceholder')}
+        value={form.message}
+        onChange={handleChange}
+        required
+        rows={5}
+        disabled={status === 'sending'}
+      />
 
-      {status === 'error' && (
-        <p className={styles.error}>{t('error')}</p>
-      )}
+      {status === 'error' && <p className={styles.error}>{t('error')}</p>}
 
       <Button type="submit" fullWidth size="lg" isLoading={status === 'sending'} disabled={status === 'sending'}>
         {status === 'sending' ? t('sending') : t('submit')}

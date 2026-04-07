@@ -36,6 +36,9 @@ $spacing-props: (
   'ml': ('margin-left',     ''),
   'mx': ('margin-inline',   ''),
   'my': ('margin-block',    ''),
+  'gap':    ('gap',         ''),
+  'gap-x':  ('column-gap',  ''),
+  'gap-y':  ('row-gap',     ''),
 );
 
 // ─── Generator ────────────────────────────────────────────────────────────────

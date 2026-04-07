@@ -2,7 +2,7 @@
 @use '@/styles/mixins' as *;
 
 .page {
-  padding: $spacing-16 0 $spacing-20;
+  padding: $spacing-8 0 $spacing-20;
   min-height: 70vh;
 }
 
@@ -23,7 +23,7 @@
 .subtitle {
   font-size: $font-size-lg;
   color: $color-text-light;
-  max-width: 560px;
+  max-width: 760px;
   margin-inline: auto;
   line-height: $line-height-relaxed;
 }

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import Input from '@/components/ui/Input/Input';
 
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
 
@@ -290,7 +291,7 @@ export default function BookingCard({
                   <p className={styles.waitlistSuccess}>{t('waitlistSuccess')}</p>
                 ) : (
                   <form onSubmit={handleWaitlist} className={styles.waitlistForm}>
-                    <input
+                    <Input
                       type="email"
                       className={styles.waitlistInput}
                       placeholder={t('waitlistEmailPlaceholder')}

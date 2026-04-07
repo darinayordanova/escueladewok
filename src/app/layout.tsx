@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import 'leaflet/dist/leaflet.css';
+
 import '@/styles/globals.scss';
 
 // Root layout: provides the HTML shell.

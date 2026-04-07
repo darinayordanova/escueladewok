@@ -4,6 +4,9 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
+import DatePicker from '@/components/ui/DatePicker/DatePicker';
+import Input from '@/components/ui/Input/Input';
+import Select from '@/components/ui/Select/Select';
 import type { Course, CourseOccurrence, CuisineType, Locale } from '@/types';
 
 import styles from './FilteredCourseGrid.module.scss';
@@ -20,6 +23,12 @@ export default function FilteredCourseGrid(props: Props) {
   const [search, setSearch] = useState('');
   const [cuisine, setCuisine] = useState<CuisineType | ''>('');
   const [date, setDate] = useState('');
+
+  // Dates that have at least one occurrence (for dot indicators in the picker)
+  const availableDates = useMemo(() => {
+    if (props.mode !== 'occurrences') return undefined;
+    return new Set(props.occurrences.map((o) => o.date));
+  }, [props]);
 
   // Derive available cuisines from the dataset
   const availableCuisines = useMemo<CuisineType[]>(() => {
@@ -63,19 +72,17 @@ export default function FilteredCourseGrid(props: Props) {
       {/* ── Filter bar ── */}
       <div className={styles.filterBar}>
         <div className={styles.filterGroup}>
-          <input
+          <Input
             type="search"
-            className={styles.searchInput}
             placeholder={t('searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             aria-label={t('searchPlaceholder')}
           />
         </div>
-
+<div className='flex gap-2'>
         <div className={styles.filterGroup}>
-          <select
-            className={styles.select}
+          <Select
             value={cuisine}
             onChange={(e) => setCuisine(e.target.value as CuisineType | '')}
             aria-label={t('cuisineLabel')}
@@ -86,17 +93,18 @@ export default function FilteredCourseGrid(props: Props) {
                 {tc(`cuisine.${c}`)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         {props.mode === 'occurrences' && (
           <div className={styles.filterGroup}>
-            <input
-              type="date"
-              className={styles.dateInput}
+            <DatePicker
               value={date}
-              onChange={(e) => setDate(e.target.value)}
-              aria-label={t('dateLabel')}
+              onChange={setDate}
+              availableDates={availableDates}
+              placeholder={t('dateLabel')}
+              clearLabel={t('clearFilters')}
+              locale={locale}
             />
           </div>
         )}
@@ -106,6 +114,7 @@ export default function FilteredCourseGrid(props: Props) {
             {t('clearFilters')}
           </button>
         )}
+        </div>
       </div>
 
       {/* ── Results ── */}

@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
+import Button from '@/components/ui/Button/Button';
+import Input from '@/components/ui/Input/Input';
+import Textarea from '@/components/ui/Textarea/Textarea';
+
 import styles from './CorporateEnquiryForm.module.scss';
 
 interface CorporateEnquiryFormProps {
@@ -31,14 +35,12 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus('sending');
-
     try {
       const res = await fetch('/api/corporate-enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ courseName, ...fields }),
       });
-
       if (!res.ok) throw new Error('Failed');
       setStatus('success');
     } catch {
@@ -62,98 +64,77 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
       <h2 className={styles.heading}>{t('heading')}</h2>
       <p className={styles.sub}>{t('sub')}</p>
 
-      <form onSubmit={handleSubmit} noValidate>
-        <div className={styles.field}>
-          <label htmlFor="ceq-company" className={styles.label}>{t('company')} *</label>
-          <input
-            id="ceq-company"
-            name="company"
-            type="text"
-            className={styles.input}
-            placeholder={t('companyPlaceholder')}
-            value={fields.company}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <form onSubmit={handleSubmit} noValidate className={styles.form}>
+        <Input
+          id="ceq-company"
+          label={`${t('company')} *`}
+          name="company"
+          type="text"
+          placeholder={t('companyPlaceholder')}
+          value={fields.company}
+          onChange={handleChange}
+          required
+        />
 
-        <div className={styles.field}>
-          <label htmlFor="ceq-name" className={styles.label}>{t('name')} *</label>
-          <input
-            id="ceq-name"
-            name="name"
-            type="text"
-            className={styles.input}
-            placeholder={t('namePlaceholder')}
-            value={fields.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <Input
+          id="ceq-name"
+          label={`${t('name')} *`}
+          name="name"
+          type="text"
+          placeholder={t('namePlaceholder')}
+          value={fields.name}
+          onChange={handleChange}
+          required
+        />
 
-        <div className={styles.field}>
-          <label htmlFor="ceq-email" className={styles.label}>{t('email')} *</label>
-          <input
-            id="ceq-email"
-            name="email"
-            type="email"
-            className={styles.input}
-            placeholder={t('emailPlaceholder')}
-            value={fields.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <Input
+          id="ceq-email"
+          label={`${t('email')} *`}
+          name="email"
+          type="email"
+          placeholder={t('emailPlaceholder')}
+          value={fields.email}
+          onChange={handleChange}
+          required
+        />
 
         <div className={styles.row}>
-          <div className={styles.field}>
-            <label htmlFor="ceq-phone" className={styles.label}>{t('phone')}</label>
-            <input
-              id="ceq-phone"
-              name="phone"
-              type="tel"
-              className={styles.input}
-              placeholder={t('phonePlaceholder')}
-              value={fields.phone}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="ceq-participants" className={styles.label}>{t('participants')}</label>
-            <input
-              id="ceq-participants"
-              name="participants"
-              type="number"
-              min="1"
-              className={styles.input}
-              placeholder="20"
-              value={fields.participants}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="ceq-message" className={styles.label}>{t('message')}</label>
-          <textarea
-            id="ceq-message"
-            name="message"
-            className={styles.textarea}
-            placeholder={t('messagePlaceholder')}
-            rows={4}
-            value={fields.message}
+          <Input
+            id="ceq-phone"
+            label={t('phone')}
+            name="phone"
+            type="tel"
+            placeholder={t('phonePlaceholder')}
+            value={fields.phone}
+            onChange={handleChange}
+          />
+          <Input
+            id="ceq-participants"
+            label={t('participants')}
+            name="participants"
+            type="number"
+            min="1"
+            placeholder="20"
+            value={fields.participants}
             onChange={handleChange}
           />
         </div>
 
-        {status === 'error' && (
-          <p className={styles.error}>{t('error')}</p>
-        )}
+        <Textarea
+          id="ceq-message"
+          label={t('message')}
+          name="message"
+          placeholder={t('messagePlaceholder')}
+          rows={4}
+          value={fields.message}
+          onChange={handleChange}
+        />
 
-        <button type="submit" className={styles.submit} disabled={status === 'sending'}>
+        {status === 'error' && <p className={styles.error}>{t('error')}</p>}
+
+        <Button type="submit" fullWidth isLoading={status === 'sending'} disabled={status === 'sending'}>
           {status === 'sending' ? t('sending') : t('submit')}
-        </button>
+        </Button>
       </form>
     </div>
   );
