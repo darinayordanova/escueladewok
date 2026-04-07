@@ -32,15 +32,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
   }
 
-  const rows = [
-    ['Course', courseName],
-    ['Company', company],
-    ['Contact name', name],
+  const rows: [string, string][] = [
+    ['Course', courseName ?? ''],
+    ['Company', company ?? ''],
+    ['Contact name', name ?? ''],
     ['Email', `<a href="mailto:${email}">${email}</a>`],
-    phone ? ['Phone', phone] : null,
-    participants ? ['Participants', participants] : null,
-  ]
-    .filter(Boolean)
+    ...(phone ? [['Phone', phone] as [string, string]] : []),
+    ...(participants ? [['Participants', participants] as [string, string]] : []),
+  ];
+
+  const rowsHtml = rows
     .map(
       ([label, value]) =>
         `<tr><td style="padding:8px 0;font-weight:600;width:140px;vertical-align:top">${label}</td><td style="padding:8px 0">${value}</td></tr>`,
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
         <html>
           <body style="font-family:sans-serif;color:#1a1a1a;padding:24px;">
             <h2 style="color:#c0392b;">Corporate event enquiry</h2>
-            <table style="width:100%;border-collapse:collapse;">${rows}</table>
+            <table style="width:100%;border-collapse:collapse;">${rowsHtml}</table>
             ${
               message?.trim()
                 ? `<hr style="margin:16px 0;border:none;border-top:1px solid #e0e0e0"/>
