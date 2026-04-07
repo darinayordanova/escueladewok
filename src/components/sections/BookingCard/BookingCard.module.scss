@@ -1,50 +1,279 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.bookingCard {
+.card {
   background-color: $color-background;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
-  padding: $spacing-8;
+  padding: $spacing-6;
   box-shadow: $shadow-md;
 }
 
 .price {
-  font-size: $font-size-h3;
+  font-size: $font-size-h4;
   font-weight: $font-weight-bold;
   color: $color-primary;
-  margin-bottom: $spacing-6;
+  margin-bottom: $spacing-5;
 }
 
-// ─── Date selector ────────────────────────────────────────────────────────────
+.noDates {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
 
-.field {
+// ─── Calendar ─────────────────────────────────────────────────────────────────
+
+.calendar {
+  margin-bottom: $spacing-5;
+}
+
+.calHeader {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-  margin-bottom: $spacing-4;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-3;
 }
 
-.label {
+.monthLabel {
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   color: $color-text;
+  text-transform: capitalize;
 }
 
-.select {
+.navBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xl;
+  line-height: 1;
+  color: $color-text-muted;
+  border-radius: $radius-sm;
+  transition: color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    color: $color-primary;
+    background-color: $color-background-alt;
+  }
+
+  @include focus-ring;
+}
+
+.dayNames {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: $spacing-1;
+}
+
+.dayName {
+  text-align: center;
+  font-size: 10px;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: $spacing-2;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+// ─── Day cell ─────────────────────────────────────────────────────────────────
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 36px;
+  padding: $spacing-1 0;
+  border-radius: $radius-sm;
+  border: 1px solid transparent;
+  cursor: default;
+  transition: background-color $transition-fast, border-color $transition-fast;
+}
+
+.dayDisabled .dayNum {
+  color: $color-text-muted;
+  opacity: 0.35;
+}
+
+.dayActive {
+  cursor: pointer;
+
+  &:hover:not(.daySelected) {
+    background-color: $color-background-alt;
+    border-color: $color-border;
+  }
+}
+
+.daySelected {
+  background-color: $color-primary !important;
+  border-color: $color-primary !important;
+
+  .dayNum {
+    color: #fff;
+    font-weight: $font-weight-semibold;
+  }
+
+  .capacityBar {
+    background: rgba(255, 255, 255, 0.25);
+    &::after { background: rgba(255, 255, 255, 0.85); }
+  }
+}
+
+.dayNum {
+  font-size: $font-size-xs;
+  color: $color-text;
+  line-height: 1;
+}
+
+// ─── Capacity bar ─────────────────────────────────────────────────────────────
+// --fill CSS var drives the filled portion (= available spots %)
+
+.capacityBar {
+  width: 75%;
+  height: 3px;
+  border-radius: 2px;
+  background: $color-background-alt;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--fill, 0%);
+  }
+}
+
+.barGreen::after  { background: #52b86a; }
+.barOrange::after { background: #e8923a; }
+.barRed::after    { background: #d94040; }
+.barFull {
+  background: rgba(217, 64, 64, 0.15);
+  &::after { background: #d94040; width: 100%; }
+}
+
+// ─── Time slots ───────────────────────────────────────────────────────────────
+
+.times {
+  padding-top: $spacing-5;
+  border-top: 1px solid $color-border-light;
+  margin-bottom: $spacing-5;
+}
+
+.timesLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  margin-bottom: $spacing-3;
+}
+
+.timeGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+}
+
+.timeSlot {
+  flex: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: $spacing-3 $spacing-2;
+  border: 1.5px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-background;
+  cursor: pointer;
+  transition: border-color $transition-fast, background-color $transition-fast;
+
+  &:hover:not(.timeSlotActive):not(.timeSlotFull) {
+    border-color: $color-primary;
+    background-color: $color-background-alt;
+  }
+
+  @include focus-ring;
+}
+
+.timeSlotActive {
+  border-color: $color-primary;
+  background-color: rgba($color-primary, 0.05);
+
+  .slotRange {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.timeSlotFull {
+  opacity: 0.45;
+  cursor: not-allowed;
+
+  &:hover {
+    border-color: $color-border;
+    background-color: $color-background;
+  }
+}
+
+.slotRange {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+  white-space: nowrap;
+}
+
+.slotSpots {
+  font-size: 11px;
+  color: $color-text-muted;
+}
+
+// ─── Waitlist ─────────────────────────────────────────────────────────────────
+
+.waitlist {
+  padding: $spacing-4;
+  background-color: $color-background-alt;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+}
+
+.waitlistTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text;
+  margin-bottom: $spacing-1;
+}
+
+.waitlistSub {
+  font-size: $font-size-xs;
+  color: $color-text-light;
+  line-height: $line-height-base;
+  margin-bottom: $spacing-3;
+}
+
+.waitlistForm {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.waitlistInput {
   width: 100%;
-  padding: $spacing-3 $spacing-4;
+  padding: $spacing-2 $spacing-3;
   border: 1px solid $color-border;
   border-radius: $radius-md;
-  background-color: $color-background;
   font-size: $font-size-sm;
+  font-family: inherit;
+  background: $color-background;
   color: $color-text;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right $spacing-4 center;
-  padding-right: $spacing-10;
   transition: border-color $transition-fast, box-shadow $transition-fast;
 
   &:focus {
@@ -52,54 +281,37 @@
     border-color: $color-primary;
     box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
   }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
 }
 
-// ─── Time + availability row ──────────────────────────────────────────────────
-
-.meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $spacing-3;
-  margin-bottom: $spacing-4;
-  padding: $spacing-3 $spacing-4;
-  background-color: $color-background-alt;
+.waitlistBtn {
+  padding: $spacing-2 $spacing-4;
+  background-color: $color-text;
+  color: #fff;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  font-family: inherit;
   border-radius: $radius-md;
-  border-left: 3px solid $color-primary;
+  cursor: pointer;
+  transition: background-color $transition-fast, opacity $transition-fast;
+
+  &:hover:not(:disabled) { background-color: $color-text-light; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  @include focus-ring;
 }
 
-.timeRange {
+.waitlistSuccess {
   font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-primary;
-}
-
-.spotsLeft {
-  font-size: $font-size-xs;
   font-weight: $font-weight-medium;
-  color: $color-text-light;
-  white-space: nowrap;
+  color: #3d8a50;
 }
 
-.soldOut {
+.waitlistError {
   font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
-  color: $color-text-muted;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
+  color: #c0392b;
 }
 
-.noDates {
-  font-size: $font-size-sm;
-  color: $color-text-muted;
-  margin-bottom: $spacing-4;
-}
+// ─── Coming soon ──────────────────────────────────────────────────────────────
 
 .comingSoon {
   padding: $spacing-4;

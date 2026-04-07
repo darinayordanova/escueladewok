@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import BookingCard from '@/components/sections/BookingCard/BookingCard';
+import CorporateEnquiryForm from '@/components/sections/CorporateEnquiryForm/CorporateEnquiryForm';
 import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
 import CourseMenu from '@/components/sections/CourseMenu/CourseMenu';
 import { getFutureDateEntries } from '@/lib/courses/timeslots';
@@ -44,7 +45,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   if (!course) notFound();
 
   const l = locale as Locale;
-  const { _id, title, image, price, currency, duration, maxParticipants, instructor, about, menu, cuisine } = course;
+  const { _id, title, image, price, currency, duration, maxParticipants, instructor,description, about, menu, cuisine, corporateEvent } = course;
 
   const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
 
@@ -58,7 +59,16 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     <article className={styles.page}>
       <div className="container">
         {/* ── Hero image ── */}
-        <div className={styles.hero}>
+        <div className="grid">
+          <div className='col-12 col-md-6'>
+                <header className={styles.header}>
+              <span className={styles.difficulty}>{cuisine}</span>
+              <h1 className={styles.title}>{title[l]}</h1>
+            
+            </header>
+          </div>
+          <div className='col-12 col-md-6'>
+
           {image && (
             <div className={styles.imageWrapper}>
               <Image
@@ -70,22 +80,21 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                 sizes="(max-width: 1200px) 100vw, 1200px"
               />
             </div>
+            
           )}
+        </div>
         </div>
 
         <div className={styles.layout}>
           <div className={styles.main}>
-            {/* ── Header ── */}
-            <header className={styles.header}>
-              <span className={styles.difficulty}>{cuisine}</span>
-              <h1 className={styles.title}>{title[l]}</h1>
+{description && (
+                <p className={styles.description}>{description[l]}</p>
+              )}
               {instructor && (
                 <p className={styles.instructor}>
                   {t('instructor')} {instructor[l]}
                 </p>
               )}
-            </header>
-
             {/* ── Page builder: about sections ── */}
             {about && about.length > 0 && (
               <section className={styles.section}>
@@ -100,22 +109,26 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             )}
           </div>
 
-          {/* ── Sidebar: booking card ── */}
+          {/* ── Sidebar: enquiry form (corporate) or booking card ── */}
           <aside className={styles.sidebar}>
-            <Suspense fallback={<div className={styles.bookingCardSkeleton} aria-hidden="true" />}>
-              <BookingCard
-                courseId={_id}
-                courseSlug={slug}
-                courseTitle={title[l]}
-                duration={duration}
-                dateEntries={dateEntries}
-                bookingCounts={bookingCounts}
-                maxParticipants={maxParticipants}
-                price={price}
-                currency={currency}
-                locale={l}
-              />
-            </Suspense>
+            {corporateEvent ? (
+              <CorporateEnquiryForm courseName={title[l]} />
+            ) : (
+              <Suspense fallback={<div className={styles.bookingCardSkeleton} aria-hidden="true" />}>
+                <BookingCard
+                  courseId={_id}
+                  courseSlug={slug}
+                  courseTitle={title[l]}
+                  duration={duration}
+                  dateEntries={dateEntries}
+                  bookingCounts={bookingCounts}
+                  maxParticipants={maxParticipants}
+                  price={price}
+                  currency={currency}
+                  locale={l}
+                />
+              </Suspense>
+            )}
           </aside>
         </div>
       </div>

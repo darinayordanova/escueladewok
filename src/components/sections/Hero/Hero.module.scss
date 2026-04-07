@@ -42,7 +42,7 @@
 
 .hero {
   position: relative;
-  min-height: 100vh; 
+  min-height: calc(100vh - $header-height-sm); 
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -50,7 +50,9 @@
   @include respond-to('md') {
   min-height: auto; 
 
-  height: 800px;
+  height: calc(100vh - $header-height);
+
+  max-height: 800px;
 
   }
 }

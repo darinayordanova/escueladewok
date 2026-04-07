@@ -1,46 +1,106 @@
 import Image from 'next/image';
-import { useTranslations } from 'next-intl';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
+import { sanityClient } from '@/lib/sanity/client';
+import { contactPageQuery } from '@/lib/sanity/queries';
+import type { ContactPage, Locale } from '@/types';
 
 import styles from './Footer.module.scss';
 
-export default function Footer() {
-  const t = useTranslations('navigation');
-  const tLegal = useTranslations('legal');
+export default async function Footer() {
+  const locale = (await getLocale()) as Locale;
+
+  const [t, tNav, tLegal, contact] = await Promise.all([
+    getTranslations('footer'),
+    getTranslations('navigation'),
+    getTranslations('legal'),
+    sanityClient.fetch<ContactPage>(contactPageQuery),
+  ]);
+
   const year = new Date().getFullYear();
 
   return (
     <footer className={styles.footer}>
-      <div className="container">
-        <Link href="/" className={styles.brand}>
-          <Image src="/logo-footer.svg" alt="Escuela de Wok" width={100} height={60} />
-        </Link>
-        <nav aria-label="Footer navigation">
-          <ul className={styles.links}>
+      <div className={`container ${styles.grid}`}>
+
+        {/* ── Brand ─────────────────────────────────────────────────────── */}
+        <div className={styles.brand}>
+          <Link href="/" className={styles.logoLink} aria-label="Escuela de Wok — home">
+            <Image
+              src="/logo-footer.svg"
+              alt="Escuela de Wok"
+              width={110}
+              height={66}
+              className={styles.logo}
+            />
+          </Link>
+          <p className={styles.tagline}>{t('tagline')}</p>
+
+          {/* Contact details — pulled from Sanity */}
+          <address className={styles.contactBlock}>
+            {contact?.email && (
+              <a href={`mailto:${contact.email}`} className={styles.contactLine}>
+                <span className={styles.contactIcon} aria-hidden="true">✉</span>
+                {contact.email}
+              </a>
+            )}
+            {contact?.phone && (
+              <a href={`tel:${contact.phone}`} className={styles.contactLine}>
+                <span className={styles.contactIcon} aria-hidden="true">✆</span>
+                {contact.phone}
+              </a>
+            )}
+            {contact?.address?.[locale] && (
+              <span className={styles.contactLine}>
+                <span className={styles.contactIcon} aria-hidden="true">⌖</span>
+                {contact.address[locale]}
+              </span>
+            )}
+          </address>
+        </div>
+
+        {/* ── Pages nav ─────────────────────────────────────────────────── */}
+        <nav aria-label="Footer — pages">
+          <p className={styles.colHeading}>{t('pages')}</p>
+          <ul className={styles.linkList}>
+            {([
+              ['/', tNav('home')],
+              ['/courses', tNav('courses')],
+              ['/calendar', tNav('calendar')],
+              ['/corporate', tNav('corporate')],
+              ['/about', tNav('about')],
+              ['/contact', tNav('contact')],
+            ] as [string, string][]).map(([href, label]) => (
+              <li key={href}>
+                <Link href={href} className={styles.link}>{label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* ── Legal nav ─────────────────────────────────────────────────── */}
+        <nav aria-label="Footer — legal">
+          <p className={styles.colHeading}>{t('legal')}</p>
+          <ul className={styles.linkList}>
             <li>
-              <Link href="/" className={styles.link}>
-                {t('home')}
-              </Link>
+              <Link href="/terms" className={styles.link}>{tLegal('terms')}</Link>
             </li>
             <li>
-              <Link href="/courses" className={styles.link}>
-                {t('courses')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/terms" className={styles.link}>
-                {tLegal('terms')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/privacy" className={styles.link}>
-                {tLegal('privacy')}
-              </Link>
+              <Link href="/privacy" className={styles.link}>{tLegal('privacy')}</Link>
             </li>
           </ul>
         </nav>
-        <p className={styles.copy}>&copy; {year} Escuela de Wok. All rights reserved.</p>
+
+      </div>
+
+      {/* ── Bottom bar ────────────────────────────────────────────────────── */}
+      <div className={styles.bottom}>
+        <div className="container">
+          <p className={styles.copy}>
+            &copy; {year} Escuela de Wok.&nbsp;{t('rights')}
+          </p>
+        </div>
       </div>
     </footer>
   );

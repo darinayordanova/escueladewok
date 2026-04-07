@@ -1,0 +1,24 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.page {
+  padding: $spacing-16 0 $spacing-20;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-12;
+}
+
+.title {
+  font-size: $font-size-h3;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-4;
+}
+
+.description {
+  font-size: $font-size-lg;
+  color: $color-text-light;
+  max-width: 560px;
+  margin-inline: auto;
+}

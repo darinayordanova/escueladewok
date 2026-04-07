@@ -43,8 +43,13 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="/about" className={styles.navLink}>
-                {t('about')}
+              <Link href="/calendar" className={styles.navLink}>
+                {t('calendar')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/corporate" className={styles.navLink}>
+                {t('corporate')}
               </Link>
             </li>
             <li>

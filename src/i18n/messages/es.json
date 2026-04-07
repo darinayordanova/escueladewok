@@ -6,6 +6,8 @@
   "navigation": {
     "home": "Inicio",
     "courses": "Cursos",
+    "calendar": "Calendario",
+    "corporate": "Eventos Corporativos",
     "about": "Nosotros",
     "contact": "Contacto"
   },
@@ -30,6 +32,31 @@
     "from": "Desde",
     "noCourses": "No hay próximos cursos por el momento. ¡Vuelve pronto!"
   },
+  "corporateEnquiry": {
+    "heading": "Solicitar información",
+    "sub": "Rellena tus datos y te contactaremos para diseñar una experiencia a medida para tu equipo.",
+    "company": "Empresa",
+    "companyPlaceholder": "Empresa S.L.",
+    "name": "Nombre de contacto",
+    "namePlaceholder": "Ana García",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "ana@empresa.com",
+    "phone": "Teléfono (opcional)",
+    "phonePlaceholder": "+34 600 000 000",
+    "participants": "Nº aproximado de participantes",
+    "message": "¿Algo más?",
+    "messagePlaceholder": "Fechas preferidas, requisitos dietéticos, peticiones especiales…",
+    "submit": "Enviar consulta",
+    "sending": "Enviando…",
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "successTitle": "¡Consulta enviada!",
+    "successSub": "Nos pondremos en contacto contigo pronto para acordar los detalles."
+  },
+  "corporate": {
+    "pageTitle": "Eventos Corporativos",
+    "pageDescription": "Experiencias culinarias únicas de team building para empresas y grupos.",
+    "noCourses": "No hay eventos corporativos disponibles en este momento. Contáctanos para organizar una experiencia a medida."
+  },
   "courseDetail": {
     "about": "Sobre este curso",
     "schedule": "Fechas disponibles",
@@ -38,7 +65,16 @@
     "notFound": "Curso no encontrado",
     "instructor": "Instructor",
     "chooseDate": "Elige una fecha",
+    "chooseTime": "Elige un horario",
     "noDatesAvailable": "No hay fechas disponibles próximamente",
+    "spotsLeftShort": "{count} disponibles",
+    "waitlistTitle": "Completo",
+    "waitlistSub": "Deja tu email y te avisaremos cuando haya una plaza disponible.",
+    "waitlistEmailPlaceholder": "tu@email.com",
+    "waitlistNotifyMe": "Avisarme",
+    "waitlistSending": "Enviando…",
+    "waitlistSuccess": "¡Anotado! Te avisaremos cuando haya plazas.",
+    "waitlistError": "Algo salió mal. Por favor, inténtalo de nuevo.",
     "timeRange": "de {start} a {end}",
     "duration": "{duration} min",
     "menuTitle": "Lo que aprenderás a cocinar",
@@ -94,6 +130,36 @@
       "success": "¡Mensaje enviado! Te responderemos pronto.",
       "error": "Algo salió mal. Por favor, inténtalo de nuevo."
     }
+  },
+  "footer": {
+    "tagline": "Clases prácticas de cocina asiática para amantes de la gastronomía.",
+    "pages": "Explorar",
+    "legal": "Legal",
+    "contactTitle": "Contacto",
+    "rights": "Todos los derechos reservados."
+  },
+  "calendar": {
+    "pageTitle": "Calendario de Clases",
+    "pageDescription": "Consulta todas las clases de cocina disponibles y reserva tu plaza.",
+    "today": "Hoy",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "noEvents": "No hay clases programadas este mes. Consulta el siguiente mes para próximas fechas.",
+    "cuisine": {
+      "chinese": "Chino",
+      "korean": "Coreano",
+      "japanese": "Japonés",
+      "thai": "Tailandés",
+      "vietnamese": "Vietnamita"
+    }
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar cursos…",
+    "cuisineLabel": "Filtrar por cocina",
+    "allCuisines": "Todas las cocinas",
+    "dateLabel": "Filtrar por fecha",
+    "clearFilters": "Limpiar filtros",
+    "noResults": "Ningún curso coincide con tus filtros."
   },
   "common": {
     "loading": "Cargando...",

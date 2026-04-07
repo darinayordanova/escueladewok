@@ -6,6 +6,8 @@
   "navigation": {
     "home": "Home",
     "courses": "Courses",
+    "calendar": "Calendar",
+    "corporate": "Corporate Events",
     "about": "About",
     "contact": "Contact"
   },
@@ -30,6 +32,31 @@
     "from": "From",
     "noCourses": "No upcoming courses at the moment. Check back soon!"
   },
+  "corporateEnquiry": {
+    "heading": "Request information",
+    "sub": "Fill in your details and we'll get back to you to discuss a tailored experience for your team.",
+    "company": "Company",
+    "companyPlaceholder": "Acme Corp",
+    "name": "Contact name",
+    "namePlaceholder": "Jane Smith",
+    "email": "Email",
+    "emailPlaceholder": "jane@acme.com",
+    "phone": "Phone (optional)",
+    "phonePlaceholder": "+34 600 000 000",
+    "participants": "Approx. participants",
+    "message": "Anything else?",
+    "messagePlaceholder": "Preferred dates, dietary requirements, special requests…",
+    "submit": "Send enquiry",
+    "sending": "Sending…",
+    "error": "Something went wrong. Please try again.",
+    "successTitle": "Enquiry sent!",
+    "successSub": "We'll be in touch shortly to arrange the details."
+  },
+  "corporate": {
+    "pageTitle": "Corporate Events",
+    "pageDescription": "Unique team-building cooking experiences tailored for companies and groups.",
+    "noCourses": "No corporate events available at the moment. Get in touch to arrange a bespoke experience."
+  },
   "courseDetail": {
     "about": "About this course",
     "schedule": "Available Dates",
@@ -38,7 +65,16 @@
     "notFound": "Course not found",
     "instructor": "Instructor",
     "chooseDate": "Choose a date",
+    "chooseTime": "Choose a time",
     "noDatesAvailable": "No upcoming dates available",
+    "spotsLeftShort": "{count} left",
+    "waitlistTitle": "Fully booked",
+    "waitlistSub": "Leave your email and we'll notify you when a spot opens up.",
+    "waitlistEmailPlaceholder": "your@email.com",
+    "waitlistNotifyMe": "Notify me",
+    "waitlistSending": "Sending…",
+    "waitlistSuccess": "You're on the list! We'll be in touch.",
+    "waitlistError": "Something went wrong. Please try again.",
     "timeRange": "from {start} to {end}",
     "duration": "{duration} min",
     "menuTitle": "What you'll learn to cook",
@@ -94,6 +130,36 @@
       "success": "Message sent! We'll get back to you soon.",
       "error": "Something went wrong. Please try again."
     }
+  },
+  "footer": {
+    "tagline": "Hands-on Asian cooking classes for curious food lovers.",
+    "pages": "Explore",
+    "legal": "Legal",
+    "contactTitle": "Get in touch",
+    "rights": "All rights reserved."
+  },
+  "calendar": {
+    "pageTitle": "Class Calendar",
+    "pageDescription": "Browse all upcoming cooking classes and book your spot.",
+    "today": "Today",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "noEvents": "No classes scheduled this month. Check the next month for upcoming dates.",
+    "cuisine": {
+      "chinese": "Chinese",
+      "korean": "Korean",
+      "japanese": "Japanese",
+      "thai": "Thai",
+      "vietnamese": "Vietnamese"
+    }
+  },
+  "filters": {
+    "searchPlaceholder": "Search courses…",
+    "cuisineLabel": "Filter by cuisine",
+    "allCuisines": "All cuisines",
+    "dateLabel": "Filter by date",
+    "clearFilters": "Clear filters",
+    "noResults": "No courses match your filters."
   },
   "common": {
     "loading": "Loading...",

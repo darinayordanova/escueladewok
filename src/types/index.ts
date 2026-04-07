@@ -75,7 +75,6 @@ export interface MenuItem {
   _key: string;
   name: LocaleString;
   description?: LocaleString;
-  image?: SanityImage;
 }
 
 // ─── Content models ───────────────────────────────────────────────────────────

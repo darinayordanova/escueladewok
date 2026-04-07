@@ -11,6 +11,8 @@ import styles from './Header.module.scss';
 const NAV_LINKS = [
   { href: '/' as const, key: 'home' },
   { href: '/courses' as const, key: 'courses' },
+  { href: '/calendar' as const, key: 'calendar' },
+  { href: '/corporate' as const, key: 'corporate' },
   { href: '/about' as const, key: 'about' },
   { href: '/contact' as const, key: 'contact' },
 ] as const;

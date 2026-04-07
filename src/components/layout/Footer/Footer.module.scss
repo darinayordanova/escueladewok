@@ -1,34 +1,112 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ─── Shell ────────────────────────────────────────────────────────────────────
+
 .footer {
   background-color: $color-background-dark;
-  color: #fff;
-  padding: $spacing-12 0;
+  color: rgba(255, 255, 255, 0.75);
   margin-top: auto;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  opacity: 0.9;
-  transition: opacity $transition-fast;
+// ─── Main grid ────────────────────────────────────────────────────────────────
 
-  &:hover {
-    opacity: 1;
-    text-decoration: none;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-10;
+  padding-top: $spacing-16;
+  padding-bottom: $spacing-12;
+
+  @include respond-to('sm') {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: $spacing-12;
   }
 }
 
-.links {
+// ─── Brand column ─────────────────────────────────────────────────────────────
+
+.brand {
   display: flex;
-  gap: $spacing-6;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+.logoLink {
+  display: inline-flex;
+  transition: opacity $transition-fast;
+
+.logo{
+  width: 135px;
+}
+}
+
+.tagline {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: $line-height-base;
+  max-width: 260px;
+}
+
+// ─── Contact block ────────────────────────────────────────────────────────────
+
+.contactBlock {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  font-style: normal;
+}
+
+.contactLine {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:is(a):hover {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  @include focus-ring($color: rgba(255, 255, 255, 0.6));
+}
+
+.contactIcon {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 1px;
+}
+
+// ─── Nav columns ──────────────────────────────────────────────────────────────
+
+.colHeading {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: $spacing-4;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
 }
 
 .link {
   font-size: $font-size-sm;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.65);
   text-decoration: none;
   transition: color $transition-fast;
 
@@ -37,10 +115,18 @@
     text-decoration: none;
   }
 
-  @include focus-ring($color: #fff);
+  @include focus-ring($color: rgba(255, 255, 255, 0.6));
+}
+
+// ─── Bottom bar ───────────────────────────────────────────────────────────────
+
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: $spacing-5 0;
 }
 
 .copy {
   font-size: $font-size-xs;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
 }

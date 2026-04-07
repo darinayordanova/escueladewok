@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import FilteredCourseGrid from '@/components/sections/FilteredCourseGrid/FilteredCourseGrid';
+import CalendarView from '@/components/sections/CalendarView/CalendarView';
 import { expandOccurrences } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { allCoursesQuery } from '@/lib/sanity/queries';
@@ -9,19 +9,19 @@ import type { Course, Locale } from '@/types';
 
 import styles from './page.module.scss';
 
-interface CoursesPageProps {
+interface CalendarPageProps {
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: CoursesPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: CalendarPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'courses' });
+  const t = await getTranslations({ locale, namespace: 'calendar' });
   return { title: t('pageTitle'), description: t('pageDescription') };
 }
 
-export default async function CoursesPage({ params }: CoursesPageProps) {
+export default async function CalendarPage({ params }: CalendarPageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'courses' });
+  const t = await getTranslations({ locale, namespace: 'calendar' });
 
   const courses = await sanityClient.fetch<Course[]>(allCoursesQuery);
   const occurrences = expandOccurrences(courses ?? []);
@@ -34,11 +34,7 @@ export default async function CoursesPage({ params }: CoursesPageProps) {
           <p className={styles.description}>{t('pageDescription')}</p>
         </header>
 
-        {occurrences.length > 0 ? (
-          <FilteredCourseGrid mode="occurrences" occurrences={occurrences} locale={locale as Locale} />
-        ) : (
-          <p className={styles.empty}>{t('noCourses')}</p>
-        )}
+        <CalendarView occurrences={occurrences} locale={locale as Locale} />
       </div>
     </div>
   );

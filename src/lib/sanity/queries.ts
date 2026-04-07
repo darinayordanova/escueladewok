@@ -24,7 +24,7 @@ const timeSlotsProjection = groq`
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export const featuredCoursesQuery = groq`
-  *[_type == "course" && featured == true] | order(_createdAt desc) {
+  *[_type == "course" && featured == true && corporateEvent != true] | order(_createdAt desc) {
     _id,
     title,
     slug,
@@ -41,8 +41,25 @@ export const featuredCoursesQuery = groq`
   }
 `;
 
+export const corporateCoursesQuery = groq`
+  *[_type == "course" && corporateEvent == true] | order(_createdAt desc) {
+    _id,
+    title,
+    slug,
+    description,
+    image,
+    price,
+    currency,
+    duration,
+    cuisine,
+    corporateEvent,
+    instructor,
+    ${timeSlotsProjection}
+  }
+`;
+
 export const allCoursesQuery = groq`
-  *[_type == "course"] | order(_createdAt desc) {
+  *[_type == "course" && corporateEvent != true] | order(_createdAt desc) {
     _id,
     title,
     slug,

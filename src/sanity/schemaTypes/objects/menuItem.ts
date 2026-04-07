@@ -16,20 +16,7 @@ export const menuItem = defineType({
       title: 'Description',
       type: 'localeString',
       description: 'A short description of the dish (optional)',
-    }),
-    defineField({
-      name: 'image',
-      title: 'Dish Photo',
-      type: 'image',
-      options: { hotspot: true },
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alt text',
-          type: 'localeString',
-        }),
-      ],
-    }),
+    })
   ],
   preview: {
     select: { title: 'name.en', media: 'image' },
