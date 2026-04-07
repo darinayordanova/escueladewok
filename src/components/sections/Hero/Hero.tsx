@@ -20,7 +20,7 @@ export default function Hero({ data, locale }: HeroProps) {
   return (
     <section className={styles.hero}>
       {/* Content */}
-      <div className={`container grid py-20 pb-md-20 pb-no`}>
+      <div className={`container grid pt-10 pt-md-no`}>
         <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left`}>
 
           <h1 className={styles.title}>{heroTitle[locale]}</h1>
