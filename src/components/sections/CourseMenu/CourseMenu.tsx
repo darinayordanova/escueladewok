@@ -22,17 +22,7 @@ export default async function CourseMenu({ items, locale }: CourseMenuProps) {
       <ul className={styles.grid} role="list">
         {items.map((item) => (
           <li key={item._key} className={styles.card}>
-            {item.image && (
-              <div className={styles.imageWrapper}>
-                <Image
-                  src={urlFor(item.image).width(400).height(300).url()}
-                  alt={item.image.alt?.[locale] ?? item.name[locale]}
-                  fill
-                  className={styles.image}
-                  sizes="(max-width: 768px) 50vw, 200px"
-                />
-              </div>
-            )}
+          
             <div className={styles.body}>
               <p className={styles.name}>{item.name[locale]}</p>
               {item.description?.[locale] && (
