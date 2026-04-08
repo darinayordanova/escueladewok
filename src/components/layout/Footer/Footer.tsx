@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 
+import { Mail, MapPin, Phone } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
 import { sanityClient } from '@/lib/sanity/client';
 import { contactPageQuery } from '@/lib/sanity/queries';
@@ -41,19 +42,19 @@ export default async function Footer() {
           <address className={styles.contactBlock}>
             {contact?.email && (
               <a href={`mailto:${contact.email}`} className={styles.contactLine}>
-                <span className={styles.contactIcon} aria-hidden="true">✉</span>
+                <Mail className={styles.contactIcon} size={16} />
                 {contact.email}
               </a>
             )}
             {contact?.phone && (
               <a href={`tel:${contact.phone}`} className={styles.contactLine}>
-                <span className={styles.contactIcon} aria-hidden="true">✆</span>
+                <Phone className={styles.contactIcon} size={16} />
                 {contact.phone}
               </a>
             )}
             {contact?.address?.[locale] && (
               <span className={styles.contactLine}>
-                <span className={styles.contactIcon} aria-hidden="true">⌖</span>
+                <MapPin className={styles.contactIcon} size={16} />
                 {contact.address[locale]}
               </span>
             )}

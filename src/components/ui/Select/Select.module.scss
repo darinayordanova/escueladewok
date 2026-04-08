@@ -67,14 +67,14 @@
   right: $spacing-4;
   top: 50%;
   transform: translateY(-50%);
-  width: 12px;
-  height: 8px;
+
   color: $color-text-muted;
   pointer-events: none;
-  transition: color $transition-fast;
+  transition: all $transition-fast;
 
   .selectWrapper:has(.control:focus) & {
     color: $color-primary;
+    transform: translateY(-50%) rotate(180deg);
   }
 }
 

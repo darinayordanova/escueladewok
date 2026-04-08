@@ -80,7 +80,6 @@ export const course = defineType({
         ],
         layout: 'radio',
       },
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'corporateEvent',
@@ -112,6 +111,12 @@ export const course = defineType({
       type: 'array',
       of: [{ type: 'menuItem' }],
       description: 'The dishes students will learn to cook in this course',
+    }),
+    defineField({
+      name: 'allergens',
+      title: 'Allergens',
+      type: 'localeBlockContent',
+      description: 'Describe the allergens in this course. You can bold specific allergen names.',
     }),
     defineField({
       name: 'instructor',

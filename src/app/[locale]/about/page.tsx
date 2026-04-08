@@ -5,6 +5,7 @@ import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
 import TeamGrid from '@/components/sections/TeamGrid/TeamGrid';
 import { sanityClient } from '@/lib/sanity/client';
 import { aboutPageQuery } from '@/lib/sanity/queries';
+import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
 import type { AboutPage, Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -17,9 +18,20 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
   const { locale } = await params;
   const page = await sanityClient.fetch<AboutPage>(aboutPageQuery);
   const l = locale as Locale;
+  const title = page?.title?.[l];
+  const description = page?.subtitle?.[l];
+
   return {
-    title: page?.title?.[l],
-    description: page?.subtitle?.[l],
+    title,
+    description,
+    alternates: buildAlternates('/about'),
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/${locale}/about`,
+      locale: OG_LOCALE[locale] ?? 'en_US',
+      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
+    },
   };
 }
 
@@ -35,7 +47,7 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
       <div className="container">
         {/* ── Page header ── */}
         <header className={styles.header}>
-          {page?.title?.[l] && <h1 className={styles.title}>{page.title[l]}</h1>}
+          {page?.title?.[l] && <h1 className='h3'>{page.title[l]}</h1>}
           {page?.subtitle?.[l] && <p className={styles.subtitle}>{page.subtitle[l]}</p>}
         </header>
 

@@ -2,15 +2,13 @@
 @use '@/styles/mixins' as *;
 
 .card {
-  background-color: $color-background;
   border-radius: $radius-lg;
+  height: 100%;
   overflow: hidden;
   box-shadow: $shadow-sm;
   transition:
     transform $transition-base,
     box-shadow $transition-base;
-  display: flex;
-  flex-direction: column;
 
   &:hover {
     transform: translateY(-4px);
@@ -27,7 +25,6 @@
   position: relative;
   aspect-ratio: 3 / 2;
   overflow: hidden;
-  background-color: $color-background-alt;
 }
 
 .image {
@@ -49,32 +46,9 @@
   position: absolute;
   top: $spacing-3;
   left: $spacing-3;
-  padding: $spacing-1 $spacing-3;
-  background-color: $color-primary;
-  color: #fff;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
-  border-radius: $radius-full;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.body {
-  padding: $spacing-6;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.titleLink {
-  text-decoration: none;
-  color: $color-text;
 }
 
 .title {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
-  margin-bottom: $spacing-3;
   transition: color $transition-fast;
 
   .titleLink:hover & {
@@ -85,11 +59,7 @@
 }
 
 .description {
-  font-size: $font-size-sm;
-  color: $color-text-light;
-  line-height: $line-height-base;
-  flex: 1;
-  margin-bottom: $spacing-4;
+ 
 
   @include line-clamp(3);
 }

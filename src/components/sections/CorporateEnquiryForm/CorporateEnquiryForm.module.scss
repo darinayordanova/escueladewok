@@ -9,12 +9,6 @@
   box-shadow: $shadow-md;
 }
 
-.heading {
-  font-size: $font-size-lg;
-  font-weight: $font-weight-bold;
-  margin-bottom: $spacing-2;
-}
-
 .sub {
   font-size: $font-size-sm;
   color: $color-text-light;
@@ -32,6 +26,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: $spacing-4;
+      align-items: end;
+
 }
 
 .error {

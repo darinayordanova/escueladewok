@@ -108,28 +108,67 @@ $breakpoints: ('sm', 'md', 'lg', 'xl');
 }
 
 .relative { position: relative; }
-
 .absolute { position: absolute; }
 
-.flex { display: flex; }
+// ─── Flex utilities ───────────────────────────────────────────────────────────
 
-.flex-justify-center { justify-content: center; }
-.flex-justify-between { justify-content: space-between; }
-.flex-justify-end { justify-content: flex-end; }
-.flex-align-center { align-items: center; }
+$_flex-props: (
+  'justify': (
+    'center':  (justify-content: center),
+    'between': (justify-content: space-between),
+    'start':   (justify-content: flex-start),
+    'end':     (justify-content: flex-end),
+    'around':  (justify-content: space-around),
+    'evenly':  (justify-content: space-evenly),
+  ),
+  'align': (
+    'center':  (align-items: center),
+    'start':   (align-items: flex-start),
+    'end':     (align-items: flex-end),
+    'stretch': (align-items: stretch),
+    'baseline':(align-items: baseline),
+  ),
+  'direction': (
+    'row':     (flex-direction: row),
+    'col':     (flex-direction: column),
+    'row-rev': (flex-direction: row-reverse),
+    'col-rev': (flex-direction: column-reverse),
+  ),
+  'wrap': (
+    'wrap':    (flex-wrap: wrap),
+    'nowrap':  (flex-wrap: nowrap),
+  ),
+);
 
-// ─── Text alignment ───────────────────────────────────────────────────────────
-// Usage: <p class="text-center text-md-left">
-.text-left   { text-align: left; }
-.text-center { text-align: center; }
-.text-right  { text-align: right; }
+.flex         { display: flex; }
+.inline-flex  { display: inline-flex; }
 
-$breakpoints: ('sm', 'md', 'lg', 'xl');
+.flex-column { flex-direction: column; }
+.flex-row    { flex-direction: row; }
 
-@each $bp in $breakpoints {
-  @include respond-to($bp) {
-    .text-#{$bp}-left   { text-align: left; }
-    .text-#{$bp}-center { text-align: center; }
-    .text-#{$bp}-right  { text-align: right; }
+// Base classes
+@each $group, $variants in $_flex-props {
+  @each $name, $decls in $variants {
+    .flex-#{$group}-#{$name} {
+      @each $prop, $val in $decls { #{$prop}: $val; }
+    }
   }
 }
+
+// Responsive overrides — .flex-md-justify-between, .flex-lg-direction-col, etc.
+@each $bp in ('sm', 'md', 'lg', 'xl') {
+  @include respond-to($bp) {
+    .flex-#{$bp} { display: flex; }
+
+    @each $group, $variants in $_flex-props {
+      @each $name, $decls in $variants {
+        .flex-#{$bp}-#{$group}-#{$name} {
+          @each $prop, $val in $decls { #{$prop}: $val; }
+        }
+      }
+    }
+  }
+}
+
+.full-width { width: 100%; }
+.full-height { height: 100%; }

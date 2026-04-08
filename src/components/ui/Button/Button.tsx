@@ -7,11 +7,13 @@ import styles from './Button.module.scss';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonColor = 'white' | 'black';
 
 type BaseProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
+  color?: ButtonColor;
 };
 
 type AsButton = BaseProps &
@@ -33,6 +35,7 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   fullWidth = false,
+  color,
   children,
   className,
   ...props
@@ -41,6 +44,7 @@ export default function Button({
     styles.button,
     styles[variant],
     styles[size],
+    color ? styles[color] : '',
     fullWidth ? styles.fullWidth : '',
     className ?? '',
   ]

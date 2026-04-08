@@ -23,13 +23,13 @@ export default function Hero({ data, locale }: HeroProps) {
       <div className={`container grid pt-10 pt-md-no`}>
         <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left`}>
 
-          <h1 className={styles.title}>{heroTitle[locale]}</h1>
+          <h1 className={`h2 mt-no ${styles.title}`}>{heroTitle[locale]}</h1>
 
           {heroSubtitle?.[locale] && (
-            <p className={styles.subtitle}>{heroSubtitle[locale]}</p>
+            <p className={`text-lg mb-10 ${styles.subtitle}`}>{heroSubtitle[locale]}</p>
           )}
 
-          <div className={styles.cta}>
+          <div className={`mb-20 flex flex-align-center gap-5 ${styles.cta}`}>
             
             <Button  href="/courses">{heroCtaLabel?.[locale] ?? t('viewAllCourses')}</Button>
             <Link href="/about" hasArrow>
@@ -38,7 +38,7 @@ export default function Hero({ data, locale }: HeroProps) {
           </div>
         </div>
         <div className={`col-12 col-lg-5 col-md-6 relative`}>
-      <div className={styles.redBox} />
+      <div className={`mt-16 mx-auto m-md-no bg-pattern bg-primary ${styles.redBox}`} />
 
          <Image
     src={heroImage}         

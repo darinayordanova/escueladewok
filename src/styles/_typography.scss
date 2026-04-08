@@ -1,0 +1,198 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// ─── Heading classes ──────────────────────────────────────────────────────────
+// Use these utility classes when you need heading styles on non-heading elements,
+// or to override default heading sizes. E.g. <p class="h1">
+
+h1, .h1 {
+  font-size: $font-size-h2;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  font-family: $font-heading;
+  margin-top: $spacing-6;
+  margin-bottom: $spacing-4;
+
+
+  @include respond-to('lg') {
+    font-size: $font-size-h1;
+    margin-top: $spacing-8;
+  }
+}
+
+h2, .h2 {
+  font-size: $font-size-h3;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  font-family: $font-heading;
+  margin-top: $spacing-6;
+  margin-bottom: $spacing-4;
+  
+  @include respond-to('lg') {
+    font-size: $font-size-h2;
+    margin-top: $spacing-8;
+  }
+}
+
+h3, .h3 {
+  font-size: $font-size-h4;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  font-family: $font-heading;
+  margin-top: $spacing-6;
+  margin-bottom: $spacing-4;
+
+  @include respond-to('lg') {
+    font-size: $font-size-h3;
+    margin-top: $spacing-8;
+  }
+}
+
+h4, .h4 {
+  font-size: $font-size-h5;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-snug;
+  font-family: $font-heading;
+  margin-top: $spacing-4;
+  margin-bottom: $spacing-4;
+
+  @include respond-to('lg') {
+    font-size: $font-size-h4;
+    margin-top: $spacing-8;
+  }
+}
+
+h5, .h5 {
+  font-size: $font-size-h6;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-snug;
+  font-family: $font-heading;
+  margin-top: $spacing-4;
+  margin-bottom: $spacing-4;
+
+  @include respond-to('lg') {
+    font-size: $font-size-h5;
+    margin-top: $spacing-6;
+  }
+}
+
+h6, .h6 {
+  font-size: $font-size-h6;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-snug;
+  font-family: $font-heading;
+  margin-top: $spacing-4;
+  margin-bottom: $spacing-4;
+
+  @include respond-to('lg') {
+    font-size: $font-size-h6;
+    margin-top: $spacing-6;
+  }
+}
+
+
+// ─── Text size classes ────────────────────────────────────────────────────────
+
+$_text-sizes: (
+  'xs':   $font-size-xs,
+  'sm':   $font-size-sm,
+  'base': $font-size-base,
+  'lg':   $font-size-lg,
+  'xl':   $font-size-xl,
+);
+
+// Base: .text-xs, .text-sm, .text-base, .text-lg, .text-xl
+@each $name, $size in $_text-sizes {
+  .text-#{$name} { font-size: $size; margin-bottom: $spacing-4; }
+}
+
+// Responsive: .text-sm-lg, .text-lg-xs, etc.
+@each $bp in ('sm', 'md', 'lg', 'xl') {
+  @include respond-to($bp) {
+    @each $name, $size in $_text-sizes {
+      .text-#{$bp}-#{$name} { font-size: $size; margin-bottom: $spacing-4; }
+    }
+  }
+}
+
+// ─── Font weight classes ──────────────────────────────────────────────────────
+
+.font-normal   { font-weight: $font-weight-normal; }
+.font-medium   { font-weight: $font-weight-medium; }
+.font-semibold { font-weight: $font-weight-semibold; }
+.font-bold     { font-weight: $font-weight-bold; }
+
+// ─── Line height classes ──────────────────────────────────────────────────────
+
+.leading-tight   { line-height: $line-height-tight; }
+.leading-snug    { line-height: $line-height-snug; }
+.leading-base    { line-height: $line-height-base; }
+.leading-relaxed { line-height: $line-height-relaxed; }
+
+// ─── Text alignment ───────────────────────────────────────────────────────────
+
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+// ─── Text alignment ───────────────────────────────────────────────────────────
+// Usage: <p class="text-center text-md-left">
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+$breakpoints: ('sm', 'md', 'lg', 'xl');
+
+@each $bp in $breakpoints {
+  @include respond-to($bp) {
+    .text-#{$bp}-left   { text-align: left; }
+    .text-#{$bp}-center { text-align: center; }
+    .text-#{$bp}-right  { text-align: right; }
+  }
+}
+
+
+// ─── Paragraph helpers ────────────────────────────────────────────────────────
+
+.lead {
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+  color: $color-text-light;
+}
+
+.caption {
+  font-size: $font-size-xs;
+  line-height: $line-height-base;
+  color: $color-text-muted;
+}
+
+.overline {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $color-text-muted;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.font-heading {
+  font-family: $font-heading;
+}
+
+.font-body {
+  font-family: $font-paragraph;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}

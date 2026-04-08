@@ -5,6 +5,7 @@ import FilteredCourseGrid from '@/components/sections/FilteredCourseGrid/Filtere
 import { expandOccurrences } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { allCoursesQuery } from '@/lib/sanity/queries';
+import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
 import type { Course, Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -16,7 +17,21 @@ interface CoursesPageProps {
 export async function generateMetadata({ params }: CoursesPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'courses' });
-  return { title: t('pageTitle'), description: t('pageDescription') };
+  const title = t('pageTitle');
+  const description = t('pageDescription');
+
+  return {
+    title,
+    description,
+    alternates: buildAlternates('/courses'),
+    openGraph: {
+      title,
+      description,
+      url: `${SITE_URL}/${locale}/courses`,
+      locale: OG_LOCALE[locale] ?? 'en_US',
+      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
+    },
+  };
 }
 
 export default async function CoursesPage({ params }: CoursesPageProps) {

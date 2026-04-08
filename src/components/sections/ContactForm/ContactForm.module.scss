@@ -7,11 +7,7 @@
   gap: $spacing-5;
 }
 
-.title {
-  font-size: $font-size-h6;
-  font-weight: $font-weight-bold;
-  margin-bottom: $spacing-2;
-}
+
 
 .error {
   font-size: $font-size-sm;
@@ -37,14 +33,9 @@
 }
 
 .successIcon {
-  width: 36px;
-  height: 36px;
   background-color: #27ae60;
   color: #fff;
   border-radius: $radius-full;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: $font-size-lg;
+  
   flex-shrink: 0;
 }

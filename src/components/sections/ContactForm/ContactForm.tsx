@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 import Button from '@/components/ui/Button/Button';
+import { Check } from '@/components/ui/icons';
 import Input from '@/components/ui/Input/Input';
 import Textarea from '@/components/ui/Textarea/Textarea';
 
@@ -43,8 +44,9 @@ export default function ContactForm({ title, successMessage }: ContactFormProps)
 
   if (status === 'success') {
     return (
-      <div className={styles.success}>
-        <span className={styles.successIcon} aria-hidden="true">✓</span>
+      <div className={`${styles.success}`}>
+        <div className={`flex flex-align-center flex-justify-center p-1 ${styles.successIcon}`}>
+        <Check size={20} /></div>
         <p>{successMessage ?? t('success')}</p>
       </div>
     );
@@ -52,7 +54,7 @@ export default function ContactForm({ title, successMessage }: ContactFormProps)
 
   return (
     <form onSubmit={handleSubmit} className={styles.form} noValidate>
-      {title && <h2 className={styles.title}>{title}</h2>}
+      {title && <h2>{title}</h2>}
 
       <Input
         id="contact-name"

@@ -1,0 +1,8 @@
+@use '@/styles/variables' as *;
+
+.pill {
+  display: inline-block;
+  background-color: var(--pill-bg);
+  border-radius: $radius-full;
+  letter-spacing: 0.06em;
+}

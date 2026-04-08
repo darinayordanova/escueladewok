@@ -1,81 +1,115 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.section {
-  margin-bottom: $spacing-10;
-}
 
-.title {
-  font-size: $font-size-h6;
-  font-weight: $font-weight-bold;
-  margin-bottom: $spacing-4;
-  padding-bottom: $spacing-3;
-  border-bottom: 2px solid $color-border;
-}
 
-// ─── Dish grid ────────────────────────────────────────────────────────────────
+// ─── Paper ────────────────────────────────────────────────────────────────────
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-4;
+.paper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
 
-  @include respond-to('sm') {
-    grid-template-columns: repeat(3, 1fr);
+  // Outer border
+  border: 1px solid rgba($color-primary, 0.2);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(#fff, 0.8);
+
+  // Inner decorative border
+  &::before {
+    content: '';
+    position: absolute;
+    inset: $spacing-3;
+    border: 1px solid rgba($color-primary, 0.12);
+    pointer-events: none;
+    z-index: 1;
   }
 
   @include respond-to('md') {
-    grid-template-columns: repeat(4, 1fr);
+    width: 80%;
   }
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  background-color: $color-background;
-  border-radius: $radius-md;
-  overflow: hidden;
-  border: 1px solid $color-border-light;
-  box-shadow: $shadow-sm;
-  transition: transform $transition-base, box-shadow $transition-base;
+// ─── Watermark ────────────────────────────────────────────────────────────────
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: $shadow-md;
-  }
+.watermark {
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/pattern2.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 320px 320px;
+  opacity: 0.04;
+  pointer-events: none;
 }
 
-.imageWrapper {
+// ─── Header ───────────────────────────────────────────────────────────────────
+
+
+
+.ornamentImg {
+  opacity: 0.9;
+}
+
+// ─── Divider ──────────────────────────────────────────────────────────────────
+
+.divider {
   position: relative;
-  aspect-ratio: 4 / 3;
-  background-color: $color-background-alt;
-  overflow: hidden;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      to var(--dir, right),
+      transparent,
+      rgba($color-primary, 0.3)
+    );
+  }
+
+  &::before { --dir: right; }
+  &::after  { --dir: left; }
 }
 
-.image {
-  object-fit: cover;
-  transition: transform $transition-slow;
+// ─── List ─────────────────────────────────────────────────────────────────────
 
-  .card:hover & {
-    transform: scale(1.05);
+.list {
+  list-style: none;
+}
+
+.item {
+  & + & {
+    border-top: 1px dashed rgba($color-primary, 0.15);
   }
 }
 
-.body {
-  padding: $spacing-3;
-}
+// ─── Number ───────────────────────────────────────────────────────────────────
 
-.name {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-text;
-  line-height: $line-height-snug;
-  margin-bottom: $spacing-1;
-}
-
-.description {
+.number {
+  font-family: $font-heading;
   font-size: $font-size-xs;
-  color: $color-text-muted;
-  line-height: $line-height-base;
-  @include line-clamp(2);
+  font-weight: $font-weight-bold;
+  color: rgba($color-primary, 0.4);
+  width: 20px;
+  height: 29px;
 }
+
+// ─── Body ─────────────────────────────────────────────────────────────────────}
+
+
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+
+

@@ -14,10 +14,14 @@ interface TermsPageProps {
 
 export async function generateMetadata({ params }: TermsPageProps): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'legal' });
   const page = await sanityClient.fetch<LegalPage>(termsPageQuery);
   const l = locale as Locale;
+
   return {
-    title: page?.title?.[l],
+    title: page?.title?.[l] ?? t('terms'),
+    description: t('termsDescription'),
+    robots: { index: false, follow: false },
   };
 }
 

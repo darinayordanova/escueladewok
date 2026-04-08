@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { Calendar, ChevronDown, ChevronLeft, ChevronRight, Close } from '@/components/ui/icons';
 import { todayISO } from '@/lib/courses/timeslots';
 
 import styles from './DatePicker.module.scss';
@@ -126,11 +127,7 @@ export default function DatePicker({
         aria-expanded={open}
         aria-haspopup="dialog"
       >
-        <svg className={styles.calIcon} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <rect x="1" y="3" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M1 7h14" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M5 1v4M11 1v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+        <Calendar className={styles.calIcon} size={16} />
 
         <span className={value ? styles.triggerValue : styles.triggerPlaceholder}>
           {triggerLabel ?? placeholder}
@@ -145,12 +142,10 @@ export default function DatePicker({
             onClick={handleClear}
             onKeyDown={(e) => e.key === 'Enter' && handleClear(e as never)}
           >
-            ×
+            <Close size={14} />
           </span>
         ) : (
-          <svg className={styles.chevron} viewBox="0 0 10 6" fill="none" aria-hidden="true">
-            <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
+          <ChevronDown className={styles.chevron} size={20} />
         )}
       </button>
 
@@ -160,11 +155,11 @@ export default function DatePicker({
           {/* Month header */}
           <div className={styles.calHeader}>
             <button type="button" onClick={prevMonth} className={styles.navBtn} aria-label="Previous month">
-              ‹
+              <ChevronLeft size={16} />
             </button>
             <span className={styles.monthTitle}>{monthLabel}</span>
             <button type="button" onClick={nextMonth} className={styles.navBtn} aria-label="Next month">
-              ›
+              <ChevronRight size={16} />
             </button>
           </div>
 

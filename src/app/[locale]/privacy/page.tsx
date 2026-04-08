@@ -14,10 +14,14 @@ interface PrivacyPageProps {
 
 export async function generateMetadata({ params }: PrivacyPageProps): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'legal' });
   const page = await sanityClient.fetch<LegalPage>(privacyPageQuery);
   const l = locale as Locale;
+
   return {
-    title: page?.title?.[l],
+    title: page?.title?.[l] ?? t('privacy'),
+    description: t('privacyDescription'),
+    robots: { index: false, follow: false },
   };
 }
 

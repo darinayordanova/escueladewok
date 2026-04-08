@@ -1,20 +1,7 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.page {
-  padding-bottom: $spacing-20;
-}
 
-
-
-.hero {
-  position: relative;
-  aspect-ratio: 16 / 7;
-  overflow: hidden;
-  background-color: $color-background-alt;
-  margin-bottom: $spacing-12;
-  border-radius: 0 0 $radius-lg $radius-lg;
-}
 
 .imageWrapper {
   position: relative;
@@ -22,6 +9,8 @@
   height: auto;
   aspect-ratio: 2/1;
   inset: 0;
+  border-radius: 0 50px 0 50px;
+  overflow: hidden;
 }
 
 .image {
@@ -38,37 +27,13 @@
   }
 }
 
-.main {
-  min-width: 0;
-}
 
-.header {
-  margin-bottom: $spacing-10;
-}
 
-.difficulty {
-  display: inline-block;
-  padding: $spacing-1 $spacing-3;
-  background-color: $color-primary;
-  color: #fff;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
-  border-radius: $radius-full;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: $spacing-4;
-}
-
-.title {
-  font-size: $font-size-h3;
-  font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
-  margin-bottom: $spacing-4;
-}
-
-.instructor {
-  font-size: $font-size-base;
-  color: $color-text-light;
+.instructorImage{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .section {
@@ -85,7 +50,11 @@
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 .sidebar {
+  // Hidden on mobile — BookingDrawer handles that viewport
+  display: none;
+
   @include respond-to('lg') {
+    display: block;
     position: sticky;
     top: calc(64px + $spacing-6);
     height: fit-content;

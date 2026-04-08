@@ -3,7 +3,9 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
+import { ChevronLeft, ChevronRight } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
+import { CUISINE_BG, CUISINE_COLOR, CUISINE_FALLBACK_BG, CUISINE_FALLBACK_COLOR } from '@/lib/cuisine';
 import { todayISO } from '@/lib/courses/timeslots';
 import type { CourseOccurrence, CuisineType, Locale } from '@/types';
 
@@ -13,23 +15,6 @@ interface CalendarViewProps {
   occurrences: CourseOccurrence[];
   locale: Locale;
 }
-
-// Cuisine accent colours — chosen to complement the brand palette
-const CUISINE_COLOR: Record<CuisineType | string, string> = {
-  chinese: '#860A15',
-  korean: '#C4622D',
-  japanese: '#2C5282',
-  thai: '#276749',
-  vietnamese: '#744C6E',
-};
-
-const CUISINE_BG: Record<CuisineType | string, string> = {
-  chinese: '#FBF0F0',
-  korean: '#FDF4EE',
-  japanese: '#EEF2FA',
-  thai: '#EEF7F2',
-  vietnamese: '#F5EFF5',
-};
 
 export default function CalendarView({ occurrences, locale }: CalendarViewProps) {
   const t = useTranslations('calendar');
@@ -118,14 +103,14 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
       </div>
 
       {/* ── Calendar header ─────────────────────────────────────────────────── */}
-      <div className={styles.header}>
+      <div className={`flex flex-align-center flex-justify-center flex-md-justify-between gap-4 mb-4`}>
         <div className={styles.headerNav}>
           <button type="button" onClick={prevMonth} className={styles.navBtn} aria-label={t('prevMonth')}>
-            ‹
+            <ChevronLeft size={18} />
           </button>
           <h2 className={styles.monthTitle}>{monthLabel}</h2>
           <button type="button" onClick={nextMonth} className={styles.navBtn} aria-label={t('nextMonth')}>
-            ›
+            <ChevronRight size={18} />
           </button>
         </div>
 
@@ -136,15 +121,15 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
         )}
       </div>
 
-      {/* ── Day-name row ────────────────────────────────────────────────────── */}
-      <div className={styles.dayNames}>
+      {/* ── Day-name row (grid only) ────────────────────────────────────────── */}
+      <div className={`${styles.dayNames} ${styles.gridOnly}`}>
         {dayNames.map((name) => (
           <span key={name} className={styles.dayName}>{name}</span>
         ))}
       </div>
 
-      {/* ── Calendar grid ───────────────────────────────────────────────────── */}
-      <div className={styles.grid}>
+      {/* ── Calendar grid (md+) ─────────────────────────────────────────────── */}
+      <div className={`${styles.grid} ${styles.gridOnly}`}>
         {cells.map((dateStr, i) => {
           if (!dateStr) {
             return <div key={`pad-${i}`} className={styles.cellPad} />;
@@ -154,7 +139,7 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
           const isToday = dateStr === today;
           const isPast = dateStr < today;
           const events = byDate[dateStr] ?? [];
-          const isWeekend = (i % 7) >= 5; // Sat / Sun (0=Mon offset)
+          const isWeekend = (i % 7) >= 5;
 
           return (
             <div
@@ -167,31 +152,23 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
                 events.length > 0 ? styles.cellActive : '',
               ].filter(Boolean).join(' ')}
             >
-              {/* Day number */}
               <span className={[styles.dayNum, isToday ? styles.dayNumToday : ''].filter(Boolean).join(' ')}>
                 {day}
               </span>
-
-              {/* Events */}
               {events.length > 0 && (
                 <div className={styles.events}>
                   {events.map((occ) => {
-                    const color = CUISINE_COLOR[occ.course.cuisine] ?? '#7A5C5C';
-                    const bg = CUISINE_BG[occ.course.cuisine] ?? '#F5F0F0';
+                    const color = CUISINE_COLOR[occ.course.cuisine] ?? CUISINE_FALLBACK_COLOR;
+                    const bg = CUISINE_BG[occ.course.cuisine] ?? CUISINE_FALLBACK_BG;
                     return (
                       <Link
                         key={`${occ.course._id}-${occ.startTime}`}
                         href={`/courses/${occ.course.slug.current}?date=${occ.date}&time=${occ.startTime}`}
                         className={styles.event}
-                        style={{
-                          '--ev-color': color,
-                          '--ev-bg': bg,
-                        } as React.CSSProperties}
+                        style={{ '--ev-color': color, '--ev-bg': bg } as React.CSSProperties}
                       >
                         <span className={styles.eventTime}>{occ.startTime}</span>
-                        <span className={styles.eventTitle}>
-                          {occ.course.title[locale]}
-                        </span>
+                        <span className={styles.eventTitle}>{occ.course.title[locale]}</span>
                       </Link>
                     );
                   })}
@@ -202,9 +179,58 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
         })}
       </div>
 
+      {/* ── Agenda list (mobile only) ────────────────────────────────────────── */}
+      <div className={`${styles.agenda} ${styles.mobileOnly}`}>
+        {cells.filter((d): d is string => !!d && !!(byDate[d]?.length)).length === 0 ? null :
+          cells.filter((d): d is string => !!d && !!(byDate[d]?.length)).map((dateStr) => {
+            const isToday = dateStr === today;
+            const isPast = dateStr < today;
+            const events = byDate[dateStr];
+            const [, , dd] = dateStr.split('-');
+            const dateLabel = new Intl.DateTimeFormat(locale, {
+              weekday: 'long', day: 'numeric', month: 'long',
+            }).format(new Date(dateStr + 'T00:00:00'));
+
+            return (
+              <div key={dateStr} className={[styles.agendaDay, isPast ? styles.agendaDayPast : ''].filter(Boolean).join(' ')}>
+                <div className={styles.agendaDateRow}>
+                  <span className={[styles.agendaDayNum, isToday ? styles.dayNumToday : ''].filter(Boolean).join(' ')}>
+                    {dd}
+                  </span>
+                  <span className={styles.agendaDateLabel}>{dateLabel}</span>
+                </div>
+                <div className={styles.agendaEvents}>
+                  {events.map((occ) => {
+                    const color = CUISINE_COLOR[occ.course.cuisine] ?? CUISINE_FALLBACK_COLOR;
+                    const bg = CUISINE_BG[occ.course.cuisine] ?? CUISINE_FALLBACK_BG;
+                    return (
+                      <Link
+                        key={`${occ.course._id}-${occ.startTime}`}
+                        href={`/courses/${occ.course.slug.current}?date=${occ.date}&time=${occ.startTime}`}
+                        className={styles.agendaEvent}
+                        style={{ '--ev-color': color, '--ev-bg': bg } as React.CSSProperties}
+                      >
+                        <span className={styles.agendaDot} style={{ background: color }} />
+                        <div className={styles.agendaEventInfo}>
+                          <span className={styles.agendaEventTitle}>{occ.course.title[locale]}</span>
+                          <span className={styles.agendaEventTime}>{occ.startTime}</span>
+                        </div>
+                        <ChevronRight size={16} className={styles.agendaChevron} />
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+
       {/* ── Empty state ─────────────────────────────────────────────────────── */}
       {eventsThisMonth === 0 && (
-        <p className={styles.empty}>{t('noEvents')}</p>
+        <p className="text-center text-muted pt-16 pb-8 text-lg">
+          {t('noEvents')}
+        </p>
       )}
     </div>
   );

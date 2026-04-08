@@ -1,7 +1,7 @@
 // ─── Colors ───────────────────────────────────────────────────────────────────
 $color-primary: #860A15;
 $color-primary-dark: #5C0A10;
-$color-primary-light: #D43040;
+$color-primary-light: #B01020;
 $color-secondary: #B87E18;
 $color-secondary-dark: #E2A830;
 
@@ -17,8 +17,8 @@ $color-border: #C4AEAE;
 $color-border-light: #C4AEAE;
 
 // ─── Typography ───────────────────────────────────────────────────────────────
-$font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-$font-serif: Georgia, 'Times New Roman', serif;
+$font-heading: var(--font-heading), Georgia, serif;
+$font-paragraph: var(--font-paragraph), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
 $font-size-xs: 12px;   // 12px
 $font-size-sm: 14px;  // 14px

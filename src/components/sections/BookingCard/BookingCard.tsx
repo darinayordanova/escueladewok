@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { ChevronLeft, ChevronRight } from '@/components/ui/icons';
 import Input from '@/components/ui/Input/Input';
 
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
@@ -186,11 +187,11 @@ export default function BookingCard({
           <div className={styles.calendar}>
             <div className={styles.calHeader}>
               <button type="button" onClick={prevMonth} className={styles.navBtn} aria-label="Previous month">
-                ‹
+                <ChevronLeft size={18} />
               </button>
               <span className={styles.monthLabel}>{monthLabel}</span>
               <button type="button" onClick={nextMonth} className={styles.navBtn} aria-label="Next month">
-                ›
+                <ChevronRight size={18} />
               </button>
             </div>
 

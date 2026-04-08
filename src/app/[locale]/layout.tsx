@@ -7,6 +7,7 @@ import { getMessages, getTranslations } from 'next-intl/server';
 import Footer from '@/components/layout/Footer/Footer';
 import Header from '@/components/layout/Header/Header';
 import { routing } from '@/i18n/routing';
+import { DEFAULT_OG_IMAGE, OG_LOCALE, SITE_NAME, SITE_URL } from '@/lib/seo';
 import type { Locale } from '@/types';
 
 interface LocaleLayoutProps {
@@ -24,10 +25,33 @@ export async function generateMetadata({
 
   return {
     title: {
-      template: `%s | ${t('title')}`,
-      default: t('title'),
+      template: `%s | ${SITE_NAME}`,
+      default: SITE_NAME,
     },
     description: t('description'),
+    openGraph: {
+      siteName: SITE_NAME,
+      locale: OG_LOCALE[locale] ?? 'en_US',
+      alternateLocale: locale === 'en' ? ['es_ES'] : ['en_US'],
+      type: 'website',
+      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [DEFAULT_OG_IMAGE],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
+    },
+    alternates: {
+      languages: {
+        en: `${SITE_URL}/en`,
+        es: `${SITE_URL}/es`,
+        'x-default': `${SITE_URL}/en`,
+      },
+    },
   };
 }
 

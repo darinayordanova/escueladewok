@@ -1,7 +1,10 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-@use '@/styles/grid';
+@use '@/styles/typography';
+@use '@/styles/colors';
 @use '@/styles/spacing';
+@use '@/styles/grid';
+
 // ─── Reset ────────────────────────────────────────────────────────────────────
 *,
 *::before,
@@ -19,7 +22,7 @@ html {
 }
 
 body {
-  font-family: $font-sans;
+  font-family: $font-paragraph;
   font-size: $font-size-base;
   font-weight: $font-weight-normal;
   line-height: $line-height-base;
@@ -30,16 +33,6 @@ body {
 }
 
 // ─── Typography ───────────────────────────────────────────────────────────────
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
-  color: $color-text;
-}
 
 p {
   line-height: $line-height-base;
@@ -50,7 +43,7 @@ a {
   text-decoration: none;
 
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 }
 

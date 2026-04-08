@@ -78,6 +78,8 @@
     "timeRange": "from {start} to {end}",
     "duration": "{duration} min",
     "menuTitle": "What you'll learn to cook",
+    "allergensTitle": "Allergens",
+    "allergensDisclaimer": "This course may contain traces of other allergens. Contact us if you have any concerns.",
     "spotsLeft": "{count} spot left",
     "spotsLeftPlural": "{count} spots left",
     "soldOut": "Sold out",
@@ -166,9 +168,18 @@
     "error": "Something went wrong. Please try again.",
     "backToHome": "Back to Home"
   },
+  "cta": {
+    "headingLine1": "Three hours.",
+    "headingLine2": "Four dishes.",
+    "headingLine3": "One unforgettable afternoon in Madrid.",
+    "sub": "Join one of our hands-on classes and discover the flavours of Asia.",
+    "cta": "View Courses"
+  },
   "legal": {
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
-    "lastUpdated": "Last updated: {date}"
+    "lastUpdated": "Last updated: {date}",
+    "termsDescription": "Terms and conditions governing the use of Escuela de Wok's services and bookings.",
+    "privacyDescription": "How Escuela de Wok collects, uses, and protects your personal data."
   }
 }

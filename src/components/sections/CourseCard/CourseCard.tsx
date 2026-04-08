@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
-import { Link } from '@/i18n/navigation';
 import { formatDate } from '@/lib/courses/timeslots';
 import { urlFor } from '@/lib/sanity/image';
+import CuisinePill from '@/components/ui/CuisinePill/CuisinePill';
+import Link from '@/components/ui/Link/Link';
 import type { Course, Locale } from '@/types';
 
 import styles from './CourseCard.module.scss';
@@ -29,9 +30,9 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
     : `/courses/${slug.current}`;
 
   return (
-    <article className={styles.card}>
+    <article className={`bg-bg flex flex-column ${styles.card}`}>
       <Link href={href} className={styles.imageLink}>
-        <div className={styles.imageWrapper}>
+        <div className={`bg-alt ${styles.imageWrapper}`}>
           {image ? (
             <Image
               src={urlFor(image).width(600).height(400).url()}
@@ -43,11 +44,12 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
           ) : (
             <div className={styles.imagePlaceholder} aria-hidden="true" />
           )}
-          {cuisine && <span className={styles.cuisine}>{t(`cuisine.${cuisine}`)}</span>}
+          {cuisine && <CuisinePill cuisine={cuisine} label={t(`cuisine.${cuisine}`)} className={styles.cuisine} />}
         </div>
       </Link>
 
-      <div className={styles.body}>
+      <div className="flex flex-column flex-justify-between p-4 full-height">
+        <div className='flex flex-column'>
         {occurrence && (
           <div className={styles.dateLabel}>
             <time dateTime={`${occurrence.date}T${occurrence.startTime}`}>
@@ -59,12 +61,12 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
           </div>
         )}
 
-        <Link href={href} className={styles.titleLink}>
-          <h3 className={styles.title}>{title[locale]}</h3>
+        <Link href={href} >
+          <h3 className={`text-xl font-bold mt-no mb-3 ${styles.title}`}>{title[locale]}</h3>
         </Link>
 
         {description?.[locale] && (
-          <p className={styles.description}>{description[locale]}</p>
+          <p className={`text-sm text-text-light line-height-base ${styles.description}`}>{description[locale]}</p>
         )}
 
         {!occurrence && (
@@ -72,7 +74,7 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
             <span className={styles.duration}>{t('duration', { duration })}</span>
           </div>
         )}
-
+</div>
         <div className={styles.footer}>
           <p className={styles.price}>
             <span className={styles.priceFrom}>{t('from')}</span>
@@ -80,8 +82,8 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
               {price} {currency}
             </strong>
           </p>
-          <Link href={href}>
-            <span className={styles.bookLink}>{t('bookNow')} &rarr;</span>
+          <Link href={href} hasArrow className='color-primary font-semibold'>
+            {t('bookNow')}
           </Link>
         </div>
       </div>

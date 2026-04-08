@@ -61,7 +61,7 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
 
   return (
     <div className={styles.card}>
-      <h2 className={styles.heading}>{t('heading')}</h2>
+      <h2 className="mt-no text-lg">{t('heading')}</h2>
       <p className={styles.sub}>{t('sub')}</p>
 
       <form onSubmit={handleSubmit} noValidate className={styles.form}>

@@ -106,7 +106,8 @@ export const courseBySlugQuery = groq`
       name,
       description,
       image { ..., asset-> }
-    }
+    },
+    allergens
   }
 `;
 

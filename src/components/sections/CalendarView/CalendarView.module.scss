@@ -28,13 +28,7 @@
 
 // ─── Calendar header ──────────────────────────────────────────────────────────
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $spacing-4;
-  margin-bottom: $spacing-4;
-}
+
 
 .headerNav {
   display: flex;
@@ -282,11 +276,132 @@
   }
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
+// ─── Responsive view switching ───────────────────────────────────────────────
 
-.empty {
-  text-align: center;
-  font-size: $font-size-lg;
-  color: $color-text-muted;
-  padding: $spacing-16 0 $spacing-8;
+.gridOnly {
+  display: none;
+
+  @include respond-to('md') {
+    display: grid;
+  }
 }
+
+.mobileOnly {
+  display: block;
+
+  @include respond-to('md') {
+    display: none;
+  }
+}
+
+// ─── Agenda (mobile list view) ────────────────────────────────────────────────
+
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.agendaDay {
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+.agendaDayPast {
+  opacity: 0.6;
+}
+
+.agendaDateRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  background-color: $color-background-alt;
+  border-bottom: 1px solid $color-border;
+}
+
+.agendaDayNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: $color-text;
+}
+
+.agendaDateLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-light;
+  text-transform: capitalize;
+}
+
+.agendaEvents {
+  display: flex;
+  flex-direction: column;
+}
+
+.agendaEvent {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  text-decoration: none;
+  border-bottom: 1px solid $color-border;
+  background-color: $color-background;
+  transition: background-color $transition-fast;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: $color-background-alt;
+    text-decoration: none;
+  }
+
+  @include focus-ring($color: $color-primary);
+}
+
+.agendaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.agendaEventInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.agendaEventTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agendaEventTime {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+.agendaChevron {
+  font-size: $font-size-xl;
+  color: $color-text-muted;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+

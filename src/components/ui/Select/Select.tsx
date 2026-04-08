@@ -1,5 +1,7 @@
 import { forwardRef, type SelectHTMLAttributes } from 'react';
 
+import { ChevronDown } from '@/components/ui/icons';
+
 import styles from './Select.module.scss';
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -35,19 +37,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         >
           {children}
         </select>
-        <svg
-          className={styles.chevron}
-          viewBox="0 0 12 8"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M1 1l5 5 5-5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
+        <ChevronDown className={styles.chevron}  />
       </div>
       {error && (
         <p className={styles.errorText} role="alert">

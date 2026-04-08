@@ -1,0 +1,27 @@
+@use '@/styles/variables' as *;
+
+.title {
+  border-bottom: 2px solid $color-border;
+}
+
+.body {
+  border-radius: $radius-md;
+  border: 2px solid $color-primary-light;
+  p { margin: 0 0 $spacing-2; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { font-weight: $font-weight-semibold; }
+
+  ul, ol {
+    padding-left: $spacing-5;
+    list-style: 
+      disc outside;
+    margin: 0 0 $spacing-2;
+  }
+}
+
+.disclaimer {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  margin: $spacing-3 0 0;
+}

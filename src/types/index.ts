@@ -97,11 +97,12 @@ export interface Course {
   currency: string;
   duration: number;
   maxParticipants: number;
-  cuisine: CuisineType;
+  cuisine?: CuisineType;
   corporateEvent?: boolean;
   timeSlots?: TimeSlot[];
   about?: CourseSection[];
   menu?: MenuItem[];
+  allergens?: LocaleBlockContent;
   instructor?: LocaleString;
   featured?: boolean;
 }

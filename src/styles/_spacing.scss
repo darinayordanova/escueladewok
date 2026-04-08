@@ -4,6 +4,7 @@
 // ─── Spacing scale ────────────────────────────────────────────────────────────
 // Maps token names to values from _variables.scss
 $spacing-scale: (
+  'auto': auto,
   '0':  0,
   '1':  $spacing-1,
   '2':  $spacing-2,

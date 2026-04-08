@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
+import { ArrowRight, Check } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
 import { formatDate } from '@/lib/courses/timeslots';
 import { getStripe } from '@/lib/stripe/client';
@@ -17,7 +18,10 @@ interface SuccessPageProps {
 export async function generateMetadata({ params }: SuccessPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
-  return { title: t('title') };
+  return {
+    title: t('title'),
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function BookingSuccessPage({ params, searchParams }: SuccessPageProps) {
@@ -56,7 +60,7 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
     <div className={styles.page}>
       <div className="container">
         <div className={styles.card}>
-          <div className={styles.icon} aria-hidden="true">✓</div>
+          <div className={styles.icon}><Check size={20} /></div>
           <h1 className={styles.title}>{t('title')}</h1>
           <p className={styles.subtitle}>{t('subtitle')}</p>
 
@@ -93,8 +97,8 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
 
           <p className={styles.emailNote}>{t('emailNote')}</p>
 
-          <Link href="/courses" className={styles.backLink}>
-            {t('backToCourses')} &rarr;
+          <Link href="/courses" className={`inline-flex flex-align-center gap-2 ${styles.backLink}`}>
+            {t('backToCourses')} <ArrowRight size={12} />
           </Link>
         </div>
       </div>

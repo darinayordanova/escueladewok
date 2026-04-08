@@ -2,30 +2,23 @@
 @use '@/styles/mixins' as *;
 
 .link {
-  display: inline-flex;
-  align-items: center;
-  gap: $spacing-1;
-  color: $color-text;
-  font-weight: $font-weight-medium;
   text-decoration: none;
   transition: color $transition-fast;
 
-  @include focus-ring;
-
-  &:hover {
-    color: $color-primary;
-    text-decoration: none;
-  }
-}
-
-.arrow {
-  &::after {
-    content: '→';
-    display: inline-block;
+  .linkArrow {
     transition: transform $transition-fast;
   }
 
-  &:hover::after {
+
+
+  &:hover {
+    color: $color-primary-dark;
+    text-decoration: none;
+
+    .linkArrow{
     transform: translateX(4px);
+
+    }
   }
 }
+
