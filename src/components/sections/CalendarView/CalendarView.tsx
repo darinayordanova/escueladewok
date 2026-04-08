@@ -158,8 +158,8 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
               {events.length > 0 && (
                 <div className={styles.events}>
                   {events.map((occ) => {
-                    const color = CUISINE_COLOR[occ.course.cuisine] ?? CUISINE_FALLBACK_COLOR;
-                    const bg = CUISINE_BG[occ.course.cuisine] ?? CUISINE_FALLBACK_BG;
+                    const color = CUISINE_COLOR[occ.course.cuisine ?? ''] ?? CUISINE_FALLBACK_COLOR;
+                    const bg = CUISINE_BG[occ.course.cuisine ?? ''] ?? CUISINE_FALLBACK_BG;
                     return (
                       <Link
                         key={`${occ.course._id}-${occ.startTime}`}
@@ -201,8 +201,8 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
                 </div>
                 <div className={styles.agendaEvents}>
                   {events.map((occ) => {
-                    const color = CUISINE_COLOR[occ.course.cuisine] ?? CUISINE_FALLBACK_COLOR;
-                    const bg = CUISINE_BG[occ.course.cuisine] ?? CUISINE_FALLBACK_BG;
+                    const color = CUISINE_COLOR[occ.course.cuisine ?? ''] ?? CUISINE_FALLBACK_COLOR;
+                    const bg = CUISINE_BG[occ.course.cuisine ?? ''] ?? CUISINE_FALLBACK_BG;
                     return (
                       <Link
                         key={`${occ.course._id}-${occ.startTime}`}
