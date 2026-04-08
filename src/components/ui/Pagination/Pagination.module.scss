@@ -1,0 +1,86 @@
+@use '@/styles/variables' as *;
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-1;
+  margin-top: $spacing-10;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// ─── Shared button base ───────────────────────────────────────────────────────
+
+%btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  background-color: $color-background;
+  color: $color-text;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+
+  &:hover:not(:disabled) {
+    background-color: $color-background-alt;
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.arrow {
+  @extend %btn-base;
+  padding: 0 $spacing-2;
+}
+
+.pageBtn {
+  @extend %btn-base;
+  padding: 0 $spacing-2;
+}
+
+.pageBtnActive {
+  background-color: $color-primary;
+  border-color: $color-primary;
+  color: #fff;
+  font-weight: $font-weight-semibold;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: #fff;
+  }
+}
+
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+  user-select: none;
+}

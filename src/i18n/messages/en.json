@@ -18,7 +18,7 @@
   },
   "courses": {
     "pageTitle": "Our Courses",
-    "pageDescription": "Explore our range of Chinese cooking classes for all skill levels.",
+    "pageDescription": "Explore our range of cooking classes for all skill levels.",
     "cuisine": {
       "chinese": "Chinese",
       "korean": "Korean",
@@ -78,6 +78,7 @@
     "timeRange": "from {start} to {end}",
     "duration": "{duration} min",
     "menuTitle": "What you'll learn to cook",
+    "downloadBrochure": "Download Brochure",
     "allergensTitle": "Allergens",
     "allergensDisclaimer": "This course may contain traces of other allergens. Contact us if you have any concerns.",
     "spotsLeft": "{count} spot left",

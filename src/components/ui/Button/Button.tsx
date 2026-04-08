@@ -58,7 +58,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     const { href, ...linkProps } = props as AsLink;
     return (
       <Link href={href} className={classes} {...linkProps}>
-        <span>{children}</span>
+        {children}
       </Link>
     );
   }
@@ -72,7 +72,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       {...buttonProps}
     >
       {isLoading && <span className={styles.spinner} aria-hidden="true" />}
-      <span>{children}</span>
+      {children}
     </button>
   );
 });

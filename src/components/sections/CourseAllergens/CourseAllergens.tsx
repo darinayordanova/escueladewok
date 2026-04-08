@@ -18,7 +18,7 @@ export default async function CourseAllergens({ allergens, locale }: CourseAller
 
   return (
     <section className="my-8" aria-label={t('allergensTitle')}>
-      <h2 className={`h6 pb-3 ${styles.title}`}>{t('allergensTitle')}</h2>
+      <h2 className={`h5 pb-3 ${styles.title}`}>{t('allergensTitle')}</h2>
       <div className={`bg-alt p-4 color-primary-dark ${styles.body}`}>
         <PortableText value={content} />
       </div>

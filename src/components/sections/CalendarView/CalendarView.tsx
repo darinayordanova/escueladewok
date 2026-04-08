@@ -168,7 +168,9 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
                         style={{ '--ev-color': color, '--ev-bg': bg } as React.CSSProperties}
                       >
                         <span className={styles.eventTime}>{occ.startTime}</span>
-                        <span className={styles.eventTitle}>{occ.course.title[locale]}</span>
+                        <span title={occ.course.title[locale]} className={`text-sm m-no ${styles.eventTitle}`}>
+                          {occ.course.title[locale]}
+                        </span>
                       </Link>
                     );
                   })}
@@ -181,6 +183,7 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
 
       {/* ── Agenda list (mobile only) ────────────────────────────────────────── */}
       <div className={`${styles.agenda} ${styles.mobileOnly}`}>
+        <div className='flex flex-column gap-4'>
         {cells.filter((d): d is string => !!d && !!(byDate[d]?.length)).length === 0 ? null :
           cells.filter((d): d is string => !!d && !!(byDate[d]?.length)).map((dateStr) => {
             const isToday = dateStr === today;
@@ -224,6 +227,7 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
             );
           })
         }
+        </div>
       </div>
 
       {/* ── Empty state ─────────────────────────────────────────────────────── */}

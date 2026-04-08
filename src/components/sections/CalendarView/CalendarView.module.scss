@@ -245,20 +245,7 @@
 }
 
 .eventTitle {
-  font-size: 10px;
-  color: $color-text;
- 
-
-  // On small screens just show a dot
-  display: none;
-
-  @include respond-to('sm') {
-    display: inline;
-  }
-
-  @include respond-to('md') {
-    font-size: 11px;
-  }
+@include line-clamp(1);
 }
 
 // On xs screens, show a single coloured dot per event instead
@@ -296,11 +283,6 @@
 
 // ─── Agenda (mobile list view) ────────────────────────────────────────────────
 
-.agenda {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-4;
-}
 
 .agendaDay {
   border: 1px solid $color-border;

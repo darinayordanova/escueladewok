@@ -17,7 +17,7 @@ export default async function CourseMenu({ items, locale }: CourseMenuProps) {
   const t = await getTranslations({ locale, namespace: 'courseDetail' });
 
   return (
-    <section className="flex  flex-justify-center" aria-label={t('menuTitle')}>
+    <section className="flex mt-6 flex-justify-center" aria-label={t('menuTitle')}>
       <div className={`pt-6 pb-2 px-6 pt-md-10 pb-md-6 px-md-8 ${styles.paper}`}>
 
         {/* Watermark */}

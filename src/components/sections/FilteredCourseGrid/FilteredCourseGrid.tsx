@@ -1,15 +1,18 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
 import DatePicker from '@/components/ui/DatePicker/DatePicker';
 import Input from '@/components/ui/Input/Input';
+import Pagination from '@/components/ui/Pagination/Pagination';
 import Select from '@/components/ui/Select/Select';
 import type { Course, CourseOccurrence, CuisineType, Locale } from '@/types';
 
 import styles from './FilteredCourseGrid.module.scss';
+
+const PAGE_SIZE = 12;
 
 type Props =
   | { mode: 'occurrences'; occurrences: CourseOccurrence[]; locale: Locale }
@@ -23,6 +26,10 @@ export default function FilteredCourseGrid(props: Props) {
   const [search, setSearch] = useState('');
   const [cuisine, setCuisine] = useState<CuisineType | ''>('');
   const [date, setDate] = useState('');
+  const [page, setPage] = useState(1);
+
+  // Reset to page 1 whenever filters change
+  useEffect(() => { setPage(1); }, [search, cuisine, date]);
 
   // Dates that have at least one occurrence (for dot indicators in the picker)
   const availableDates = useMemo(() => {
@@ -58,6 +65,9 @@ export default function FilteredCourseGrid(props: Props) {
       return true;
     });
   }, [props, search, cuisine, date, locale]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const hasActiveFilters = search !== '' || cuisine !== '' || date !== '';
 
@@ -121,9 +131,15 @@ export default function FilteredCourseGrid(props: Props) {
       {filtered.length === 0 ? (
         <p className={styles.empty}>{t('noResults')}</p>
       ) : props.mode === 'occurrences' ? (
-        <CourseGrid occurrences={filtered as CourseOccurrence[]} locale={locale} />
+        <>
+          <CourseGrid occurrences={paginated as CourseOccurrence[]} locale={locale} />
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       ) : (
-        <CourseGrid courses={filtered as Course[]} locale={locale} />
+        <>
+          <CourseGrid courses={paginated as Course[]} locale={locale} />
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       )}
     </div>
   );

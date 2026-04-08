@@ -46,8 +46,8 @@ export default async function ContactPageRoute({ params }: ContactPageProps) {
   const hasContactInfo = page?.email || page?.phone || page?.address?.[l];
 
   return (
-    <div className={styles.page}>
-      <div className="container">
+    <div>
+      <div className="container pb-16">
         {/* ── Header ── */}
         <header className={styles.header}>
           <h1 className={styles.title}>{page?.title?.[l] ?? t('pageTitle')}</h1>

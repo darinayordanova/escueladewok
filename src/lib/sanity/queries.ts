@@ -54,6 +54,7 @@ export const corporateCoursesQuery = groq`
     cuisine,
     corporateEvent,
     instructor,
+    brochure { asset-> },
     ${timeSlotsProjection}
   }
 `;
@@ -107,7 +108,8 @@ export const courseBySlugQuery = groq`
       description,
       image { ..., asset-> }
     },
-    allergens
+    allergens,
+    brochure { asset-> }
   }
 `;
 

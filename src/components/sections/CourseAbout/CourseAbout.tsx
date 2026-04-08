@@ -22,7 +22,7 @@ export default function CourseAbout({ sections, locale }: CourseAboutProps) {
   if (sections.length === 0) return null;
 
   return (
-    <div className={styles.about}>
+    <div className="flex flex-column gap-6">
       {sections.map((section) => {
         switch (section._type) {
           case 'textSection':
@@ -44,9 +44,9 @@ function TextBlock({ section, locale }: { section: TextSection; locale: Locale }
   if (!body?.length) return null;
 
   return (
-    <div className={styles.textBlock}>
+    <div>
       {section.heading?.[locale] && (
-        <h3 className={styles.blockHeading}>{section.heading[locale]}</h3>
+        <h6 className='mt-2'>{section.heading[locale]}</h6>
       )}
       <div className={styles.prose}>
         <PortableText value={body} />

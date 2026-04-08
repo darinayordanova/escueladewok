@@ -43,24 +43,22 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
   const page = await sanityClient.fetch<AboutPage>(aboutPageQuery);
 
   return (
-    <div className={styles.page}>
-      <div className="container">
+      <div className="container mb-16">
         {/* ── Page header ── */}
-        <header className={styles.header}>
+        <header className={"h3 text-center"}>
           {page?.title?.[l] && <h1 className='h3'>{page.title[l]}</h1>}
-          {page?.subtitle?.[l] && <p className={styles.subtitle}>{page.subtitle[l]}</p>}
         </header>
 
         {/* ── Page builder content ── */}
         {page?.content && page.content.length > 0 && (
-          <section className={styles.content}>
+          <section className="{styles.content}">
             <CourseAbout sections={page.content} locale={l} />
           </section>
         )}
 
         {/* ── Team ── */}
         {page?.team && page.team.length > 0 && (
-          <section className={styles.team}>
+          <section className="my-6">
             <h2 className={styles.teamTitle}>
               {page.teamTitle?.[l] ?? t('team')}
             </h2>
@@ -68,6 +66,5 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
           </section>
         )}
       </div>
-    </div>
   );
 }

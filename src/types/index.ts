@@ -27,6 +27,16 @@ export interface SanityImage {
   alt?: LocaleString;
 }
 
+export interface SanityFile {
+  _type: 'file';
+  asset: {
+    _ref?: string;
+    _type: string;
+    url?: string;
+    originalFilename?: string;
+  };
+}
+
 // ─── Portable Text ────────────────────────────────────────────────────────────
 // Using a loose type to avoid coupling to @portabletext/types internals.
 // The PortableText renderer accepts this shape at runtime.
@@ -91,7 +101,7 @@ export interface Course {
   _type: 'course';
   title: LocaleString;
   slug: { current: string };
-  description: LocaleText;
+  description?: LocaleBlockContent;
   image?: SanityImage;
   price: number;
   currency: string;
@@ -103,6 +113,7 @@ export interface Course {
   about?: CourseSection[];
   menu?: MenuItem[];
   allergens?: LocaleBlockContent;
+  brochure?: SanityFile;
   instructor?: LocaleString;
   featured?: boolean;
 }

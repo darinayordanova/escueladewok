@@ -1,24 +1,8 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.about {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-10;
-}
 
-// ─── Text block ───────────────────────────────────────────────────────────────
 
-.textBlock {
-  // no extra wrapper styles needed
-}
-
-.blockHeading {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
-  margin-bottom: $spacing-4;
-  color: $color-text;
-}
 
 // Portable Text renders standard HTML elements — style them here
 .prose {

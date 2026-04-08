@@ -1,0 +1,116 @@
+@use '@/styles/variables' as *;
+
+
+
+.title {
+ 
+  border-bottom: 2px solid $color-border;
+
+}
+
+// ─── Accordion list ───────────────────────────────────────────────────────────
+
+.list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.item {
+  border-bottom: 1px solid $color-border;
+
+  
+}
+
+// ─── Question (trigger) ───────────────────────────────────────────────────────
+
+.question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-5 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: $font-heading;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  line-height: $line-height-snug;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+
+  .itemOpen & {
+    color: $color-primary;
+  }
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: $color-text-muted;
+  transition: transform 250ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+// ─── Answer ───────────────────────────────────────────────────────────────────
+
+.answer {
+  // Using `hidden` attribute for accessibility — no CSS animation needed
+  // for screen readers; browsers hide it natively.
+}
+
+.answerInner {
+  padding-bottom: $spacing-5;
+  font-size: $font-size-sm;
+  color: $color-text-light;
+  line-height: $line-height-base;
+
+  p {
+    margin: 0 0 $spacing-3;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  ul {
+    margin: $spacing-2 0 $spacing-3 0;
+    padding-left: $spacing-5;
+    list-style: disc outside;
+  }
+
+  li {
+    margin-bottom: $spacing-2;
+  }
+
+  li:last-child {
+    margin-bottom: 0;
+  }
+
+  strong {
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+
+  a {
+    color: $color-primary;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}

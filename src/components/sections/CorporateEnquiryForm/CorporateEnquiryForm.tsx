@@ -67,7 +67,7 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
       <form onSubmit={handleSubmit} noValidate className={styles.form}>
         <Input
           id="ceq-company"
-          label={`${t('company')} *`}
+          label={`${t('company')}`}
           name="company"
           type="text"
           placeholder={t('companyPlaceholder')}
@@ -78,7 +78,7 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
 
         <Input
           id="ceq-name"
-          label={`${t('name')} *`}
+          label={`${t('name')}`}
           name="name"
           type="text"
           placeholder={t('namePlaceholder')}
@@ -89,7 +89,7 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
 
         <Input
           id="ceq-email"
-          label={`${t('email')} *`}
+          label={`${t('email')}`}
           name="email"
           type="email"
           placeholder={t('emailPlaceholder')}

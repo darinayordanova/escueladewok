@@ -24,7 +24,7 @@ export const course = defineType({
     defineField({
       name: 'description',
       title: 'Description',
-      type: 'localeText',
+      type: 'localeBlockContent',
     }),
     defineField({
       name: 'image',
@@ -86,6 +86,13 @@ export const course = defineType({
       title: 'Corporate Event',
       type: 'boolean',
       initialValue: false,
+    }),
+    defineField({
+      name: 'brochure',
+      title: 'Brochure (PDF)',
+      type: 'file',
+      options: { accept: 'application/pdf' },
+      description: 'Optional PDF brochure — shown as a download link on corporate course pages',
     }),
     defineField({
       name: 'timeSlots',

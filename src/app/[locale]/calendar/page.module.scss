@@ -1,10 +1,6 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.page {
-  padding: $spacing-16 0 $spacing-20;
-}
-
 .header {
   text-align: center;
   margin-bottom: $spacing-12;

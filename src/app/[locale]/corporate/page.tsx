@@ -41,7 +41,7 @@ export default async function CorporatePage({ params }: CorporatePageProps) {
 
   return (
     <div className={styles.page}>
-      <div className="container">
+      <div className="container mb-16">
         <header className={styles.header}>
           <h1 className={styles.title}>{t('pageTitle')}</h1>
           <p className={styles.description}>{t('pageDescription')}</p>

@@ -18,7 +18,7 @@
   },
   "courses": {
     "pageTitle": "Nuestros Cursos",
-    "pageDescription": "Explora nuestra oferta de clases de cocina china para todos los niveles.",
+    "pageDescription": "Explora nuestra oferta de clases de cocina para todos los niveles.",
     "cuisine": {
       "chinese": "Chino",
       "korean": "Coreano",
@@ -78,6 +78,7 @@
     "timeRange": "de {start} a {end}",
     "duration": "{duration} min",
     "menuTitle": "Lo que aprenderás a cocinar",
+    "downloadBrochure": "Descargar Dossier",
     "allergensTitle": "Alérgenos",
     "allergensDisclaimer": "Este curso puede contener trazas de otros alérgenos. Consulta con nosotros si tienes dudas.",
     "spotsLeft": "{count} plaza disponible",

@@ -122,6 +122,20 @@
   color: $color-text-muted;
 }
 
+.brochureLink {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color $transition-fast;
+
+  &:hover { color: $color-primary; }
+}
+
 .bookLink {
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;

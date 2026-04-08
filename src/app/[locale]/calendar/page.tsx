@@ -42,8 +42,8 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
   const occurrences = expandOccurrences(courses ?? []);
 
   return (
-    <div className={styles.page}>
-      <div className="container">
+    <div>
+      <div className="container pb-16">
         <header className={styles.header}>
           <h1 className={styles.title}>{t('pageTitle')}</h1>
           <p className={styles.description}>{t('pageDescription')}</p>

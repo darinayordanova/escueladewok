@@ -8,3 +8,4 @@ export { default as Close } from './Close';
 export { default as Mail } from './Mail';
 export { default as MapPin } from './MapPin';
 export { default as Phone } from './Phone';
+export { default as Download } from './Download';

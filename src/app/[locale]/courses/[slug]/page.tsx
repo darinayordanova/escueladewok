@@ -10,6 +10,7 @@ import CorporateDrawer from '@/components/sections/CorporateDrawer/CorporateDraw
 import CorporateEnquiryForm from '@/components/sections/CorporateEnquiryForm/CorporateEnquiryForm';
 import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
 import CourseAllergens from '@/components/sections/CourseAllergens/CourseAllergens';
+import CourseFAQ from '@/components/sections/CourseFAQ/CourseFAQ';
 import CourseMenu from '@/components/sections/CourseMenu/CourseMenu';
 import CuisinePill from '@/components/ui/CuisinePill/CuisinePill';
 import { getFutureDateEntries } from '@/lib/courses/timeslots';
@@ -17,9 +18,13 @@ import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
 import { confirmedBookingsForCourseQuery, courseBySlugQuery } from '@/lib/sanity/queries';
 import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_NAME, SITE_URL } from '@/lib/seo';
+import { portableTextToString } from '@/lib/portableTextToString';
 import type { BookingCountMap, Course, Locale } from '@/types';
+import { PortableText } from '@portabletext/react';
 import instructorImage from '@public/images/instructor.webp';
 import styles from './page.module.scss';
+import Button from '@/components/ui/Button/Button';
+import Download from '@/components/ui/icons/Download';
 
 interface CourseDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -32,7 +37,8 @@ export async function generateMetadata({ params }: CourseDetailPageProps): Promi
   if (!course) return {};
 
   const title = course.title[l];
-  const description = course.description?.[l];
+  const descBlocks = course.description?.[l];
+  const description = descBlocks ? portableTextToString(descBlocks) : undefined;
   const ogImage = course.image
     ? urlFor(course.image).width(1200).height(630).url()
     : DEFAULT_OG_IMAGE;
@@ -70,7 +76,10 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   if (!course) notFound();
 
   const l = locale as Locale;
-  const { _id, title, image, price, currency, duration, maxParticipants, instructor, description, about, menu, allergens, cuisine, corporateEvent } = course;
+  const { _id, title, image, price, currency, duration, maxParticipants, instructor, description, about, menu, allergens, cuisine, corporateEvent, brochure } = course;
+  const brochureUrl = brochure?.asset?.url;
+  const descriptionBlocks = description?.[l];
+  const descriptionPlain = descriptionBlocks ? portableTextToString(descriptionBlocks) : undefined;
 
   const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
 
@@ -86,7 +95,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     '@context': 'https://schema.org',
     '@type': 'Course',
     name: title[l],
-    description: description?.[l],
+    description: descriptionPlain,
     image: ogImage,
     url: `${SITE_URL}/${locale}/courses/${slug}`,
     provider: {
@@ -131,6 +140,20 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                 </p></div>
                 </div>
               )}
+
+              {brochureUrl && (
+                <Button
+                  href={brochureUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="outline"
+                  size='sm'
+                  className='mt-4'
+                >
+                  <Download size={16} />
+                  {t('downloadBrochure')}
+                </Button>
+              )}
             </header>
           </div>
           <div className='col-12 col-md-6'>
@@ -153,14 +176,16 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
         <div className={styles.layout}>
           <div >
-{description && (
-                <p className="text-md mb-4">{description[l]}</p>
+{descriptionBlocks && descriptionBlocks.length > 0 && (
+                <div className="text-md mb-4">
+                  <PortableText value={descriptionBlocks} />
+                </div>
               )}
              
             {/* ── Page builder: about sections ── */}
             {about && about.length > 0 && (
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>{t('about')}</h2>
+              <section>
+                <h2 className={`h5 ${styles.sectionTitle}`}>{t('about')}</h2>
                 <CourseAbout sections={about} locale={l} />
               </section>
             )}
@@ -174,6 +199,9 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
             {allergens && (
               <CourseAllergens allergens={allergens} locale={l} />
             )}
+
+            {/* ── FAQ ── */}
+            <CourseFAQ locale={l} />
           </div>
 
           {/* ── Sidebar: enquiry form (corporate) or booking card (desktop) ── */}

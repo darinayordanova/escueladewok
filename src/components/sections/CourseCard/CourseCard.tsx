@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 
 import { formatDate } from '@/lib/courses/timeslots';
 import { urlFor } from '@/lib/sanity/image';
+import { portableTextToString } from '@/lib/portableTextToString';
 import CuisinePill from '@/components/ui/CuisinePill/CuisinePill';
 import Link from '@/components/ui/Link/Link';
 import type { Course, Locale } from '@/types';
@@ -23,7 +24,12 @@ interface CourseCardProps {
 
 export default function CourseCard({ course, locale, occurrence }: CourseCardProps) {
   const t = useTranslations('courses');
-  const { title, slug, description, image, price, currency, duration, cuisine } = course;
+  const tDetail = useTranslations('courseDetail');
+  const { title, slug, description, image, price, currency, duration, cuisine, brochure } = course;
+  const brochureUrl = brochure?.asset?.url;
+  const descriptionText = description?.[locale]
+    ? portableTextToString(description[locale])
+    : undefined;
 
   const href = occurrence
     ? `/courses/${slug.current}?date=${occurrence.date}&time=${occurrence.startTime}`
@@ -65,8 +71,8 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
           <h3 className={`text-xl font-bold mt-no mb-3 ${styles.title}`}>{title[locale]}</h3>
         </Link>
 
-        {description?.[locale] && (
-          <p className={`text-sm text-text-light line-height-base ${styles.description}`}>{description[locale]}</p>
+        {descriptionText && (
+          <p className={`text-sm text-text-light line-height-base ${styles.description}`}>{descriptionText}</p>
         )}
 
         {!occurrence && (
@@ -85,6 +91,17 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
           <Link href={href} hasArrow className='color-primary font-semibold'>
             {t('bookNow')}
           </Link>
+          {brochureUrl && (
+            <a
+              href={brochureUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.brochureLink}
+              aria-label={`${tDetail('downloadBrochure')}: ${title[locale]}`}
+            >
+              {tDetail('downloadBrochure')}
+            </a>
+          )}
         </div>
       </div>
     </article>
