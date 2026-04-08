@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import { forwardRef, type ButtonHTMLAttributes } from 'react';
 
 import { Link } from '@/i18n/navigation';
 import type { ComponentPropsWithoutRef } from 'react';
@@ -31,15 +31,18 @@ type AsLink = BaseProps &
 
 type ButtonProps = AsButton | AsLink;
 
-export default function Button({
-  variant = 'primary',
-  size = 'md',
-  fullWidth = false,
-  color,
-  children,
-  className,
-  ...props
-}: ButtonProps) {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    variant = 'primary',
+    size = 'md',
+    fullWidth = false,
+    color,
+    children,
+    className,
+    ...props
+  },
+  ref,
+) {
   const classes = [
     styles.button,
     styles[variant],
@@ -63,6 +66,7 @@ export default function Button({
   const { isLoading, disabled, ...buttonProps } = props as AsButton;
   return (
     <button
+      ref={ref}
       className={`${classes}${isLoading ? ` ${styles.loading}` : ''}`}
       disabled={disabled || isLoading}
       {...buttonProps}
@@ -71,4 +75,6 @@ export default function Button({
       <span>{children}</span>
     </button>
   );
-}
+});
+
+export default Button;
