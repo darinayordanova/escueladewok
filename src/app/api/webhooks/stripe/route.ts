@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 
-import { sendConfirmationEmail } from '@/lib/email';
+import { sendConfirmationEmail, sendOwnerNotificationEmail } from '@/lib/email';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
 
@@ -82,19 +82,26 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     })
     .commit();
 
-  try {
-    await sendConfirmationEmail({
+  const emailData = {
+    courseName: meta.courseTitle ?? '',
+    courseDate: meta.date ?? '',
+    timeRange: meta.timeRange ?? `${meta.startTime} – ${meta.endTime}`,
+    customerName,
+    customerEmail,
+    customerPhone,
+  };
+
+  await Promise.allSettled([
+    sendConfirmationEmail({
       to: customerEmail,
       recipientName: customerName,
-      courseName: meta.courseTitle ?? '',
-      courseDate: meta.date ?? '',
-      timeRange: meta.timeRange ?? `${meta.startTime} – ${meta.endTime}`,
+      ...emailData,
       amount: session.amount_total ? session.amount_total / 100 : 0,
       currency: session.currency?.toUpperCase() ?? '',
-    });
-  } catch (err) {
-    console.error('Failed to send confirmation email:', err);
-  }
+    }).catch((err) => console.error('Failed to send confirmation email:', err)),
+    sendOwnerNotificationEmail(emailData)
+      .catch((err) => console.error('Failed to send owner notification email:', err)),
+  ]);
 }
 
 async function handleSessionExpired(session: Stripe.Checkout.Session) {
