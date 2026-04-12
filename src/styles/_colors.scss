@@ -6,11 +6,13 @@ $_bg-colors: (
   'primary':        $color-primary,
   'primary-dark':   $color-primary-dark,
   'primary-light':  $color-primary-light,
-  'secondary':      $color-secondary,
-  'secondary-dark': $color-secondary-dark,
   'bg':             $color-background,
   'alt':         $color-background-alt,
   'dark':        $color-background-dark,
+  'success':     $color-success,
+  'success-light': $color-success-light,
+  'success-dark':  $color-success-dark,
+
   'transparent':    transparent,
 );
 
@@ -18,11 +20,11 @@ $_text-colors: (
   'primary':        $color-primary,
   'primary-dark':   $color-primary-dark,
   'primary-light':  $color-primary-light,
-  'secondary':      $color-secondary,
-  'secondary-dark': $color-secondary-dark,
   'text':           $color-text,
   'text-light':     $color-text-light,
   'text-muted':     $color-text-muted,
+  'success':     $color-success,
+  'success-dark':  $color-success-dark,
   'white':          $color-background, // white
 );
 
@@ -30,6 +32,9 @@ $_border-colors: (
   'primary': $color-primary,
   'default': $color-border,
   'light':   $color-border-light,
+  'success':     $color-success,
+  'success-light': $color-success-light,
+  'success-dark':  $color-success-dark,
 );
 
 // ─── Generators ───────────────────────────────────────────────────────────────

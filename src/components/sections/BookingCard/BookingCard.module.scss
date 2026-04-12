@@ -333,3 +333,11 @@
   color: $color-text-muted;
   line-height: $line-height-base;
 }
+
+.comingSoonLink {
+  color: $color-primary;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover { text-decoration: none; }
+}

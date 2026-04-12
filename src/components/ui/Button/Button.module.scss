@@ -44,17 +44,6 @@
   }
 }
 
-.secondary {
-  background-color: $color-secondary;
-  color: #fff;
-  border: 2px solid $color-secondary;
-
-  &:not(:disabled):hover {
-    background-color: $color-secondary-dark;
-    border-color: $color-secondary-dark;
-  }
-}
-
 .outline {
   background-color: transparent;
   color: $color-primary;

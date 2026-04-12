@@ -68,6 +68,8 @@ export async function POST(request: Request) {
 
     const stripeSession = await getStripe().checkout.sessions.create({
       mode: 'payment',
+      billing_address_collection: 'auto',
+      phone_number_collection: { enabled: true },
       line_items: [
         {
           price_data: {
@@ -81,14 +83,6 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      custom_fields: [
-        {
-          key: 'customer_name',
-          label: { type: 'custom', custom: 'Full name' },
-          type: 'text',
-        },
-      ],
-      phone_number_collection: { enabled: true },
       metadata: {
         courseId,
         courseSlug,

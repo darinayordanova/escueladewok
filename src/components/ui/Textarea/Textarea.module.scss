@@ -28,7 +28,6 @@
   color: $color-text;
   line-height: $line-height-base;
   resize: vertical;
-  min-height: 120px;
   transition: border-color $transition-fast, box-shadow $transition-fast;
 
   &::placeholder {

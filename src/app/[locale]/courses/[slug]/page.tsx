@@ -42,7 +42,6 @@ export async function generateMetadata({ params }: CourseDetailPageProps): Promi
   const ogImage = course.image
     ? urlFor(course.image).width(1200).height(630).url()
     : DEFAULT_OG_IMAGE;
-
   return {
     title,
     description,
@@ -80,6 +79,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   const brochureUrl = brochure?.asset?.url;
   const descriptionBlocks = description?.[l];
   const descriptionPlain = descriptionBlocks ? portableTextToString(descriptionBlocks) : undefined;
+    const instructorName = instructor?.[l] ?? 'Yutian Xing';
 
   const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
 
@@ -123,23 +123,23 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       />
       <div className="container">
         {/* ── Hero image ── */}
-        <div className="grid mt-10 mt-md-20 mb-8 gap-4">
+        <div className="grid mt-10 mt-md-8 mb-8 gap-4">
           <div className='col-12 col-md-6'>
               <header className="mb-no mb-md-10">
               {cuisine && <CuisinePill cuisine={cuisine} label={tCourses(`cuisine.${cuisine}`)} />}
 
               <h1 className="h3 mt-1 mb-4">{title[l]}</h1>
 
-               {instructor && (
+               
                 <div className="mt-2" >
                   <p className='font-heading mb-2 color-text-muted font-medium'>{t('instructor')}</p>
                   <div className='flex gap-2 flex-align-center'>
-                    <Image src={instructorImage} alt={instructor[l]} width={40} height={40} className={styles.instructorImage} />
+                    <Image src={instructorImage} alt={instructorName} width={40} height={40} className={styles.instructorImage} />
                 <p className="text-lg font-semibold m-no">
-                   {instructor[l]}
+                   {instructorName}
                 </p></div>
                 </div>
-              )}
+              
 
               {brochureUrl && (
                 <Button
@@ -148,7 +148,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                   rel="noopener noreferrer"
                   variant="outline"
                   size='sm'
-                  className='mt-4'
+                  className='mt-8'
                 >
                   <Download size={16} />
                   {t('downloadBrochure')}

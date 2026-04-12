@@ -62,7 +62,7 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
   return (
     <div className={styles.card}>
       <h2 className="mt-no text-lg">{t('heading')}</h2>
-      <p className={styles.sub}>{t('sub')}</p>
+      <p className="text-muted text-sm leading-tight mb-4">{t('sub')}</p>
 
       <form onSubmit={handleSubmit} noValidate className={styles.form}>
         <Input
@@ -125,7 +125,7 @@ export default function CorporateEnquiryForm({ courseName }: CorporateEnquiryFor
           label={t('message')}
           name="message"
           placeholder={t('messagePlaceholder')}
-          rows={4}
+          rows={2}
           value={fields.message}
           onChange={handleChange}
         />

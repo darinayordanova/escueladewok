@@ -6,6 +6,7 @@ import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
 
 export async function POST(request: Request) {
+  console.log('[stripe webhook] POST received');
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
 
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 
 async function handleSessionCompleted(session: Stripe.Checkout.Session) {
+  console.log('[stripe] checkout.session.completed', JSON.stringify(session, null, 2));
   // Find the courseSession document and the specific attendee key
   const result = await sanityWriteClient.fetch<{
     _id: string;
@@ -63,11 +65,10 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
       ? session.payment_intent
       : session.payment_intent?.id ?? '';
 
-  // Extract customer details from the Stripe-hosted form
+  const meta = session.metadata ?? {};
+  const customerName = session.customer_details?.name ?? '';
   const customerEmail = session.customer_details?.email ?? '';
   const customerPhone = session.customer_details?.phone ?? '';
-  const customerName =
-    session.custom_fields?.find((f) => f.key === 'customer_name')?.text?.value ?? '';
 
   // Update the specific attendee in the array using its _key
   await sanityWriteClient
@@ -80,8 +81,6 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
       [`attendees[_key == "${attendeeKey}"].customerPhone`]: customerPhone,
     })
     .commit();
-
-  const meta = session.metadata ?? {};
 
   try {
     await sendConfirmationEmail({

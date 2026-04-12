@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { ArrowRight, Check } from '@/components/ui/icons';
-import { Link } from '@/i18n/navigation';
+import {  Check } from '@/components/ui/icons';
+import Link from '@/components/ui/Link/Link';
 import { formatDate } from '@/lib/courses/timeslots';
 import { getStripe } from '@/lib/stripe/client';
 import type { Locale } from '@/types';
@@ -57,12 +57,12 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
     : meta.date;
 
   return (
-    <div className={styles.page}>
-      <div className="container">
+    <div className={"bg-alt"}>
+      <div className="container flex flex-justify-center py-16">
         <div className={styles.card}>
-          <div className={styles.icon}><Check size={20} /></div>
-          <h1 className={styles.title}>{t('title')}</h1>
-          <p className={styles.subtitle}>{t('subtitle')}</p>
+          <div className={`bg-success color-white p-2 inline-flex flex-align-center ${styles.icon}`}><Check size={28} /></div>
+          <h1 className="h4">{t('title')}</h1>
+          <p className="text-lg color-text-light">{t('subtitle')}</p>
 
           <dl className={styles.details}>
             <div className={styles.row}>
@@ -97,8 +97,8 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
 
           <p className={styles.emailNote}>{t('emailNote')}</p>
 
-          <Link href="/courses" className={`inline-flex flex-align-center gap-2 ${styles.backLink}`}>
-            {t('backToCourses')} <ArrowRight size={12} />
+          <Link href="/courses" hasArrow >
+            {t('backToCourses')}
           </Link>
         </div>
       </div>

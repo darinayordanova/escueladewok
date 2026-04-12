@@ -8,7 +8,6 @@ import { aboutPageQuery } from '@/lib/sanity/queries';
 import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
 import type { AboutPage, Locale } from '@/types';
 
-import styles from './page.module.scss';
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -51,7 +50,7 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
 
         {/* ── Page builder content ── */}
         {page?.content && page.content.length > 0 && (
-          <section className="{styles.content}">
+          <section>
             <CourseAbout sections={page.content} locale={l} />
           </section>
         )}
@@ -59,7 +58,7 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
         {/* ── Team ── */}
         {page?.team && page.team.length > 0 && (
           <section className="my-6">
-            <h2 className={styles.teamTitle}>
+            <h2>
               {page.teamTitle?.[l] ?? t('team')}
             </h2>
             <TeamGrid members={page.team} locale={l} />

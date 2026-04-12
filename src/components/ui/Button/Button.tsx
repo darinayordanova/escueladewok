@@ -5,7 +5,7 @@ import type { ComponentPropsWithoutRef } from 'react';
 
 import styles from './Button.module.scss';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type ButtonVariant = 'primary' | 'outline' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonColor = 'white' | 'black';
 

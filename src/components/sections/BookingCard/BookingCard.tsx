@@ -4,11 +4,13 @@ import { useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight } from '@/components/ui/icons';
+import { Link } from '@/i18n/navigation';
 import Input from '@/components/ui/Input/Input';
 
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
 
 import styles from './BookingCard.module.scss';
+import Button from '@/components/ui/Button/Button';
 
 interface BookingCardProps {
   courseId: string;
@@ -26,8 +28,10 @@ interface BookingCardProps {
 const TODAY = new Date().toISOString().split('T')[0];
 
 export default function BookingCard({
+  courseId,
   courseSlug,
   courseTitle,
+  duration,
   dateEntries,
   bookingCounts,
   maxParticipants,
@@ -75,6 +79,7 @@ export default function BookingCard({
   const [selectedTime, setSelectedTime] = useState(initTime);
   const [waitlistEmail, setWaitlistEmail] = useState('');
   const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading'>('idle');
 
   // ── Derived ───────────────────────────────────────────────────────────────
   const timesForDate: DateEntry[] = selectedDate ? (entriesByDate[selectedDate] ?? []) : [];
@@ -143,6 +148,35 @@ export default function BookingCard({
       setWaitlistStatus('sent');
     } catch {
       setWaitlistStatus('error');
+    }
+  }
+
+  async function handleCheckout() {
+    if (!selectedDate || !selectedTime) return;
+    setCheckoutStatus('loading');
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          courseId,
+          courseSlug,
+          courseTitle,
+          date: selectedDate,
+          startTime: selectedTime,
+          duration,
+          price,
+          currency,
+          maxParticipants,
+          locale,
+          cancelPath: `/${locale}/courses/${courseSlug}?date=${selectedDate}&time=${selectedTime}`,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Unknown error');
+      window.location.href = data.url;
+    } catch {
+      setCheckoutStatus('idle');
     }
   }
 
@@ -314,10 +348,9 @@ export default function BookingCard({
                 )}
               </div>
             ) : (
-              <div className={styles.comingSoon}>
-                <p className={styles.comingSoonTitle}>{t('paymentComingSoon')}</p>
-                <p className={styles.comingSoonSub}>{t('paymentComingSoonSub')}</p>
-              </div>
+              <Button onClick={handleCheckout} disabled={checkoutStatus === 'loading'} style={{ width: '100%' }}>
+                {checkoutStatus === 'loading' ? t('processing') : t('proceedToPayment')}
+              </Button>
             )
           )}
         </>

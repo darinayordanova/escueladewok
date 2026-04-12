@@ -1,0 +1,16 @@
+@use '@/styles/variables' as *;
+
+// ─── Border radius utilities ──────────────────────────────────────────────────
+
+$radius-scale: (
+  'sm':   $radius-sm,
+  'md':   $radius-md,
+  'lg':   $radius-lg,
+  'full': $radius-full,
+);
+
+@each $key, $value in $radius-scale {
+  .rounded-#{$key} { border-radius: $value; }
+}
+
+.rounded-none { border-radius: 0; }
