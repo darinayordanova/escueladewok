@@ -68,8 +68,16 @@ export async function POST(request: Request) {
 
     const stripeSession = await getStripe().checkout.sessions.create({
       mode: 'payment',
-      billing_address_collection: 'auto',
+      billing_address_collection: 'required',
       phone_number_collection: { enabled: true },
+      custom_fields: [
+        {
+          key: 'dietary',
+          label: { type: 'custom', custom: 'Dietary restrictions / allergies' },
+          type: 'text',
+          optional: true,
+        },
+      ],
       line_items: [
         {
           price_data: {

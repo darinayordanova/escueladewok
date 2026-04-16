@@ -3,6 +3,7 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 
 import { schemaTypes } from './src/sanity/schemaTypes';
+import { DownloadParticipantsAction } from './src/sanity/actions/downloadParticipants';
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production';
@@ -47,6 +48,14 @@ export default defineConfig({
     }),
     visionTool({ defaultApiVersion: '2025-01-01' }),
   ],
+  document: {
+    actions: (prev, { schemaType }) => {
+      if (schemaType === 'courseSession') {
+        return [...prev, DownloadParticipantsAction];
+      }
+      return prev;
+    },
+  },
   schema: {
     types: schemaTypes,
     // Hide singleton types from the "create new document" menu

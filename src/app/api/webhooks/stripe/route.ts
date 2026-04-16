@@ -69,6 +69,8 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
   const customerName = session.customer_details?.name ?? '';
   const customerEmail = session.customer_details?.email ?? '';
   const customerPhone = session.customer_details?.phone ?? '';
+  const dietaryRestrictions =
+    session.custom_fields?.find((f) => f.key === 'dietary')?.text?.value ?? '';
 
   // Update the specific attendee in the array using its _key
   await sanityWriteClient
@@ -79,6 +81,7 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
       [`attendees[_key == "${attendeeKey}"].customerName`]: customerName,
       [`attendees[_key == "${attendeeKey}"].customerEmail`]: customerEmail,
       [`attendees[_key == "${attendeeKey}"].customerPhone`]: customerPhone,
+      [`attendees[_key == "${attendeeKey}"].dietaryRestrictions`]: dietaryRestrictions,
     })
     .commit();
 
@@ -89,6 +92,7 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     customerName,
     customerEmail,
     customerPhone,
+    dietaryRestrictions,
   };
 
   await Promise.allSettled([

@@ -14,8 +14,9 @@ export async function sendOwnerNotificationEmail(data: {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  dietaryRestrictions?: string;
 }) {
-  const { courseName, courseDate, timeRange, customerName, customerEmail, customerPhone } = data;
+  const { courseName, courseDate, timeRange, customerName, customerEmail, customerPhone, dietaryRestrictions } = data;
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
@@ -47,6 +48,7 @@ export async function sendOwnerNotificationEmail(data: {
                   <tr><td>Name</td><td>${customerName}</td></tr>
                   <tr><td>Email</td><td>${customerEmail}</td></tr>
                   <tr><td>Phone</td><td>${customerPhone || '—'}</td></tr>
+                  ${dietaryRestrictions ? `<tr><td>Dietary</td><td>${dietaryRestrictions}</td></tr>` : ''}
                 </table>
               </div>
             </div>

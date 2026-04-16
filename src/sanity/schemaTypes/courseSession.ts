@@ -69,6 +69,11 @@ export const courseSession = defineType({
               type: 'string',
             }),
             defineField({
+              name: 'dietaryRestrictions',
+              title: 'Dietary Restrictions / Allergies',
+              type: 'string',
+            }),
+            defineField({
               name: 'status',
               title: 'Status',
               type: 'string',
