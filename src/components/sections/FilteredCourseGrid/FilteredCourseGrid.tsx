@@ -8,15 +8,15 @@ import DatePicker from '@/components/ui/DatePicker/DatePicker';
 import Input from '@/components/ui/Input/Input';
 import Pagination from '@/components/ui/Pagination/Pagination';
 import Select from '@/components/ui/Select/Select';
-import type { Course, CourseOccurrence, CuisineType, Locale } from '@/types';
+import type { BookingCountMap, Course, CourseOccurrence, CuisineType, Locale } from '@/types';
 
 import styles from './FilteredCourseGrid.module.scss';
 
 const PAGE_SIZE = 12;
 
 type Props =
-  | { mode: 'occurrences'; occurrences: CourseOccurrence[]; locale: Locale }
-  | { mode: 'courses'; courses: Course[]; locale: Locale };
+  | { mode: 'occurrences'; occurrences: CourseOccurrence[]; locale: Locale; bookingCounts?: BookingCountMap }
+  | { mode: 'courses'; courses: Course[]; locale: Locale; bookingCounts?: undefined };
 
 export default function FilteredCourseGrid(props: Props) {
   const { locale } = props;
@@ -132,7 +132,7 @@ export default function FilteredCourseGrid(props: Props) {
         <p className={styles.empty}>{t('noResults')}</p>
       ) : props.mode === 'occurrences' ? (
         <>
-          <CourseGrid occurrences={paginated as CourseOccurrence[]} locale={locale} />
+          <CourseGrid occurrences={paginated as CourseOccurrence[]} locale={locale} bookingCounts={props.mode === 'occurrences' ? props.bookingCounts : undefined} />
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </>
       ) : (

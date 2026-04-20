@@ -101,6 +101,46 @@
   }
 }
 
+// ─── Cart button ─────────────────────────────────────────────────────────────
+
+.cartBtn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: color $transition-fast, background-color $transition-fast;
+  flex-shrink: 0;
+
+  &:hover {
+    color: $color-primary;
+    background-color: $color-background-alt;
+  }
+
+  @include focus-ring;
+}
+
+.cartBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background: $color-primary;
+  color: #fff;
+  font-size: 10px;
+  font-weight: $font-weight-bold;
+  line-height: 16px;
+  border-radius: $radius-full;
+  text-align: center;
+  pointer-events: none;
+}
+
 // ─── Burger button ────────────────────────────────────────────────────────────
 
 .burgerButton {

@@ -311,6 +311,27 @@
   color: #c0392b;
 }
 
+// ─── Quantity + CTA ───────────────────────────────────────────────────────────
+
+.quantityRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-3;
+}
+
+.quantityLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+}
+
+.ctaRow {
+  display: flex;
+  gap: $spacing-2;
+  flex-direction: column;
+}
+
 // ─── Coming soon ──────────────────────────────────────────────────────────────
 
 .comingSoon {

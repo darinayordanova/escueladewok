@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
+import { ShoppingCart } from '@/components/ui/icons';
+import { useCart } from '@/context/CartContext';
 import { Link } from '@/i18n/navigation';
 
 import styles from './Header.module.scss';
@@ -13,6 +15,7 @@ import MobileMenu from './MobileMenu';
 
 export default function Header() {
   const t = useTranslations('navigation');
+  const { totalItems, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -63,7 +66,16 @@ export default function Header() {
         {/* Desktop language switcher */}
         <div className={styles.desktopLang}>
           <LanguageSwitcher />
+           {/* Cart button */}
+        <button type="button" className={styles.cartBtn} onClick={openCart} aria-label="Open cart">
+          <ShoppingCart size={22} />
+          {totalItems > 0 && (
+            <span className={styles.cartBadge}>{totalItems}</span>
+          )}
+        </button>
         </div>
+
+       
 
         {/* Mobile burger + drawer */}
         <MobileMenu />

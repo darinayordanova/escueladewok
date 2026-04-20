@@ -69,6 +69,7 @@ export const allCoursesQuery = groq`
     price,
     currency,
     duration,
+    maxParticipants,
     cuisine,
     corporateEvent,
     instructor,
@@ -119,6 +120,19 @@ export const courseBySlugQuery = groq`
  */
 export const confirmedBookingsForCourseQuery = groq`
   *[_type == "courseSession" && courseSlug == $courseSlug] {
+    date,
+    startTime,
+    "confirmedCount": count(attendees[status == "confirmed"])
+  }
+`;
+
+/**
+ * Returns confirmed attendee counts for ALL course sessions.
+ * Used to show spots left on course cards.
+ */
+export const allBookingCountsQuery = groq`
+  *[_type == "courseSession"] {
+    courseSlug,
     date,
     startTime,
     "confirmedCount": count(attendees[status == "confirmed"])

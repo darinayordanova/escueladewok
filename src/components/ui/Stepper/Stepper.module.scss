@@ -1,0 +1,44 @@
+@use '@/styles/variables' as *;
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-lg;
+  line-height: 1;
+  color: $color-text;
+  background: $color-background;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: $color-background-alt;
+  }
+
+  &:disabled {
+    color: $color-text-muted;
+    cursor: not-allowed;
+  }
+}
+
+.value {
+  min-width: 32px;
+  text-align: center;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  border-inline: 1px solid $color-border;
+  padding: 0 $spacing-1;
+  line-height: 32px;
+}

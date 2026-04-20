@@ -174,6 +174,18 @@
     "sub": "Join one of our hands-on classes and discover the flavours of Asia.",
     "cta": "View Courses"
   },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty.",
+    "browseCourses": "Browse courses",
+    "quantity": "Qty",
+    "remove": "Remove",
+    "total": "Total",
+    "checkout": "Checkout",
+    "processing": "Redirecting to payment…",
+    "addToCart": "Add to cart",
+    "buyNow": "Book now"
+  },
   "legal": {
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",

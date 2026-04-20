@@ -174,6 +174,18 @@
     "sub": "Únete a una de nuestras clases prácticas y descubre los sabores de Asia.",
     "cta": "Ver cursos"
   },
+  "cart": {
+    "title": "Tu carrito",
+    "empty": "Tu carrito está vacío.",
+    "browseCourses": "Ver cursos",
+    "quantity": "Cant.",
+    "remove": "Eliminar",
+    "total": "Total",
+    "checkout": "Pagar",
+    "processing": "Redirigiendo al pago…",
+    "addToCart": "Añadir al carrito",
+    "buyNow": "Reservar ahora"
+  },
   "legal": {
     "terms": "Términos de Servicio",
     "privacy": "Política de Privacidad",

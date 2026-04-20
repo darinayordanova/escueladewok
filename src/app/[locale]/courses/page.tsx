@@ -4,9 +4,9 @@ import { getTranslations } from 'next-intl/server';
 import FilteredCourseGrid from '@/components/sections/FilteredCourseGrid/FilteredCourseGrid';
 import { expandOccurrences } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
-import { allCoursesQuery } from '@/lib/sanity/queries';
+import { allBookingCountsQuery, allCoursesQuery } from '@/lib/sanity/queries';
 import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
-import type { Course, Locale } from '@/types';
+import type { BookingCountMap, Course, Locale } from '@/types';
 
 import styles from './page.module.scss';
 
@@ -38,7 +38,16 @@ export default async function CoursesPage({ params }: CoursesPageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'courses' });
 
-  const courses = await sanityClient.fetch<Course[]>(allCoursesQuery);
+  const [courses, rawCounts] = await Promise.all([
+    sanityClient.fetch<Course[]>(allCoursesQuery),
+    sanityClient.fetch<{ courseSlug: string; date: string; startTime: string; confirmedCount: number }[]>(allBookingCountsQuery),
+  ]);
+
+  const bookingCounts: BookingCountMap = {};
+  for (const row of rawCounts ?? []) {
+    bookingCounts[`${row.courseSlug}|${row.date}|${row.startTime}`] = row.confirmedCount;
+  }
+
   const occurrences = expandOccurrences(courses ?? []);
 
   return (
@@ -50,7 +59,7 @@ export default async function CoursesPage({ params }: CoursesPageProps) {
         </header>
 
         {occurrences.length > 0 ? (
-          <FilteredCourseGrid mode="occurrences" occurrences={occurrences} locale={locale as Locale} />
+          <FilteredCourseGrid mode="occurrences" occurrences={occurrences} locale={locale as Locale} bookingCounts={bookingCounts} />
         ) : (
           <p className={styles.empty}>{t('noCourses')}</p>
         )}

@@ -1,0 +1,200 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// ─── Backdrop ─────────────────────────────────────────────────────────────────
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity $transition-base;
+}
+
+.backdropVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+// ─── Panel ────────────────────────────────────────────────────────────────────
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(420px, 100vw);
+  background: $color-background;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  box-shadow: $shadow-lg;
+  transform: translateX(100%);
+  transition: transform $transition-base;
+}
+
+.panelOpen {
+  transform: translateX(0);
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-5 $spacing-6;
+  border-bottom: 1px solid $color-border-light;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: $font-size-h5;
+  font-weight: $font-weight-bold;
+  color: $color-text;
+  margin: 0;
+}
+
+.close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-muted;
+  border-radius: $radius-sm;
+  transition: color $transition-fast, background-color $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-text;
+    background-color: $color-background-alt;
+  }
+
+  @include focus-ring;
+}
+
+// ─── Empty ────────────────────────────────────────────────────────────────────
+
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-4;
+  padding: $spacing-8;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+// ─── Item list ────────────────────────────────────────────────────────────────
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-4 $spacing-6;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.item {
+  display: flex;
+  gap: $spacing-4;
+  align-items: flex-start;
+  padding-bottom: $spacing-4;
+  border-bottom: 1px solid $color-border-light;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.itemTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  line-height: $line-height-tight;
+}
+
+.itemMeta {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+}
+
+.itemPrice {
+  font-size: $font-size-xs;
+  color: $color-text-light;
+  margin-top: $spacing-1;
+
+  strong {
+    color: $color-primary;
+  }
+}
+
+.itemActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $spacing-2;
+  flex-shrink: 0;
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: $color-text-muted;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: color $transition-fast;
+
+  &:hover { color: $color-primary; }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.footer {
+  padding: $spacing-5 $spacing-6;
+  border-top: 1px solid $color-border-light;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  flex-shrink: 0;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totalLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+}
+
+.totalPrice {
+  font-size: $font-size-h5;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+}

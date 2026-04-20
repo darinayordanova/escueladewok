@@ -46,15 +46,16 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
   const meta = session.metadata ?? {};
   const amount = session.amount_total ? session.amount_total / 100 : 0;
   const currency = session.currency?.toUpperCase() ?? '';
+  const customerName  = session.customer_details?.name  ?? '';
+  const customerEmail = session.customer_details?.email ?? '';
 
-  // Customer details are on the session itself (collected by Stripe Checkout)
-  const customerName =
-    session.custom_fields?.find((f) => f.key === 'customer_name')?.text?.value ?? '';
-  const customerEmail = session.customer_details?.email ?? session.customer_email ?? '';
-
-  const formattedDate = meta.date
-    ? formatDate(meta.date, l, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-    : meta.date;
+  const itemCount = parseInt(meta.item_count ?? '1', 10);
+  const items = Array.from({ length: itemCount }, (_, i) => ({
+    date:      meta[`item_${i}_date`] ?? meta.date ?? '',
+    startTime: meta[`item_${i}_time`] ?? meta.startTime ?? '',
+    endTime:   meta[`item_${i}_end`]  ?? meta.endTime ?? '',
+    quantity:  parseInt(meta[`item_${i}_qty`] ?? '1', 10),
+  }));
 
   return (
     <div className={"bg-alt"}>
@@ -65,18 +66,16 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
           <p className="text-lg color-text-light">{t('subtitle')}</p>
 
           <dl className={styles.details}>
-            <div className={styles.row}>
-              <dt>{t('course')}</dt>
-              <dd>{meta.courseTitle}</dd>
-            </div>
-            <div className={styles.row}>
-              <dt>{t('date')}</dt>
-              <dd>{formattedDate}</dd>
-            </div>
-            <div className={styles.row}>
-              <dt>{t('time')}</dt>
-              <dd>{meta.timeRange ?? `${meta.startTime} – ${meta.endTime}`}</dd>
-            </div>
+            {items.map((item, i) => (
+              <div key={i} className={styles.row}>
+                <dt>{t('date')}</dt>
+                <dd>
+                  {formatDate(item.date, l, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                  {' · '}{item.startTime} – {item.endTime}
+                  {item.quantity > 1 && ` · ×${item.quantity}`}
+                </dd>
+              </div>
+            ))}
             {customerName && (
               <div className={styles.row}>
                 <dt>{t('name')}</dt>

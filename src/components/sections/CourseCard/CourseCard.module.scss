@@ -122,6 +122,16 @@
   color: $color-text-muted;
 }
 
+.spots {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-text-muted;
+}
+
+.spotsSoldOut {
+  color: $color-primary;
+}
+
 .brochureLink {
   display: inline-flex;
   align-items: center;

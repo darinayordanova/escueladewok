@@ -1,4 +1,19 @@
-import type { Course, CourseOccurrence, DateEntry, TimeSlot } from '@/types';
+import type { BookingCountMap, Course, CourseOccurrence, DateEntry, TimeSlot } from '@/types';
+
+// ─── Spots ────────────────────────────────────────────────────────────────────
+
+/**
+ * Returns the number of spots left for a given date + startTime.
+ * bookingCounts key format: `${date}|${startTime}`
+ */
+export function slotSpots(
+  maxParticipants: number,
+  bookingCounts: BookingCountMap,
+  date: string,
+  startTime: string,
+): number {
+  return Math.max(0, maxParticipants - (bookingCounts[`${date}|${startTime}`] ?? 0));
+}
 
 // ─── Time arithmetic ──────────────────────────────────────────────────────────
 

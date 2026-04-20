@@ -211,6 +211,22 @@ export interface CourseSession {
 /** Map of "YYYY-MM-DD|HH:MM" → confirmed attendee count */
 export type BookingCountMap = Record<string, number>;
 
+// ─── Cart ─────────────────────────────────────────────────────────────────────
+
+export interface CartItem {
+  courseId: string;
+  courseSlug: string;
+  courseTitle: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  duration: number;
+  price: number;
+  currency: string;
+  maxParticipants: number;
+  quantity: number;
+}
+
 // ─── Email ────────────────────────────────────────────────────────────────────
 export interface ConfirmationEmailData {
   to: string;

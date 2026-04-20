@@ -6,7 +6,6 @@ import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
 
 export async function POST(request: Request) {
-  console.log('[stripe webhook] POST received');
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
 
@@ -37,95 +36,118 @@ export async function POST(request: Request) {
   return NextResponse.json({ received: true });
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function parseItems(meta: Record<string, string>) {
+  const count = parseInt(meta.item_count ?? '1', 10);
+  const items = [];
+  for (let i = 0; i < count; i++) {
+    items.push({
+      courseSlug: meta[`item_${i}_slug`] ?? '',
+      courseId:   meta[`item_${i}_id`]   ?? '',
+      date:       meta[`item_${i}_date`] ?? '',
+      startTime:  meta[`item_${i}_time`] ?? '',
+      endTime:    meta[`item_${i}_end`]  ?? '',
+      quantity:   parseInt(meta[`item_${i}_qty`] ?? '1', 10),
+    });
+  }
+  return items;
+}
+
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 
 async function handleSessionCompleted(session: Stripe.Checkout.Session) {
-  console.log('[stripe] checkout.session.completed', JSON.stringify(session, null, 2));
-  // Find the courseSession document and the specific attendee key
-  const result = await sanityWriteClient.fetch<{
-    _id: string;
-    attendeeKey: string;
-  } | null>(
-    `*[_type == "courseSession" && defined(attendees[stripeSessionId == $sessionId])][0] {
-      _id,
-      "attendeeKey": attendees[stripeSessionId == $sessionId][0]._key
-    }`,
-    { sessionId: session.id },
-  );
-
-  if (!result) {
-    console.error(`No courseSession found for Stripe session ${session.id}`);
-    return;
-  }
-
-  const { _id, attendeeKey } = result;
+  const meta = session.metadata ?? {};
+  const items = parseItems(meta);
 
   const paymentIntentId =
     typeof session.payment_intent === 'string'
       ? session.payment_intent
       : session.payment_intent?.id ?? '';
 
-  const meta = session.metadata ?? {};
-  const customerName = session.customer_details?.name ?? '';
+  const customerName  = session.customer_details?.name  ?? '';
   const customerEmail = session.customer_details?.email ?? '';
   const customerPhone = session.customer_details?.phone ?? '';
   const dietaryRestrictions =
     session.custom_fields?.find((f) => f.key === 'dietary')?.text?.value ?? '';
 
-  // Update the specific attendee in the array using its _key
-  await sanityWriteClient
-    .patch(_id)
-    .set({
-      [`attendees[_key == "${attendeeKey}"].status`]: 'confirmed',
-      [`attendees[_key == "${attendeeKey}"].stripePaymentIntentId`]: paymentIntentId,
-      [`attendees[_key == "${attendeeKey}"].customerName`]: customerName,
-      [`attendees[_key == "${attendeeKey}"].customerEmail`]: customerEmail,
-      [`attendees[_key == "${attendeeKey}"].customerPhone`]: customerPhone,
-      [`attendees[_key == "${attendeeKey}"].dietaryRestrictions`]: dietaryRestrictions,
-    })
-    .commit();
+  // Find all courseSession docs with pending attendees for this Stripe session
+  const sessions = await sanityWriteClient.fetch<{ _id: string; attendeeKeys: string[] }[]>(
+    `*[_type == "courseSession" && defined(attendees[stripeSessionId == $sessionId])] {
+      _id,
+      "attendeeKeys": attendees[stripeSessionId == $sessionId][]._key
+    }`,
+    { sessionId: session.id },
+  );
 
-  const emailData = {
-    courseName: meta.courseTitle ?? '',
-    courseDate: meta.date ?? '',
-    timeRange: meta.timeRange ?? `${meta.startTime} – ${meta.endTime}`,
-    customerName,
-    customerEmail,
-    customerPhone,
-    dietaryRestrictions,
-  };
+  if (!sessions.length) {
+    console.error(`No courseSession found for Stripe session ${session.id}`);
+    return;
+  }
+
+  // Confirm all matching attendees across all sessions
+  await Promise.all(
+    sessions.flatMap(({ _id, attendeeKeys }) =>
+      attendeeKeys.map((key) =>
+        sanityWriteClient.patch(_id).set({
+          [`attendees[_key == "${key}"].status`]:                 'confirmed',
+          [`attendees[_key == "${key}"].stripePaymentIntentId`]:  paymentIntentId,
+          [`attendees[_key == "${key}"].customerName`]:           customerName,
+          [`attendees[_key == "${key}"].customerEmail`]:          customerEmail,
+          [`attendees[_key == "${key}"].customerPhone`]:          customerPhone,
+          [`attendees[_key == "${key}"].dietaryRestrictions`]:    dietaryRestrictions,
+        }).commit(),
+      ),
+    ),
+  );
+
+  // Build course list for emails
+  const courseLines = items.map((item) => ({
+    courseName: item.courseSlug, // will be enriched from Sanity if needed
+    courseDate: item.date,
+    timeRange: `${item.startTime} – ${item.endTime}`,
+  }));
+
+  const firstItem = items[0];
 
   await Promise.allSettled([
     sendConfirmationEmail({
       to: customerEmail,
       recipientName: customerName,
-      ...emailData,
+      courseName: courseLines.map((c) => c.courseName).join(', '),
+      courseDate: firstItem?.date ?? '',
+      timeRange: courseLines.map((c) => c.timeRange).join(' / '),
       amount: session.amount_total ? session.amount_total / 100 : 0,
       currency: session.currency?.toUpperCase() ?? '',
     }).catch((err) => console.error('Failed to send confirmation email:', err)),
-    sendOwnerNotificationEmail(emailData)
-      .catch((err) => console.error('Failed to send owner notification email:', err)),
+    sendOwnerNotificationEmail({
+      courseName: courseLines.map((c) => c.courseName).join(', '),
+      courseDate: firstItem?.date ?? '',
+      timeRange: courseLines.map((c) => `${c.courseDate} ${c.timeRange}`).join(' | '),
+      customerName,
+      customerEmail,
+      customerPhone,
+      dietaryRestrictions,
+    }).catch((err) => console.error('Failed to send owner notification email:', err)),
   ]);
 }
 
 async function handleSessionExpired(session: Stripe.Checkout.Session) {
-  const result = await sanityWriteClient.fetch<{
-    _id: string;
-    attendeeKey: string;
-  } | null>(
-    `*[_type == "courseSession" && defined(attendees[stripeSessionId == $sessionId])][0] {
+  const sessions = await sanityWriteClient.fetch<{ _id: string; attendeeKeys: string[] }[]>(
+    `*[_type == "courseSession" && defined(attendees[stripeSessionId == $sessionId])] {
       _id,
-      "attendeeKey": attendees[stripeSessionId == $sessionId][0]._key
+      "attendeeKeys": attendees[stripeSessionId == $sessionId][]._key
     }`,
     { sessionId: session.id },
   );
 
-  if (!result) return;
-
-  await sanityWriteClient
-    .patch(result._id)
-    .set({
-      [`attendees[_key == "${result.attendeeKey}"].status`]: 'cancelled',
-    })
-    .commit();
+  await Promise.all(
+    sessions.flatMap(({ _id, attendeeKeys }) =>
+      attendeeKeys.map((key) =>
+        sanityWriteClient.patch(_id).set({
+          [`attendees[_key == "${key}"].status`]: 'cancelled',
+        }).commit(),
+      ),
+    ),
+  );
 }

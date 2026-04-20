@@ -6,11 +6,13 @@ import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
 import Input from '@/components/ui/Input/Input';
+import Button from '@/components/ui/Button/Button';
+import { useCart } from '@/context/CartContext';
+import { slotSpots } from '@/lib/courses/timeslots';
 
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
 
 import styles from './BookingCard.module.scss';
-import Button from '@/components/ui/Button/Button';
 
 interface BookingCardProps {
   courseId: string;
@@ -40,8 +42,10 @@ export default function BookingCard({
   locale,
 }: BookingCardProps) {
   const t = useTranslations('courseDetail');
+  const tc = useTranslations('cart');
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { addItem } = useCart();
 
   // ── Group entries by date ─────────────────────────────────────────────────
   const entriesByDate = useMemo(
@@ -94,14 +98,10 @@ export default function BookingCard({
   function spotsForDate(date: string) {
     const entries = entriesByDate[date] ?? [];
     const left = entries.reduce(
-      (sum, e) => sum + Math.max(0, maxParticipants - (bookingCounts[`${date}|${e.startTime}`] ?? 0)),
+      (sum, e) => sum + slotSpots(maxParticipants, bookingCounts, date, e.startTime),
       0,
     );
     return { left, total: entries.length * maxParticipants };
-  }
-
-  function slotSpots(date: string, startTime: string) {
-    return Math.max(0, maxParticipants - (bookingCounts[`${date}|${startTime}`] ?? 0));
   }
 
   // ── Handlers ──────────────────────────────────────────────────────────────
@@ -151,6 +151,21 @@ export default function BookingCard({
     }
   }
 
+  function buildCartItem() {
+    return {
+      courseId,
+      courseSlug,
+      courseTitle,
+      date: selectedDate,
+      startTime: selectedTime,
+      endTime: selectedEntry?.endTime ?? '',
+      duration,
+      price,
+      currency,
+      maxParticipants,
+    };
+  }
+
   async function handleCheckout() {
     if (!selectedDate || !selectedTime) return;
     setCheckoutStatus('loading');
@@ -159,15 +174,7 @@ export default function BookingCard({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          courseId,
-          courseSlug,
-          courseTitle,
-          date: selectedDate,
-          startTime: selectedTime,
-          duration,
-          price,
-          currency,
-          maxParticipants,
+          items: [{ ...buildCartItem(), quantity: 1 }],
           locale,
           cancelPath: `/${locale}/courses/${courseSlug}?date=${selectedDate}&time=${selectedTime}`,
         }),
@@ -178,6 +185,11 @@ export default function BookingCard({
     } catch {
       setCheckoutStatus('idle');
     }
+  }
+
+  function handleAddToCart() {
+    if (!selectedDate || !selectedTime) return;
+    addItem(buildCartItem(), 1);
   }
 
   // ── Calendar grid ─────────────────────────────────────────────────────────
@@ -287,7 +299,7 @@ export default function BookingCard({
               <p className={styles.timesLabel}>{t('chooseTime')}</p>
               <div className={styles.timeGrid}>
                 {timesForDate.map((entry) => {
-                  const spots = slotSpots(selectedDate, entry.startTime);
+                  const spots = slotSpots(maxParticipants, bookingCounts, selectedDate, entry.startTime);
                   const full = spots === 0;
                   const active = selectedTime === entry.startTime;
 
@@ -348,9 +360,14 @@ export default function BookingCard({
                 )}
               </div>
             ) : (
-              <Button onClick={handleCheckout} disabled={checkoutStatus === 'loading'} style={{ width: '100%' }}>
-                {checkoutStatus === 'loading' ? t('processing') : t('proceedToPayment')}
-              </Button>
+              <div className={styles.ctaRow}>
+                <Button onClick={handleAddToCart} variant="outline">
+                  {tc('addToCart')}
+                </Button>
+                <Button onClick={handleCheckout} disabled={checkoutStatus === 'loading'}>
+                  {checkoutStatus === 'loading' ? t('processing') : tc('buyNow')}
+                </Button>
+              </div>
             )
           )}
         </>

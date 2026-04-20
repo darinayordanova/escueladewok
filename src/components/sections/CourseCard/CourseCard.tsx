@@ -20,9 +20,10 @@ interface CourseCardProps {
   course: Course;
   locale: Locale;
   occurrence?: Occurrence;
+  spotsLeft?: number;
 }
 
-export default function CourseCard({ course, locale, occurrence }: CourseCardProps) {
+export default function CourseCard({ course, locale, occurrence, spotsLeft }: CourseCardProps) {
   const t = useTranslations('courses');
   const tDetail = useTranslations('courseDetail');
   const { title, slug, description, image, price, currency, duration, cuisine, brochure } = course;
@@ -61,9 +62,20 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
             <time dateTime={`${occurrence.date}T${occurrence.startTime}`}>
               {formatDate(occurrence.date, locale)}
             </time>
+            <div className='flex flex-justify-between'>
             <span className={styles.timeRange}>
               {occurrence.startTime} – {occurrence.endTime}
             </span>
+            {spotsLeft !== undefined && (
+              <span className={`${styles.spots} ${spotsLeft === 0 ? styles.spotsSoldOut : ''}`}>
+                {spotsLeft === 0
+                  ? tDetail('soldOut')
+                  : spotsLeft === 1
+                    ? tDetail('spotsLeft', { count: spotsLeft })
+                    : tDetail('spotsLeftPlural', { count: spotsLeft })}
+              </span>
+            )}
+            </div>
           </div>
         )}
 
@@ -83,7 +95,6 @@ export default function CourseCard({ course, locale, occurrence }: CourseCardPro
 </div>
         <div className={styles.footer}>
           <p className={styles.price}>
-            <span className={styles.priceFrom}>{t('from')}</span>
             <strong>
               {price} {currency}
             </strong>
