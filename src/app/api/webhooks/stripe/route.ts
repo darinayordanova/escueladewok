@@ -169,7 +169,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   });
 
   const promoCode = await getStripe().promotionCodes.create({
-    coupon: coupon.id,
+    promotion: { type: 'coupon', coupon: coupon.id },
     max_redemptions: 1,
     metadata: { stripe_session_id: session.id },
   });
