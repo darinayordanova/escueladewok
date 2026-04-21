@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 
-import { sendConfirmationEmail, sendOwnerNotificationEmail } from '@/lib/email';
+import { sendConfirmationEmail, sendOwnerNotificationEmail, sendVoucherBuyerEmail, sendVoucherRecipientEmail } from '@/lib/email';
+import { generateVoucherPdf, formatVoucherTypeName } from '@/lib/pdf/voucherPdf';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
 
@@ -58,6 +59,11 @@ function parseItems(meta: Record<string, string>) {
 
 async function handleSessionCompleted(session: Stripe.Checkout.Session) {
   const meta = session.metadata ?? {};
+
+  if (meta.purchase_type === 'voucher') {
+    await handleVoucherSessionCompleted(session);
+    return;
+  }
   const items = parseItems(meta);
 
   const paymentIntentId =
@@ -130,6 +136,98 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
       dietaryRestrictions,
     }).catch((err) => console.error('Failed to send owner notification email:', err)),
   ]);
+}
+
+async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
+  const meta = session.metadata ?? {};
+  const voucherKey = meta.voucher_key as 'classVoucher' | 'giftCard25' | 'giftCard50';
+
+  // Idempotency guard — skip if already processed
+  const existing = await sanityWriteClient.fetch<string | null>(
+    `*[_type == "giftVoucher" && stripeSessionId == $sid][0]._id`,
+    { sid: session.id },
+  );
+  if (existing) return;
+
+  const customerName  = session.customer_details?.name  ?? '';
+  const customerEmail = session.customer_details?.email ?? '';
+  const amount        = session.amount_total ? session.amount_total / 100 : 0;
+  const currency      = session.currency ?? 'eur';
+
+  const recipientName  = session.custom_fields?.find((f) => f.key === 'recipient_name')?.text?.value  ?? customerName;
+  const recipientEmail = session.custom_fields?.find((f) => f.key === 'recipient_email')?.text?.value ?? customerEmail;
+  const sendDate       = session.custom_fields?.find((f) => f.key === 'send_date')?.text?.value       ?? '';
+
+  // 1. Create Stripe coupon + promo code
+  const coupon = await getStripe().coupons.create({
+    amount_off: session.amount_total!,
+    currency,
+    duration: 'once',
+    max_redemptions: 1,
+    name: `Gift Voucher — ${formatVoucherTypeName(voucherKey)}`,
+    metadata: { stripe_session_id: session.id, voucher_key: voucherKey },
+  });
+
+  const promoCode = await getStripe().promotionCodes.create({
+    coupon: coupon.id,
+    max_redemptions: 1,
+    metadata: { stripe_session_id: session.id },
+  });
+
+  // 2. Expiry date (12 months)
+  const expiresAt = new Date();
+  expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+  const expiresAtISO     = expiresAt.toISOString().split('T')[0];
+  const expiresAtDisplay = expiresAt.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // 3. Generate PDF
+  const voucherTypeName = formatVoucherTypeName(voucherKey);
+  const pdfBuffer = await generateVoucherPdf({
+    code: promoCode.code,
+    voucherTypeName,
+    amount,
+    currency,
+    buyerName: customerName,
+    recipientName,
+    validUntil: expiresAtDisplay,
+  });
+
+  // 4. Save to Sanity
+  const today = new Date().toISOString().split('T')[0];
+  const sendNow = !sendDate || sendDate <= today;
+
+  const sanityDoc = await sanityWriteClient.create({
+    _type: 'giftVoucher',
+    code: promoCode.code,
+    voucherType: voucherKey,
+    amount,
+    currency,
+    buyerName: customerName,
+    buyerEmail: customerEmail,
+    recipientName,
+    recipientEmail,
+    ...(sendDate ? { scheduledSendDate: new Date(sendDate + 'T00:00:00').toISOString() } : {}),
+    stripeSessionId: session.id,
+    stripeCouponId: coupon.id,
+    stripePromotionCodeId: promoCode.id,
+    issuedAt: new Date().toISOString(),
+    expiresAt: expiresAtISO,
+    status: 'active',
+  });
+
+  // 5. Send emails
+  const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer };
+
+  await Promise.allSettled([
+    sendVoucherBuyerEmail({ ...sharedData, sendDate }).catch((err) => console.error('[voucher] buyer email failed:', err)),
+    sendNow
+      ? sendVoucherRecipientEmail(sharedData).catch((err) => console.error('[voucher] recipient email failed:', err))
+      : Promise.resolve(),
+  ]);
+
+  if (sendNow) {
+    await sanityWriteClient.patch(sanityDoc._id).set({ sentAt: new Date().toISOString() }).commit();
+  }
 }
 
 async function handleSessionExpired(session: Stripe.Checkout.Session) {

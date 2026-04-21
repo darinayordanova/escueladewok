@@ -6,6 +6,123 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@escueladewok.com';
 const OWNER_EMAIL = 'Xingyutian2001@gmail.com';
 
+// ─── Voucher emails ───────────────────────────────────────────────────────────
+
+export interface VoucherEmailData {
+  buyerName: string;
+  buyerEmail: string;
+  recipientName: string;
+  recipientEmail: string;
+  voucherTypeName: string;
+  code: string;
+  amount: number;
+  currency: string;
+  validUntil: string;
+  sendDate?: string;
+  pdfBuffer: Buffer;
+}
+
+export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
+  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, sendDate, pdfBuffer } = data;
+  const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
+  const scheduled = sendDate ? `on ${sendDate}` : 'shortly';
+
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: buyerEmail,
+    subject: `Your gift voucher — ${voucherTypeName}`,
+    attachments: [{ filename: 'escueladewok-voucher.pdf', content: pdfBuffer }],
+    html: `
+      <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
+      <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;margin:0;padding:0;background:#f9f5f0}
+        .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+        .header{background:#860A15;padding:32px;text-align:center}
+        .header h1{color:#fff;margin:0;font-size:22px;letter-spacing:2px}
+        .header p{color:#f5c6ca;margin:6px 0 0;font-size:12px;letter-spacing:1px}
+        .body{padding:32px}
+        .body p{margin:0 0 16px;line-height:1.6}
+        .detail-box{background:#f9f5f0;border-radius:8px;padding:20px 24px;margin:20px 0;border-left:4px solid #860A15}
+        .detail-box table{width:100%;border-collapse:collapse}
+        .detail-box td{padding:6px 0;vertical-align:top;font-size:14px}
+        .detail-box td:first-child{font-weight:600;width:40%;color:#7a5c5c}
+        .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
+      </style></head>
+      <body><div class="wrapper">
+        <div class="header"><h1>ESCUELA DE WOK</h1><p>Chinese Cooking Classes · Madrid</p></div>
+        <div class="body">
+          <p>Hi ${buyerName},</p>
+          <p>Your gift voucher purchase is confirmed! We'll send it to <strong>${recipientName}</strong> (${recipientEmail}) ${scheduled}. A PDF copy is attached for your records.</p>
+          <div class="detail-box"><table>
+            <tr><td>Voucher</td><td>${voucherTypeName}</td></tr>
+            <tr><td>Code</td><td><strong>${code}</strong></td></tr>
+            <tr><td>Amount</td><td>${amount} ${currencySymbol}</td></tr>
+            <tr><td>Valid until</td><td>${validUntil}</td></tr>
+            <tr><td>Recipient</td><td>${recipientName}</td></tr>
+            ${sendDate ? `<tr><td>Send date</td><td>${sendDate}</td></tr>` : ''}
+          </table></div>
+          <p>If you have any questions, reply to this email.</p>
+        </div>
+        <div class="footer"><p>Escuela de Wok &mdash; Chinese Cooking Classes</p></div>
+      </div></body></html>`,
+  });
+
+  if (error) throw new Error(`Failed to send voucher buyer email: ${error.message}`);
+}
+
+export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'buyerEmail' | 'sendDate'>) {
+  const { buyerName, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer } = data;
+  const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
+
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: recipientEmail,
+    subject: `You've received a gift from ${buyerName}! 🎁`,
+    attachments: [{ filename: 'escueladewok-voucher.pdf', content: pdfBuffer }],
+    html: `
+      <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
+      <style>
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;margin:0;padding:0;background:#f9f5f0}
+        .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+        .header{background:#860A15;padding:32px;text-align:center}
+        .header h1{color:#fff;margin:0;font-size:22px;letter-spacing:2px}
+        .header p{color:#f5c6ca;margin:6px 0 0;font-size:12px;letter-spacing:1px}
+        .body{padding:32px}
+        .body p{margin:0 0 16px;line-height:1.6}
+        .code-box{background:#f5e6e8;border-radius:8px;padding:24px;margin:20px 0;text-align:center;border-left:4px solid #860A15}
+        .code-label{font-size:11px;color:#7a5c5c;letter-spacing:2px;font-weight:600;text-transform:uppercase;margin-bottom:8px}
+        .code{font-size:28px;font-weight:700;color:#860A15;letter-spacing:4px}
+        .valid{font-size:12px;color:#7a5c5c;margin-top:8px}
+        .detail-box{background:#f9f5f0;border-radius:8px;padding:20px 24px;margin:20px 0}
+        .detail-box table{width:100%;border-collapse:collapse}
+        .detail-box td{padding:6px 0;vertical-align:top;font-size:14px}
+        .detail-box td:first-child{font-weight:600;width:40%;color:#7a5c5c}
+        .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
+      </style></head>
+      <body><div class="wrapper">
+        <div class="header"><h1>ESCUELA DE WOK</h1><p>Chinese Cooking Classes · Madrid</p></div>
+        <div class="body">
+          <p>Hi ${recipientName},</p>
+          <p><strong>${buyerName}</strong> has sent you a cooking experience as a gift! 🎉</p>
+          <div class="code-box">
+            <p class="code-label">Your voucher code</p>
+            <p class="code">${code}</p>
+            <p class="valid">Valid until ${validUntil}</p>
+          </div>
+          <div class="detail-box"><table>
+            <tr><td>Voucher</td><td>${voucherTypeName}</td></tr>
+            <tr><td>Value</td><td>${amount} ${currencySymbol}</td></tr>
+          </table></div>
+          <p>Enter the code at checkout on <a href="https://escueladewok.com">escueladewok.com</a> to redeem your voucher. The PDF attached can be printed or kept digitally.</p>
+          <p>See you in the kitchen! 🍳</p>
+        </div>
+        <div class="footer"><p>Escuela de Wok &mdash; Chinese Cooking Classes &mdash; hola@escueladewok.com</p></div>
+      </div></body></html>`,
+  });
+
+  if (error) throw new Error(`Failed to send voucher recipient email: ${error.message}`);
+}
+
 export async function sendOwnerNotificationEmail(data: {
   courseName: string;
   courseDate: string;

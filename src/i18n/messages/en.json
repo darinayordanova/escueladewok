@@ -98,6 +98,18 @@
       "cancel": "Cancel"
     }
   },
+  "voucherSuccess": {
+    "title": "Gift voucher purchased!",
+    "subtitle": "Your gift is on its way.",
+    "voucher": "Voucher",
+    "recipient": "Sent to",
+    "scheduledFor": "Scheduled for",
+    "amountPaid": "Amount paid",
+    "emailNoteSent": "The voucher has been emailed to {email}.",
+    "emailNoteScheduled": "The voucher will be emailed to {email} on {date}.",
+    "emailNoteBuyer": "A confirmation has been sent to your email.",
+    "browseVouchers": "Browse more vouchers"
+  },
   "bookingSuccess": {
     "title": "Booking confirmed!",
     "subtitle": "We look forward to cooking with you.",

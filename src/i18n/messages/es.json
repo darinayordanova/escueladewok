@@ -98,6 +98,18 @@
       "cancel": "Cancelar"
     }
   },
+  "voucherSuccess": {
+    "title": "¡Tarjeta regalo comprada!",
+    "subtitle": "Tu regalo está en camino.",
+    "voucher": "Bono",
+    "recipient": "Enviado a",
+    "scheduledFor": "Programado para",
+    "amountPaid": "Importe pagado",
+    "emailNoteSent": "El bono ha sido enviado por email a {email}.",
+    "emailNoteScheduled": "El bono será enviado por email a {email} el {date}.",
+    "emailNoteBuyer": "Se ha enviado una confirmación a tu correo.",
+    "browseVouchers": "Ver más tarjetas regalo"
+  },
   "bookingSuccess": {
     "title": "¡Reserva confirmada!",
     "subtitle": "Estamos deseando cocinar contigo.",
