@@ -8,6 +8,7 @@
     "courses": "Courses",
     "calendar": "Calendar",
     "corporate": "Corporate Events",
+    "vouchers": "Gift Vouchers",
     "about": "About",
     "contact": "Contact"
   },
@@ -185,6 +186,24 @@
     "processing": "Redirecting to payment…",
     "addToCart": "Add to cart",
     "buyNow": "Book now"
+  },
+  "vouchers": {
+    "pageTitle": "Gift Vouchers",
+    "pageDescription": "Give the gift of cooking. Our gift vouchers are perfect for any occasion.",
+    "classVoucher": "Cooking Class",
+    "classVoucherDesc": "A hands-on cooking experience for one person. Redeemable on any available class.",
+    "giftCard25": "Gift Card — 25 €",
+    "giftCard25Desc": "A flexible gift card worth 25 €. Can be used towards any class or product.",
+    "giftCard50": "Gift Card — 50 €",
+    "giftCard50Desc": "A flexible gift card worth 50 €. Can be used towards any class or product.",
+    "buyVoucher": "Buy now",
+    "validityNote": "Valid for 12 months from date of purchase."
+  },
+  "notFound": {
+    "title": "This dish isn't on the menu.",
+    "subtitle": "The page you're looking for doesn't exist — but our classes do. Head back home and find your next culinary adventure.",
+    "backToHome": "Back to home",
+    "browseCourses": "Browse courses"
   },
   "legal": {
     "terms": "Terms of Service",

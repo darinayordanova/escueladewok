@@ -93,7 +93,7 @@
 .popover {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  right: 0;
   z-index: $z-dropdown;
   width: 280px;
   background: $color-background;

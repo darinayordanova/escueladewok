@@ -1,4 +1,5 @@
 import { aboutPage } from './aboutPage';
+import { giftVoucher } from './giftVoucher';
 import { contactPage } from './contactPage';
 import { course } from './course';
 import { courseSession } from './courseSession';
@@ -35,4 +36,5 @@ export const schemaTypes = [
   termsPage,
   privacyPage,
   courseSession,
+  giftVoucher,
 ];

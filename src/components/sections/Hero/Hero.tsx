@@ -21,15 +21,15 @@ export default function Hero({ data, locale }: HeroProps) {
     <section className={styles.hero}>
       {/* Content */}
       <div className={`container grid pt-10 pt-md-no`}>
-        <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left`}>
+        <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left pr-md-10 pr-no`}>
 
-          <h1 className={`h2 mt-no ${styles.title}`}>{heroTitle[locale]}</h1>
+          <h1 className={`h2 h1-md mt-no ${styles.title}`}>{heroTitle[locale]}</h1>
 
           {heroSubtitle?.[locale] && (
-            <p className={`text-lg mb-10 ${styles.subtitle}`}>{heroSubtitle[locale]}</p>
+            <p className={`text-md text-md-lg mb-6 mb-10-md ${styles.subtitle}`}>{heroSubtitle[locale]}</p>
           )}
 
-          <div className={`mb-20 flex flex-align-center gap-5 ${styles.cta}`}>
+          <div className={`mb-16 mb-20-md flex flex-align-center gap-5 ${styles.cta}`}>
             
             <Button  href="/courses">{heroCtaLabel?.[locale] ?? t('viewAllCourses')}</Button>
             <Link href="/about" hasArrow>

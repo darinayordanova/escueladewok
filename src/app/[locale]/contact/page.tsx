@@ -47,16 +47,16 @@ export default async function ContactPageRoute({ params }: ContactPageProps) {
 
   return (
     <div>
-      <div className="container pb-16">
+      <div className="container pb-16 flex flex-wrap-wrap flex-justify-center">
         {/* ── Header ── */}
-        <header className={styles.header}>
-          <h1 className={styles.title}>{page?.title?.[l] ?? t('pageTitle')}</h1>
+        <header className={"  text-center mb-12 col-12 col-md-8"}>
+          <h1 className={"h3"}>{page?.title?.[l] ?? t('pageTitle')}</h1>
           {page?.subtitle?.[l] && (
-            <p className={styles.subtitle}>{page.subtitle[l]}</p>
+            <p className={"text-lg color-text-light"}>{page.subtitle[l]}</p>
           )}
         </header>
 
-        <div className={hasContactInfo ? styles.layout : styles.layoutCentered}>
+        <div className={`${hasContactInfo ? styles.layout : styles.layoutCentered} col-12`}>
           {/* ── Contact info ── */}
           {hasContactInfo && (
             <aside className={styles.info}>

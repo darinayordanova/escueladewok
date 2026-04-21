@@ -4,7 +4,6 @@ import type { ConfirmationEmailData } from '@/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@escueladewok.com';
-
 const OWNER_EMAIL = 'Xingyutian2001@gmail.com';
 
 export async function sendOwnerNotificationEmail(data: {

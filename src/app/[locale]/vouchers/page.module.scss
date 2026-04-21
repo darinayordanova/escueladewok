@@ -1,0 +1,73 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+  transition:
+    transform $transition-base,
+    box-shadow $transition-base;
+  background: $color-background;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+.cardBanner {
+  background: $color-primary;
+  padding: $spacing-8 $spacing-6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+}
+
+.cardIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.cardPrice {
+  font-family: $font-heading;
+  font-size: $font-size-h3;
+  font-weight: $font-weight-bold;
+  color: $color-background;
+  line-height: $line-height-tight;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: $spacing-6;
+  gap: $spacing-4;
+}
+
+.cardTitle {
+  font-family: $font-heading;
+  font-size: $font-size-h5;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+  margin: 0;
+}
+
+.cardDesc {
+  color: $color-text-muted;
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+  flex: 1;
+}
+
+.validity {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  border-top: 1px solid $color-border-light;
+  padding-top: $spacing-4;
+}

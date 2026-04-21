@@ -8,6 +8,7 @@
     "courses": "Cursos",
     "calendar": "Calendario",
     "corporate": "Eventos Corporativos",
+    "vouchers": "Tarjetas Regalo",
     "about": "Nosotros",
     "contact": "Contacto"
   },
@@ -185,6 +186,24 @@
     "processing": "Redirigiendo al pago…",
     "addToCart": "Añadir al carrito",
     "buyNow": "Reservar ahora"
+  },
+  "vouchers": {
+    "pageTitle": "Tarjetas Regalo",
+    "pageDescription": "Regala una experiencia culinaria. Nuestras tarjetas regalo son perfectas para cualquier ocasión.",
+    "classVoucher": "Clase de Cocina",
+    "classVoucherDesc": "Una experiencia culinaria práctica para una persona. Canjeable en cualquier clase disponible.",
+    "giftCard25": "Tarjeta Regalo — 25 €",
+    "giftCard25Desc": "Una tarjeta regalo por valor de 25 €. Válida para cualquier clase o producto.",
+    "giftCard50": "Tarjeta Regalo — 50 €",
+    "giftCard50Desc": "Una tarjeta regalo por valor de 50 €. Válida para cualquier clase o producto.",
+    "buyVoucher": "Comprar",
+    "validityNote": "Válida durante 12 meses desde la fecha de compra."
+  },
+  "notFound": {
+    "title": "Este plato no está en la carta.",
+    "subtitle": "La página que buscas no existe, pero nuestras clases sí. Vuelve al inicio y encuentra tu próxima aventura culinaria.",
+    "backToHome": "Volver al inicio",
+    "browseCourses": "Ver cursos"
   },
   "legal": {
     "terms": "Términos de Servicio",

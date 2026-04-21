@@ -76,7 +76,7 @@
 .subtitle {
   animation: fadeUp 0.6s ease-out both;
   animation-delay: 0.32s;
-
+  
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }

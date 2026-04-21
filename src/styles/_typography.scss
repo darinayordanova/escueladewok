@@ -106,8 +106,9 @@ $_text-sizes: (
   .text-#{$name} { font-size: $size; margin-bottom: $spacing-4; }
 }
 
+$breakpoints: ('sm', 'md', 'lg', 'xl');
 // Responsive: .text-sm-lg, .text-lg-xs, etc.
-@each $bp in ('sm', 'md', 'lg', 'xl') {
+@each $bp in $breakpoints {
   @include respond-to($bp) {
     @each $name, $size in $_text-sizes {
       .text-#{$bp}-#{$name} { font-size: $size; margin-bottom: $spacing-4; }

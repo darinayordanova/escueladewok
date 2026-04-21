@@ -63,7 +63,7 @@ $spacing-props: (
 
     // p-no / m-no — remove all padding or margin on a side/axis
     $class: if($bp, '.#{$prop}-#{$bp}-no', '.#{$prop}-no');
-    #{$class} { #{$css-prop}: 0 !important; }
+    #{$class} { #{$css-prop}: 0; }
   }
 }
 

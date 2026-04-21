@@ -8,7 +8,6 @@ import { allCoursesQuery } from '@/lib/sanity/queries';
 import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
 import type { Course, Locale } from '@/types';
 
-import styles from './page.module.scss';
 
 interface CalendarPageProps {
   params: Promise<{ locale: string }>;
@@ -43,14 +42,15 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
 
   return (
     <div>
-      <div className="container pb-16">
-        <header className={styles.header}>
-          <h1 className={styles.title}>{t('pageTitle')}</h1>
-          <p className={styles.description}>{t('pageDescription')}</p>
+      <div className="container pb-16 flex flex-wrap-wrap flex-justify-center">
+        <header className={`text-center mb-12 col-12 col-md-8`}>
+          <h1 className={"h3"}>{t('pageTitle')}</h1>
+          <p className={"text-lg color-text-light"}>{t('pageDescription')}</p>
         </header>
 
+<div className={"col-12"}>
         <CalendarView occurrences={occurrences} locale={locale as Locale} />
-      </div>
+     </div> </div>
     </div>
   );
 }

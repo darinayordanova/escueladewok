@@ -1,3 +1,4 @@
+@use 'sass:math';
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
@@ -49,11 +50,18 @@
 @for $i from 1 through $grid-columns {
   .col-#{$i} {
     grid-column: span #{$i};
+    // flex fallback — ignored inside CSS Grid, active inside .flex containers
+    flex: 0 0 math.percentage(calc($i / $grid-columns));
+    max-width: math.percentage(calc($i / $grid-columns));
   }
 }
 
 // .col-auto — size to content, don't span fixed columns
-.col-auto { grid-column: auto; }
+.col-auto {
+  grid-column: auto;
+  flex: 0 0 auto;
+  max-width: none;
+}
 
 // Responsive overrides
 $breakpoints: ('sm', 'md', 'lg', 'xl');
@@ -63,11 +71,13 @@ $breakpoints: ('sm', 'md', 'lg', 'xl');
     @for $i from 1 through $grid-columns {
       .col-#{$bp}-#{$i} {
         grid-column: span #{$i};
+        flex: 0 0 math.percentage(calc($i / $grid-columns));
       }
     }
 
     .col-#{$bp}-auto {
       grid-column: auto;
+      flex: 0 0 auto;
     }
   }
 }

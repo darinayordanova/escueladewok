@@ -1,0 +1,36 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+
+.page {
+  min-height: 80vh;
+}
+
+.subtitle{
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.code {
+  font-family: $font-heading;
+  font-size: clamp(10rem, 88vw, 16rem);
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.04em;
+  color: $color-border;
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.actions {
+  flex-direction: column;
+
+  @include respond-to('sm') {
+    flex-direction: row;
+    justify-content: center;
+  }
+}

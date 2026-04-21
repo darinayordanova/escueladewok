@@ -10,9 +10,16 @@
     transform $transition-base,
     box-shadow $transition-base;
 
+     .linkArrow {
+    transition: transform $transition-fast;
+  }
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: $shadow-lg;
+
+    .linkArrow {
+      transform: translateX(4px);}
   }
 }
 
@@ -59,9 +66,7 @@
 }
 
 .description {
- 
-
-  @include line-clamp(3);
+  @include line-clamp(2);
 }
 
 .dateLabel {
@@ -157,3 +162,4 @@
     color: $color-primary-dark;
   }
 }
+

@@ -52,17 +52,19 @@ export default async function CoursesPage({ params }: CoursesPageProps) {
 
   return (
     <div className={styles.page}>
-      <div className="container mb-16">
-        <header className={styles.header}>
-          <h1 className={styles.title}>{t('pageTitle')}</h1>
-          <p className={styles.description}>{t('pageDescription')}</p>
+      <div className="container mb-16 flex flex-wrap-wrap flex-justify-center">
+        <header className="text-center mb-12 col-12 col-md-8">
+          <h1 className="h3">{t('pageTitle')}</h1>
+          <p className="text-lg color-text-light">{t('pageDescription')}</p>
         </header>
 
+        <div className="col-12">
         {occurrences.length > 0 ? (
           <FilteredCourseGrid mode="occurrences" occurrences={occurrences} locale={locale as Locale} bookingCounts={bookingCounts} />
         ) : (
-          <p className={styles.empty}>{t('noCourses')}</p>
+          <p className="text-lg color-text-muted text-center py-16">{t('noCourses')}</p>
         )}
+        </div>
       </div>
     </div>
   );

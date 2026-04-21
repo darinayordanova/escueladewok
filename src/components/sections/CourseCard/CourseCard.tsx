@@ -9,6 +9,8 @@ import Link from '@/components/ui/Link/Link';
 import type { Course, Locale } from '@/types';
 
 import styles from './CourseCard.module.scss';
+import { ArrowRight } from "@/components/ui/icons";
+;
 
 interface Occurrence {
   date: string;      // "YYYY-MM-DD"
@@ -37,11 +39,12 @@ export default function CourseCard({ course, locale, occurrence, spotsLeft }: Co
     : `/courses/${slug.current}`;
 
   return (
-    <article className={`bg-bg flex flex-column ${styles.card}`}>
-      <Link href={href} className={styles.imageLink}>
-        <div className={`bg-alt ${styles.imageWrapper}`}>
-          {image ? (
-            <Image
+    <Link href={href}>
+      <article className={`bg-bg flex flex-column ${styles.card}`}>
+        <div className={styles.imageLink}>
+          <div className={`bg-alt ${styles.imageWrapper}`}>
+            {image ? (
+              <Image
               src={urlFor(image).width(600).height(400).url()}
               alt={image.alt?.[locale] ?? title[locale]}
               fill
@@ -53,8 +56,7 @@ export default function CourseCard({ course, locale, occurrence, spotsLeft }: Co
           )}
           {cuisine && <CuisinePill cuisine={cuisine} label={t(`cuisine.${cuisine}`)} className={styles.cuisine} />}
         </div>
-      </Link>
-
+</div>
       <div className="flex flex-column flex-justify-between p-4 full-height">
         <div className='flex flex-column'>
         {occurrence && (
@@ -79,9 +81,7 @@ export default function CourseCard({ course, locale, occurrence, spotsLeft }: Co
           </div>
         )}
 
-        <Link href={href} >
-          <h3 className={`text-xl font-bold mt-no mb-3 ${styles.title}`}>{title[locale]}</h3>
-        </Link>
+          <h3 className={`h4 text-xl font-bold mt-no mb-2 ${styles.title}`}>{title[locale]}</h3>
 
         {descriptionText && (
           <p className={`text-sm text-text-light line-height-base ${styles.description}`}>{descriptionText}</p>
@@ -99,9 +99,10 @@ export default function CourseCard({ course, locale, occurrence, spotsLeft }: Co
               {price} {currency}
             </strong>
           </p>
-          <Link href={href} hasArrow className='color-primary font-semibold'>
+          <span className={ `inline-flex flex-align-center gap-1 font-medium color-primary font-semibold`}>
             {t('bookNow')}
-          </Link>
+            <ArrowRight size={16} className={styles.linkArrow} />
+          </span>
           {brochureUrl && (
             <a
               href={brochureUrl}
@@ -116,5 +117,7 @@ export default function CourseCard({ course, locale, occurrence, spotsLeft }: Co
         </div>
       </div>
     </article>
+      </Link>
+
   );
 }
