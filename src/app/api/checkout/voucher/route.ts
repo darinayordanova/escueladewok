@@ -11,7 +11,7 @@ interface VoucherCheckoutBody {
 const VOUCHER_PRODUCTS = {
   classVoucher: { name: 'Cooking Class Gift Voucher', amount: 69, currency: 'eur' },
   giftCard25:   { name: 'Gift Card — 25 €',           amount: 25, currency: 'eur' },
-  giftCard50:   { name: 'Gift Card — 0.50 €',           amount: 0.50, currency: 'eur' },
+  giftCard50:   { name: 'Gift Card — 50 €',           amount: 50, currency: 'eur' },
 } as const;
 
 export async function POST(request: Request) {
