@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     validUntil: '30 April 2027',
   });
 
-  return new NextResponse(pdf, {
+  return new NextResponse(new Uint8Array(pdf), {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'inline; filename="voucher-preview.pdf"',
