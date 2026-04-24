@@ -49,10 +49,9 @@ export default async function VouchersPage({ params }: VouchersPageProps) {
       </div>
 
       <div className={"grid gap-6 pb-16 col-12"}>
-        {VOUCHERS.map(({ key, price, icon }) => (
+        {VOUCHERS.map(({ key, price }) => (
           <div key={key} className={`col-12 col-md-4 ${styles.card}`}>
             <div className={styles.cardBanner}>
-              <span className={styles.cardIcon}>{icon}</span>
               <span className={styles.cardPrice}>{price}</span>
             </div>
             <div className={styles.cardBody}>

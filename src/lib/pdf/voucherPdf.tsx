@@ -1,23 +1,6 @@
-import { Document, Font, Image, Page, StyleSheet, Text, View, renderToBuffer } from '@react-pdf/renderer';
-import path from 'path';
+import { Document, Image, Page, StyleSheet, Text, View, renderToBuffer } from '@react-pdf/renderer';
 import React from 'react';
 import sharp from 'sharp';
-
-Font.register({
-  family: 'Fraunces',
-  fonts: [
-    { src: path.join(process.cwd(), 'public', 'fonts', 'Fraunces-Regular.ttf'), fontWeight: 'normal' },
-    { src: path.join(process.cwd(), 'public', 'fonts', 'Fraunces-Bold.ttf'), fontWeight: 'bold' },
-  ],
-});
-
-Font.register({
-  family: 'Montserrat',
-  fonts: [
-    { src: path.join(process.cwd(), 'public', 'fonts', 'Montserrat-Regular.ttf'), fontWeight: 'normal' },
-    { src: path.join(process.cwd(), 'public', 'fonts', 'Montserrat-Bold.ttf'), fontWeight: 'bold' },
-  ],
-});
 
 const RED = '#860A15';
 const TEXT = '#1A0E0E';
@@ -43,10 +26,11 @@ const s = StyleSheet.create({
     color: WHITE,
     fontSize: 20,
     textAlign: 'center',
-    fontFamily: 'Fraunces',
+    fontFamily: 'Times-Roman',
     letterSpacing: 2,
     marginBottom: 10,
     marginTop: 10,
+    fontWeight: 'bold',
   },
 
   voucherType: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: TEXT, marginBottom: 24 },
@@ -61,7 +45,6 @@ const s = StyleSheet.create({
     marginBottom: 24,
     borderLeftWidth: 4,
     borderLeftColor: RED,
-    borderLeftStyle: 'solid',
   },
   codeLabel: { fontSize: 9, color: MUTED, letterSpacing: 2, marginBottom: 10, fontFamily: 'Helvetica-Bold' },
   code: { fontSize: 30, fontFamily: 'Helvetica-Bold', color: RED, letterSpacing: 5 },
@@ -85,7 +68,7 @@ const s = StyleSheet.create({
   amountText: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: RED },
 
   // Footer
-  footer: { paddingHorizontal: 40, paddingVertical: 20, borderTopWidth: 1, borderTopColor: BORDER, borderTopStyle: 'solid' },
+  footer: { paddingHorizontal: 40, paddingVertical: 20, borderTopWidth: 1, borderTopColor: BORDER },
   footerText: { fontSize: 10, color: MUTED, textAlign: 'center', lineHeight: 1.7 },
 });
 
