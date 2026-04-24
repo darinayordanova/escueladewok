@@ -1,11 +1,11 @@
 /**
  * Shared SEO helpers.
- * NEXT_PUBLIC_SITE_URL must be set in your environment (e.g. https://escueladewok.com).
+ * NEXT_PUBLIC_SITE_URL must be set in your environment (e.g. https://woklab.es).
  */
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://escueladewok.com';
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://woklab.es';
 
-export const SITE_NAME = 'Escuela de Wok';
+export const SITE_NAME = 'Wok Lab';
 
 /** Absolute URL to the default OG/social share image. */
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/images/hero.webp`;

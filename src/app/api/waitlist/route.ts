@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@escueladewok.com';
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? process.env.EMAIL_FROM ?? 'hello@escueladewok.com';
+const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? process.env.EMAIL_FROM ?? 'info@woklab.es';
 
 export async function POST(request: Request) {
   let body: {

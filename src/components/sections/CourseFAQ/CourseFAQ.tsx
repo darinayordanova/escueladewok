@@ -12,7 +12,7 @@ interface FAQItem {
   a: React.ReactNode;
 }
 
-const EMAIL = 'info@escueladewok.com';
+const EMAIL = 'info@woklab.es';
 
 const FAQ: Record<Locale, FAQItem[]> = {
   en: [

@@ -15,7 +15,7 @@ export default defineConfig({
   basePath: '/studio',
   projectId,
   dataset,
-  title: 'Escuela de Wok',
+  title: 'Wok Lab',
   plugins: [
     structureTool({
       structure: (S) =>

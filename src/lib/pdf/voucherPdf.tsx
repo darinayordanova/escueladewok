@@ -176,7 +176,7 @@ function VoucherDocument({
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
 
   return (
-    <Document title="Escuela de Wok — Gift Voucher" author="Escuela de Wok">
+    <Document title="Wok Lab — Gift Voucher" author="Wok Lab">
       <Page size="A5" style={s.page}>
         {/* Header */}
         <View style={s.header}>
@@ -221,8 +221,8 @@ function VoucherDocument({
         {/* Footer */}
         <View style={s.footer}>
           <Text style={s.footerText}>
-            Enter this code at checkout on escueladewok.com to redeem your voucher.{'\n'}
-            Questions? hola@escueladewok.com
+            Enter this code at checkout on woklab.es to redeem your voucher.{'\n'}
+            Questions? info@woklab.es
           </Text>
         </View>
       </Page>

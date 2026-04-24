@@ -27,10 +27,10 @@ export default async function Footer() {
 
         {/* ── Brand ─────────────────────────────────────────────────────── */}
         <div className={styles.brand}>
-          <Link href="/" className={styles.logoLink} aria-label="Escuela de Wok — home">
+          <Link href="/" className={styles.logoLink} aria-label="Wok Lab — home">
             <Image
               src="/logo-footer.svg"
-              alt="Escuela de Wok"
+              alt="Wok Lab"
               width={110}
               height={66}
               className={styles.logo}
@@ -99,7 +99,7 @@ export default async function Footer() {
       <div className={styles.bottom}>
         <div className="container">
           <p className={styles.copy}>
-            &copy; {year} Escuela de Wok.&nbsp;{t('rights')}
+            &copy; {year} Wok Lab.&nbsp;{t('rights')}
           </p>
         </div>
       </div>

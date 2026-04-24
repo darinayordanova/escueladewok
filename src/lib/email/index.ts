@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 import type { ConfirmationEmailData } from '@/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@escueladewok.com';
+const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
 const OWNER_EMAIL = 'Xingyutian2001@gmail.com';
 
 // ─── Voucher emails ───────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
     from: FROM_EMAIL,
     to: buyerEmail,
     subject: `Your gift voucher — ${voucherTypeName}`,
-    attachments: [{ filename: 'escueladewok-voucher.pdf', content: pdfBuffer }],
+    attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
     html: `
       <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
       <style>
@@ -49,7 +49,7 @@ export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
         .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
       </style></head>
       <body><div class="wrapper">
-        <div class="header"><h1>ESCUELA DE WOK</h1><p>Chinese Cooking Classes · Madrid</p></div>
+        <div class="header"><h1>WOK LAB</h1><p>Chinese Cooking Classes · Madrid</p></div>
         <div class="body">
           <p>Hi ${buyerName},</p>
           <p>Your gift voucher purchase is confirmed! We'll send it to <strong>${recipientName}</strong> (${recipientEmail}) ${scheduled}. A PDF copy is attached for your records.</p>
@@ -63,7 +63,7 @@ export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
           </table></div>
           <p>If you have any questions, reply to this email.</p>
         </div>
-        <div class="footer"><p>Escuela de Wok &mdash; Chinese Cooking Classes</p></div>
+        <div class="footer"><p>Wok Lab &mdash; Chinese Cooking Classes</p></div>
       </div></body></html>`,
   });
 
@@ -78,7 +78,7 @@ export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'bu
     from: FROM_EMAIL,
     to: recipientEmail,
     subject: `You've received a gift from ${buyerName}! 🎁`,
-    attachments: [{ filename: 'escueladewok-voucher.pdf', content: pdfBuffer }],
+    attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
     html: `
       <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
       <style>
@@ -100,7 +100,7 @@ export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'bu
         .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
       </style></head>
       <body><div class="wrapper">
-        <div class="header"><h1>ESCUELA DE WOK</h1><p>Chinese Cooking Classes · Madrid</p></div>
+        <div class="header"><h1>WOK LAB</h1><p>Chinese Cooking Classes · Madrid</p></div>
         <div class="body">
           <p>Hi ${recipientName},</p>
           <p><strong>${buyerName}</strong> has sent you a cooking experience as a gift! 🎉</p>
@@ -113,10 +113,10 @@ export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'bu
             <tr><td>Voucher</td><td>${voucherTypeName}</td></tr>
             <tr><td>Value</td><td>${amount} ${currencySymbol}</td></tr>
           </table></div>
-          <p>Enter the code at checkout on <a href="https://escueladewok.com">escueladewok.com</a> to redeem your voucher. The PDF attached can be printed or kept digitally.</p>
+          <p>Enter the code at checkout on <a href="https://woklab.es">woklab.es</a> to redeem your voucher. The PDF attached can be printed or kept digitally.</p>
           <p>See you in the kitchen! 🍳</p>
         </div>
-        <div class="footer"><p>Escuela de Wok &mdash; Chinese Cooking Classes &mdash; hola@escueladewok.com</p></div>
+        <div class="footer"><p>Wok Lab &mdash; Chinese Cooking Classes &mdash; info@woklab.es</p></div>
       </div></body></html>`,
   });
 
@@ -228,7 +228,7 @@ function buildConfirmationHtml({
       <body>
         <div class="wrapper">
           <div class="header">
-            <h1>Escuela de Wok</h1>
+            <h1>Wok Lab</h1>
           </div>
           <div class="body">
             <p>Hi ${recipientName},</p>
@@ -245,7 +245,7 @@ function buildConfirmationHtml({
             <p>See you in the kitchen!</p>
           </div>
           <div class="footer">
-            <p>Escuela de Wok &mdash; Chinese Cooking Classes</p>
+            <p>Wok Lab &mdash; Chinese Cooking Classes</p>
           </div>
         </div>
       </body>

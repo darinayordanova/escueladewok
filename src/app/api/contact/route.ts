@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@escueladewok.com';
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? process.env.EMAIL_FROM ?? 'hello@escueladewok.com';
+const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? process.env.EMAIL_FROM ?? 'info@woklab.es';
 
 export async function POST(request: Request) {
   let body: { name?: string; email?: string; message?: string };
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       from: FROM_EMAIL,
       to: CONTACT_EMAIL,
       replyTo: email,
-      subject: `New message from ${name} — Escuela de Wok`,
+      subject: `New message from ${name} — Wok Lab`,
       html: `
         <!DOCTYPE html>
         <html>
