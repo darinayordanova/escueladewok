@@ -6,6 +6,7 @@ import { getMessages, getTranslations } from 'next-intl/server';
 
 import Footer from '@/components/layout/Footer/Footer';
 import Header from '@/components/layout/Header/Header';
+import ScrollToTop from '@/components/layout/ScrollToTop';
 import CartDrawer from '@/components/ui/CartDrawer/CartDrawer';
 import { CartProvider } from '@/context/CartContext';
 import { routing } from '@/i18n/routing';
@@ -69,6 +70,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   return (
     <NextIntlClientProvider locale={locale as Locale} messages={messages}>
       <CartProvider>
+        <ScrollToTop />
         <Header />
         <main>{children}</main>
         <Footer />
