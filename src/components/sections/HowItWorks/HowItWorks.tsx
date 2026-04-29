@@ -19,7 +19,7 @@ export default function HowItWorks({ title, steps, locale }: HowItWorksProps) {
     <section className="py-10 py-md-16">
       <div className="container">
         <p className="overline text-center color-primary mb-4">{t('label')}</p>
-        <h2 className="h3 text-center mt-no mb-16">
+        <h2 className="h3 text-center mt-no mb-10">
           {title?.[locale] ?? t('fallbackTitle')}
         </h2>
         <ol className={styles.steps} data-count={steps.length}>

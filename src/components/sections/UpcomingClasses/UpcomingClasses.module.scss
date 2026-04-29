@@ -57,6 +57,7 @@
 .rowCta {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: $spacing-1;
   flex-shrink: 0;
   color: $color-primary;

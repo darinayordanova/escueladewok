@@ -43,7 +43,7 @@ export default function UpcomingClasses({ courses, locale }: UpcomingClassesProp
     <section className="bg-alt py-10 py-md-16">
       <div className="container">
         <p className="overline text-center color-primary mb-4">{t('label')}</p>
-        <h2 className="h3 text-center mt-no mb-16">{t('title')}</h2>
+        <h2 className="h3 text-center mt-no mb-10">{t('title')}</h2>
 
         <div className="grid gap-4">
           <div className="col-12 col-md-4">
@@ -89,22 +89,22 @@ function CourseRow({ occ, locale }: { occ: CourseOccurrence; locale: Locale }) {
 
   return (
     <Link href={href}>
-      <div className={`grid grid--row gap-4 p-4 bg-bg mb-4 ${styles.row}`}>
-        <div className="col-auto">
+      <div className={`grid gap-4 p-4 bg-bg mb-4 ${styles.row}`}>
+        <div className="col-4 col-md-2 relative">
           {image ? (
             <Image
               src={urlFor(image).width(160).height(160).url()}
               alt={image.alt?.[locale] ?? title[locale]}
               className={styles.rowImg}
-              width={80}
-              height={80}
+             fill
+              sizes="(max-width: 768px) 100vw, 160px"
             />
           ) : (
             <div className={styles.rowImgPlaceholder} aria-hidden="true" />
           )}
         </div>
 
-        <div className={`col-fluid ${styles.rowContent}`}>
+        <div className={`col-8 col-md-7 ${styles.rowContent}`}>
           <p className={`h6 m-no color-text ${styles.rowTitle}`}>{title[locale]}</p>
           <p className="text-xs color-text-muted m-no">
             {startTime} – {endTime}
@@ -114,7 +114,7 @@ function CourseRow({ occ, locale }: { occ: CourseOccurrence; locale: Locale }) {
           )}
         </div>
 
-        <span className={`col-auto ${styles.rowCta}`}>
+        <span className={`col-12 col-md-3 ${styles.rowCta}`}>
           {t('bookNow')}
           <ArrowRight className={styles.linkArrow} size={15} />
         </span>
