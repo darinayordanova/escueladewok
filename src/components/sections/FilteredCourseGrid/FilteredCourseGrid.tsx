@@ -90,8 +90,11 @@ export default function FilteredCourseGrid(props: Props) {
             aria-label={t('searchPlaceholder')}
           />
         </div>
-<div className='flex gap-2'>
-        <div className={styles.filterGroup}>
+<div className='grid gap-2'>
+        
+        {props.mode === 'occurrences' && (
+          <>
+          <div className={`col-6 ${styles.filterGroup}`}>
           <Select
             value={cuisine}
             onChange={(e) => setCuisine(e.target.value as CuisineType | '')}
@@ -106,8 +109,7 @@ export default function FilteredCourseGrid(props: Props) {
           </Select>
         </div>
 
-        {props.mode === 'occurrences' && (
-          <div className={styles.filterGroup}>
+          <div className={`col-6 ${styles.filterGroup}`}>
             <DatePicker
               value={date}
               onChange={setDate}
@@ -117,6 +119,7 @@ export default function FilteredCourseGrid(props: Props) {
               locale={locale}
             />
           </div>
+          </>
         )}
 
         {hasActiveFilters && (

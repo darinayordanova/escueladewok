@@ -83,6 +83,17 @@ select {
   @include container;
 }
 
+// ─── Visibility ───────────────────────────────────────────────────────────────
+.hidden        { display: none !important; }
+.hidden-sm     { @include respond-to('sm') { display: none !important; } }
+.hidden-md     { @include respond-to('md') { display: none !important; } }
+.hidden-lg     { @include respond-to('lg') { display: none !important; } }
+.hidden-xl     { @include respond-to('xl') { display: none !important; } }
+.visible-sm    { display: none !important; @include respond-to('sm') { display: revert !important; } }
+.visible-md    { display: none !important; @include respond-to('md') { display: revert !important; } }
+.visible-lg    { display: none !important; @include respond-to('lg') { display: revert !important; } }
+.visible-xl    { display: none !important; @include respond-to('xl') { display: revert !important; } }
+
 // ─── Accessibility ────────────────────────────────────────────────────────────
 .sr-only {
   @include visually-hidden;

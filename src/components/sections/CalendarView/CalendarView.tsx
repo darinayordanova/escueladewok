@@ -115,7 +115,7 @@ export default function CalendarView({ occurrences, locale }: CalendarViewProps)
         </div>
 
         {!isCurrentMonth && (
-          <button type="button" onClick={goToToday} className={styles.todayBtn}>
+          <button type="button" onClick={goToToday} className={`hidden visible-md ${styles.todayBtn}`}>
             {t('today')}
           </button>
         )}

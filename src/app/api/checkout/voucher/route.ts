@@ -44,10 +44,11 @@ export async function POST(request: Request) {
           type: 'text',
         },
         {
-          key: 'send_date',
-          label: { type: 'custom', custom: 'Send date (YYYY-MM-DD, leave blank to send now)' },
+          key: 'message',
+          label: { type: 'custom', custom: 'Personal message (optional)' },
           type: 'text',
           optional: true,
+          text: { maximum_length: 200 },
         },
       ],
       line_items: [{

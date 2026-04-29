@@ -13,8 +13,7 @@
 }
 
 .filterGroup {
-  flex: 1;
-  min-width: 180px;
+  flex: auto;
 
   @include respond-to('md') {
     flex: 0 1 auto;

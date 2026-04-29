@@ -17,8 +17,8 @@
   right: 0;
   z-index: $z-sticky;
   background-color: $color-background;
-  border-top: 1px solid $color-border;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+  border-radius: $spacing-4 $spacing-4 0 0;
   padding: $spacing-3 $spacing-4;
   // Respect iOS home-bar safe area
   padding-bottom: calc(#{$spacing-3} + env(safe-area-inset-bottom, 0px));
@@ -84,8 +84,8 @@
   border-radius: $radius-lg $radius-lg 0 0;
 
   // Cap height — leaves room at top for user to tap backdrop
-  max-height: 92dvh;
-  max-height: 92vh; // fallback
+  max-height: 82dvh;
+  max-height: 82vh; // fallback
 
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -126,8 +126,8 @@
 .closeBtn {
   position: fixed;
   // Align to the top-right corner of where the sheet will be
-  bottom: 92dvh;
-  bottom: 92vh; // fallback
+  bottom: 82dvh;
+  bottom: 82vh; // fallback
   right: $spacing-4;
   z-index: calc(#{$z-modal} + 1);
 

@@ -20,7 +20,7 @@ export default function TeamGrid({ members, locale }: TeamGridProps) {
 
   // Multiple people — responsive grid
   return (
-    <ul className={styles.grid} role="list">
+    <ul role="list">
       {members.map((member) => (
         <li key={member._key}>
           <MemberCard member={member} locale={locale} />
@@ -34,8 +34,8 @@ export default function TeamGrid({ members, locale }: TeamGridProps) {
 
 function FeaturedMember({ member, locale }: { member: TeamMember; locale: Locale }) {
   return (
-    <div className={"container grid gap-8"}>
-      <div className={`col-4 ${styles.featuredImageWrapper}`}>
+    <div className={"grid"}>
+      <div className={`col-12 col-md-4 mb-4 mb-md-no ${styles.featuredImageWrapper}`}>
         {member.image ? (
           <Image
             src={urlFor(member.image).width(600).height(700).url()}
@@ -49,10 +49,10 @@ function FeaturedMember({ member, locale }: { member: TeamMember; locale: Locale
         )}
       </div>
 
-      <div className={`col-8 ${styles.featuredBody}`}>
-        <p className={styles.featuredName}>{member.name}</p>
+      <div className={`col-12 col-md-8 pl-md-10 ${styles.featuredBody}`}>
+        <h5 className='mb-no'>{member.name}</h5>
         {member.role?.[locale] && (
-          <p className={styles.featuredRole}>{member.role[locale]}</p>
+          <p className="color-primary font-semibold text-md text-uppercase ">{member.role[locale]}</p>
         )}
         {member.bio?.[locale] && (
           <p className={styles.featuredBio}>{member.bio[locale]}</p>

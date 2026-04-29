@@ -47,14 +47,14 @@ export default function ContactForm({ title, successMessage }: ContactFormProps)
       <div className={`${styles.success}`}>
         <div className={`flex flex-align-center flex-justify-center p-1 ${styles.successIcon}`}>
         <Check size={20} /></div>
-        <p>{successMessage ?? t('success')}</p>
+        <p className='m-no'>{successMessage ?? t('success')}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className={styles.form} noValidate>
-      {title && <h2>{title}</h2>}
+      {title && <h2 className='h4 m-no'>{title}</h2>}
 
       <Input
         id="contact-name"

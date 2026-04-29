@@ -15,14 +15,14 @@
 
 .featuredImageWrapper {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 4;
   border-radius: $radius-lg;
   overflow: hidden;
   background-color: $color-background-alt;
   box-shadow: $shadow-lg;
 
   @include respond-to('md') {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 4;
   }
 }
 
@@ -31,47 +31,9 @@
   object-position: top center;
 }
 
-.featuredBody {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-3;
-}
-
-.featuredName {
-  font-size: $font-size-h4;
-  font-weight: $font-weight-bold;
-  color: $color-text;
-  line-height: $line-height-tight;
-}
-
-.featuredRole {
-  font-size: $font-size-lg;
-  color: $color-primary;
-  font-weight: $font-weight-medium;
-}
-
-.featuredBio {
-  font-size: $font-size-base;
-  color: $color-text-light;
-  line-height: $line-height-relaxed;
-  white-space: pre-line;
-}
-
 // ─── Grid — multiple people ───────────────────────────────────────────────────
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-8;
 
-  @include respond-to('md') {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @include respond-to('lg') {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
 
 .card {
   display: flex;

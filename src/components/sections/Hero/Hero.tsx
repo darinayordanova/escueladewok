@@ -20,8 +20,8 @@ export default function Hero({ data, locale }: HeroProps) {
   return (
     <section className={styles.hero}>
       {/* Content */}
-      <div className={`container grid pt-10 pt-md-no`}>
-        <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left pr-md-10 pr-no`}>
+      <div className={`container grid pt-20 pt-md-10 pt-md-no`}>
+        <div className={`col-12 col-lg-7 col-md-6 text-center text-md-left pr-md-10 pr-no mb-10 mb-md-no`}>
 
           <h1 className={`h2 h1-md mt-no ${styles.title}`}>{heroTitle[locale]}</h1>
 

@@ -18,14 +18,12 @@ export interface VoucherEmailData {
   amount: number;
   currency: string;
   validUntil: string;
-  sendDate?: string;
   pdfBuffer: Buffer;
 }
 
 export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
-  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, sendDate, pdfBuffer } = data;
+  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer } = data;
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
-  const scheduled = sendDate ? `on ${sendDate}` : 'shortly';
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
@@ -52,14 +50,13 @@ export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
         <div class="header"><h1>WOK LAB</h1><p>Chinese Cooking Classes · Madrid</p></div>
         <div class="body">
           <p>Hi ${buyerName},</p>
-          <p>Your gift voucher purchase is confirmed! We'll send it to <strong>${recipientName}</strong> (${recipientEmail}) ${scheduled}. A PDF copy is attached for your records.</p>
+          <p>Your gift voucher purchase is confirmed! We've sent it to <strong>${recipientName}</strong> (${recipientEmail}). A PDF copy is attached for your records.</p>
           <div class="detail-box"><table>
             <tr><td>Voucher</td><td>${voucherTypeName}</td></tr>
             <tr><td>Code</td><td><strong>${code}</strong></td></tr>
             <tr><td>Amount</td><td>${amount} ${currencySymbol}</td></tr>
             <tr><td>Valid until</td><td>${validUntil}</td></tr>
             <tr><td>Recipient</td><td>${recipientName}</td></tr>
-            ${sendDate ? `<tr><td>Send date</td><td>${sendDate}</td></tr>` : ''}
           </table></div>
           <p>If you have any questions, reply to this email.</p>
         </div>

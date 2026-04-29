@@ -154,9 +154,9 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const amount        = session.amount_total ? session.amount_total / 100 : 0;
   const currency      = session.currency ?? 'eur';
 
-  const recipientName  = session.custom_fields?.find((f) => f.key === 'recipient_name')?.text?.value  ?? customerName;
-  const recipientEmail = session.custom_fields?.find((f) => f.key === 'recipient_email')?.text?.value ?? customerEmail;
-  const sendDate       = session.custom_fields?.find((f) => f.key === 'send_date')?.text?.value       ?? '';
+  const recipientName    = session.custom_fields?.find((f) => f.key === 'recipient_name')?.text?.value  ?? customerName;
+  const recipientEmail   = session.custom_fields?.find((f) => f.key === 'recipient_email')?.text?.value ?? customerEmail;
+  const recipientMessage = session.custom_fields?.find((f) => f.key === 'message')?.text?.value         ?? '';
 
   // 1. Create Stripe coupon + promo code
   const coupon = await getStripe().coupons.create({
@@ -189,13 +189,11 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     currency,
     buyerName: customerName,
     recipientName,
+    recipientMessage: recipientMessage || undefined,
     validUntil: expiresAtDisplay,
   });
 
   // 4. Save to Sanity
-  const today = new Date().toISOString().split('T')[0];
-  const sendNow = !sendDate || sendDate <= today;
-
   const sanityDoc = await sanityWriteClient.create({
     _type: 'giftVoucher',
     code: promoCode.code,
@@ -206,7 +204,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     buyerEmail: customerEmail,
     recipientName,
     recipientEmail,
-    ...(sendDate ? { scheduledSendDate: new Date(sendDate + 'T00:00:00').toISOString() } : {}),
+    ...(recipientMessage ? { recipientMessage } : {}),
     stripeSessionId: session.id,
     stripeCouponId: coupon.id,
     stripePromotionCodeId: promoCode.id,
@@ -219,15 +217,11 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer };
 
   await Promise.allSettled([
-    sendVoucherBuyerEmail({ ...sharedData, sendDate }).catch((err) => console.error('[voucher] buyer email failed:', err)),
-    sendNow
-      ? sendVoucherRecipientEmail(sharedData).catch((err) => console.error('[voucher] recipient email failed:', err))
-      : Promise.resolve(),
+    sendVoucherBuyerEmail(sharedData).catch((err) => console.error('[voucher] buyer email failed:', err)),
+    sendVoucherRecipientEmail(sharedData).catch((err) => console.error('[voucher] recipient email failed:', err)),
   ]);
 
-  if (sendNow) {
-    await sanityWriteClient.patch(sanityDoc._id).set({ sentAt: new Date().toISOString() }).commit();
-  }
+  await sanityWriteClient.patch(sanityDoc._id).set({ sentAt: new Date().toISOString() }).commit();
 }
 
 async function handleSessionExpired(session: Stripe.Checkout.Session) {
