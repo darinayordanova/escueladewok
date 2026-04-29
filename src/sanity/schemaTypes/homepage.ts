@@ -28,6 +28,27 @@ export const homepage = defineType({
       title: 'Featured Courses Section Title',
       type: 'localeString',
     }),
+
+    defineField({
+      name: 'howItWorksTitle',
+      title: 'How It Works — Section Title',
+      type: 'localeString',
+    }),
+    defineField({
+      name: 'howItWorksSteps',
+      title: 'How It Works — Steps',
+      type: 'array',
+      of: [{
+        type: 'object',
+        name: 'howItWorksStep',
+        fields: [
+          defineField({ name: 'title', title: 'Title', type: 'localeString', validation: r => r.required() }),
+          defineField({ name: 'description', title: 'Description', type: 'localeText' }),
+        ],
+        preview: { select: { title: 'title.en' } },
+      }],
+      validation: r => r.max(6),
+    }),
   ],
   preview: {
     prepare() {

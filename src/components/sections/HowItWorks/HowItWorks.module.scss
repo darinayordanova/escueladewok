@@ -1,0 +1,48 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-8 $spacing-6;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  // At lg: match column count to step count
+  @include respond-to('md') {
+    &[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
+    &[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
+    &[data-count="5"] { grid-template-columns: repeat(5, 1fr); }
+  }
+}
+
+.step {
+  border-left: 3px solid $color-primary;
+  padding-left: $spacing-6;
+
+  @include respond-to('md') {
+    border-left: none;
+    padding-left: 0;
+    border-top: 3px solid $color-primary;
+  padding-top: $spacing-6;
+  }
+}
+
+.number {
+  display: block;
+  font-size: 2rem;
+  font-family: $font-heading;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: $color-primary;
+  opacity: 0.15;
+  margin-bottom: $spacing-2;
+
+  @include respond-to('lg') {
+    font-size: 3rem;
+  margin-bottom: $spacing-4;
+
+  }
+}

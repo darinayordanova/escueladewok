@@ -41,19 +41,16 @@ export default async function CorporatePage({ params }: CorporatePageProps) {
 
   return (
     <div className={styles.page}>
-      <div className="container mb-16 flex flex-wrap-wrap flex-justify-center">
-        <header className={"text-center mb-12 col-12 col-md-8"}>
-          <h1 className={"h3"}>{t('pageTitle')}</h1>
-          <p className={"text-lg color-text-light"}>{t('pageDescription')}</p>
+      <div className="container mb-16">
+        <header className="container--narrow text-center mb-12">
+          <h1 className="h3">{t('pageTitle')}</h1>
+          <p className="text-lg color-text-light">{t('pageDescription')}</p>
         </header>
-
-<div className={"col-12"}>
         {courses && courses.length > 0 ? (
-          <FilteredCourseGrid mode="courses" courses={courses} locale={locale as Locale} />
+          <FilteredCourseGrid mode="courses" courses={courses} locale={locale as Locale} showPrice={false} />
         ) : (
-          <p className={"text-lg color-text-muted py-16 text-center"}>{t('noCourses')}</p>
+          <p className="text-lg color-text-muted py-16 text-center">{t('noCourses')}</p>
         )}
-      </div>
       </div>
     </div>
   );

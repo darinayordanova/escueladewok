@@ -171,6 +171,12 @@ export interface ContactPage {
   successMessage?: LocaleText;
 }
 
+export interface HowItWorksStep {
+  _key: string;
+  title: LocaleString;
+  description?: LocaleText;
+}
+
 export interface Homepage {
   _id: string;
   _type: 'homepage';
@@ -178,6 +184,8 @@ export interface Homepage {
   heroSubtitle: LocaleText;
   heroCtaLabel: LocaleString;
   featuredCoursesTitle: LocaleString;
+  howItWorksTitle?: LocaleString;
+  howItWorksSteps?: HowItWorksStep[];
 }
 
 // ─── Course sessions & bookings ───────────────────────────────────────────────

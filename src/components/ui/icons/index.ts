@@ -10,3 +10,5 @@ export { default as MapPin } from './MapPin';
 export { default as Phone } from './Phone';
 export { default as Download } from './Download';
 export { default as ShoppingCart } from './ShoppingCart';
+export { default as Instagram } from './Instagram';
+export { default as Facebook } from './Facebook';

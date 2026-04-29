@@ -23,9 +23,10 @@ interface CourseCardProps {
   locale: Locale;
   occurrence?: Occurrence;
   spotsLeft?: number;
+  showPrice?: boolean;
 }
 
-export default function CourseCard({ course, locale, occurrence, spotsLeft }: CourseCardProps) {
+export default function CourseCard({ course, locale, occurrence, spotsLeft, showPrice = true }: CourseCardProps) {
   const t = useTranslations('courses');
   const tDetail = useTranslations('courseDetail');
   const { title, slug, description, image, price, currency, duration, cuisine, brochure } = course;
@@ -94,11 +95,11 @@ export default function CourseCard({ course, locale, occurrence, spotsLeft }: Co
         )}
 </div>
         <div className={styles.footer}>
-          <p className={styles.price}>
-            <strong>
-              {price} {currency}
-            </strong>
-          </p>
+          {showPrice && (
+            <p className={styles.price}>
+              <strong>{price} {currency}</strong>
+            </p>
+          )}
           <span className={ `inline-flex flex-align-center gap-1 font-medium color-primary font-semibold`}>
             {t('bookNow')}
             <ArrowRight size={16} className={styles.linkArrow} />

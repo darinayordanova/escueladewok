@@ -85,11 +85,6 @@
 @mixin grid($gutter: $grid-gutter) {
   display: grid;
   grid-template-columns: repeat(#{$grid-columns}, 1fr);
-  gap: $grid-row-gap $grid-gutter-mobile;
-
-  @include respond-to('md') {
-    gap: $grid-row-gap $gutter;
-  }
 }
 
 // Span N columns (1–12). Use inside CSS Modules for component-level control.

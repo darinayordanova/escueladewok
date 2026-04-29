@@ -5,10 +5,10 @@ import type { BookingCountMap, Course, CourseOccurrence, Locale } from '@/types'
 import styles from './CourseGrid.module.scss';
 
 type CourseGridProps =
-  | { courses: Course[]; occurrences?: undefined; locale: Locale; bookingCounts?: undefined }
-  | { occurrences: CourseOccurrence[]; courses?: undefined; locale: Locale; bookingCounts?: BookingCountMap };
+  | { courses: Course[]; occurrences?: undefined; locale: Locale; bookingCounts?: undefined; showPrice?: boolean }
+  | { occurrences: CourseOccurrence[]; courses?: undefined; locale: Locale; bookingCounts?: BookingCountMap; showPrice?: boolean };
 
-export default function CourseGrid({ courses, occurrences, locale, bookingCounts }: CourseGridProps) {
+export default function CourseGrid({ courses, occurrences, locale, bookingCounts, showPrice = true }: CourseGridProps) {
   if (occurrences) {
     if (occurrences.length === 0) return null;
     return (
@@ -25,7 +25,7 @@ export default function CourseGrid({ courses, occurrences, locale, bookingCounts
           const spots = slotSpots(occ.course.maxParticipants, perCourseMap, occ.date, occ.startTime);
           return (
             <li key={`${occ.course._id}-${occ.date}-${occ.startTime}`}>
-              <CourseCard course={occ.course} locale={locale} occurrence={occ} spotsLeft={spots} />
+              <CourseCard course={occ.course} locale={locale} occurrence={occ} spotsLeft={spots} showPrice={showPrice} />
             </li>
           );
         })}
@@ -38,7 +38,7 @@ export default function CourseGrid({ courses, occurrences, locale, bookingCounts
     <ul className={styles.grid} role="list">
       {courses.map((course) => (
         <li key={course._id}>
-          <CourseCard course={course} locale={locale} />
+          <CourseCard course={course} locale={locale} showPrice={showPrice} />
         </li>
       ))}
     </ul>

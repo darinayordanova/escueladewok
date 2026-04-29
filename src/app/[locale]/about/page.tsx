@@ -44,8 +44,9 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
   return (
       <div className="container mb-16">
         {/* ── Page header ── */}
-        <header className={"h3 text-center"}>
-          {page?.title?.[l] && <h1 className='h3'>{page.title[l]}</h1>}
+        <header className="container--narrow text-center mb-12">
+          {page?.title?.[l] && <h1 className="h3">{page.title[l]}</h1>}
+          {page?.subtitle?.[l] && <p className="text-lg color-text-light">{page.subtitle[l]}</p>}
         </header>
 
         {/* ── Page builder content ── */}
@@ -58,9 +59,7 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
         {/* ── Team ── */}
         {page?.team && page.team.length > 0 && (
           <section className="my-6">
-            <h2>
-              {page.teamTitle?.[l] ?? t('team')}
-            </h2>
+         
             <TeamGrid members={page.team} locale={l} />
           </section>
         )}

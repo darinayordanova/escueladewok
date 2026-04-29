@@ -12,7 +12,17 @@
     "about": "About",
     "contact": "Contact"
   },
+  "howItWorks": {
+    "label": "How it works",
+    "fallbackTitle": "Four steps to an unforgettable evening"
+  },
+  "upcomingClasses": {
+    "label": "What's on",
+    "title": "Upcoming Classes",
+    "noClasses": "No classes scheduled on this date."
+  },
   "home": {
+    "featuredCoursesLabel": "Our picks",
     "featuredCourses": "Featured Courses",
     "viewAllCourses": "View All Courses",
     "heroAboutLink": "About us"

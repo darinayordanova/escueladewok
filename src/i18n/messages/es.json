@@ -12,7 +12,17 @@
     "about": "Nosotros",
     "contact": "Contacto"
   },
+  "howItWorks": {
+    "label": "Cómo funciona",
+    "fallbackTitle": "Cuatro pasos para una velada inolvidable"
+  },
+  "upcomingClasses": {
+    "label": "Próximamente",
+    "title": "Clases Próximas",
+    "noClasses": "No hay clases programadas para esta fecha."
+  },
   "home": {
+    "featuredCoursesLabel": "Nuestra selección",
     "featuredCourses": "Cursos Destacados",
     "viewAllCourses": "Ver todos los cursos",
     "heroAboutLink": "Sobre nosotros"

@@ -1,0 +1,77 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.center {
+  justify-content: center;
+}
+.start {
+  justify-content: flex-start;
+}
+.end {
+  justify-content: flex-end;
+}
+
+// ─── Track ────────────────────────────────────────────────────────────────────
+
+.trackWrap {
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  transition: transform 300ms ease;
+  transform: translateX(calc(var(--idx, 0) * -100%));
+}
+
+.slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+// ─── Controls ─────────────────────────────────────────────────────────────────
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  margin-top: $spacing-5;
+}
+
+.btn {
+  width: 34px;
+  height: 34px;
+  @include flex-center;
+  border-radius: 50%;
+  color: $color-text-muted;
+  border: 1px solid $color-border;
+  transition: color $transition-fast, border-color $transition-fast;
+
+  &:hover:not(:disabled) {
+    color: $color-primary;
+    border-color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+// ─── Dots ─────────────────────────────────────────────────────────────────────
+
+.dots {
+  display: flex;
+  gap: $spacing-2;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $color-border;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  @include focus-ring;
+}
+
+.dotActive {
+  background: $color-primary;
+}

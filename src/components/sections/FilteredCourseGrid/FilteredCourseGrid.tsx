@@ -15,11 +15,11 @@ import styles from './FilteredCourseGrid.module.scss';
 const PAGE_SIZE = 12;
 
 type Props =
-  | { mode: 'occurrences'; occurrences: CourseOccurrence[]; locale: Locale; bookingCounts?: BookingCountMap }
-  | { mode: 'courses'; courses: Course[]; locale: Locale; bookingCounts?: undefined };
+  | { mode: 'occurrences'; occurrences: CourseOccurrence[]; locale: Locale; bookingCounts?: BookingCountMap; showPrice?: boolean }
+  | { mode: 'courses'; courses: Course[]; locale: Locale; bookingCounts?: undefined; showPrice?: boolean };
 
 export default function FilteredCourseGrid(props: Props) {
-  const { locale } = props;
+  const { locale, showPrice = true } = props;
   const t = useTranslations('filters');
   const tc = useTranslations('courses');
 
@@ -132,12 +132,12 @@ export default function FilteredCourseGrid(props: Props) {
         <p className={styles.empty}>{t('noResults')}</p>
       ) : props.mode === 'occurrences' ? (
         <>
-          <CourseGrid occurrences={paginated as CourseOccurrence[]} locale={locale} bookingCounts={props.mode === 'occurrences' ? props.bookingCounts : undefined} />
+          <CourseGrid occurrences={paginated as CourseOccurrence[]} locale={locale} bookingCounts={props.mode === 'occurrences' ? props.bookingCounts : undefined} showPrice={showPrice} />
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </>
       ) : (
         <>
-          <CourseGrid courses={paginated as Course[]} locale={locale} />
+          <CourseGrid courses={paginated as Course[]} locale={locale} showPrice={showPrice} />
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </>
       )}

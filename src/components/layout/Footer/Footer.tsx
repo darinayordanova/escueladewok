@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { Mail, MapPin, Phone } from '@/components/ui/icons';
+import { Facebook, Instagram, Mail, MapPin, Phone } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
 import { sanityClient } from '@/lib/sanity/client';
 import { contactPageQuery } from '@/lib/sanity/queries';
@@ -37,6 +37,15 @@ export default async function Footer() {
             />
           </Link>
           <p className={styles.tagline}>{t('tagline')}</p>
+
+          <div className={styles.social}>
+            <a href="https://www.instagram.com/woklab.madrid" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Instagram">
+              <Instagram size={20} />
+            </a>
+            <a href="https://www.facebook.com/woklabmadrid" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Facebook">
+              <Facebook size={20} />
+            </a>
+          </div>
 
           {/* Contact details — pulled from Sanity */}
           <address className={styles.contactBlock}>

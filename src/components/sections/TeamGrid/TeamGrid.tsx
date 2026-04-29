@@ -34,8 +34,8 @@ export default function TeamGrid({ members, locale }: TeamGridProps) {
 
 function FeaturedMember({ member, locale }: { member: TeamMember; locale: Locale }) {
   return (
-    <div className={styles.featured}>
-      <div className={styles.featuredImageWrapper}>
+    <div className={"container grid gap-8"}>
+      <div className={`col-4 ${styles.featuredImageWrapper}`}>
         {member.image ? (
           <Image
             src={urlFor(member.image).width(600).height(700).url()}
@@ -49,7 +49,7 @@ function FeaturedMember({ member, locale }: { member: TeamMember; locale: Locale
         )}
       </div>
 
-      <div className={styles.featuredBody}>
+      <div className={`col-8 ${styles.featuredBody}`}>
         <p className={styles.featuredName}>{member.name}</p>
         {member.role?.[locale] && (
           <p className={styles.featuredRole}>{member.role[locale]}</p>

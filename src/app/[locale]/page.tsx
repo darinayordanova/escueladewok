@@ -5,13 +5,15 @@ import Link from '@/components/ui/Link/Link';
 
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
 import Hero from '@/components/sections/Hero/Hero';
+import UpcomingClasses from '@/components/sections/UpcomingClasses/UpcomingClasses';
 import { sanityClient } from '@/lib/sanity/client';
-import { featuredCoursesQuery, homepageQuery } from '@/lib/sanity/queries';
+import { allCoursesQuery, featuredCoursesQuery, homepageQuery } from '@/lib/sanity/queries';
 import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_NAME, SITE_URL } from '@/lib/seo';
 import type { Course, Homepage, Locale } from '@/types';
 
 import styles from './page.module.scss';
 import CtaBanner from '@/components/sections/CtaBanner/CtaBanner';
+import HowItWorks from '@/components/sections/HowItWorks/HowItWorks';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
@@ -39,9 +41,10 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
 
-  const [homepage, featuredCourses] = await Promise.all([
+  const [homepage, featuredCourses, allCourses] = await Promise.all([
     sanityClient.fetch<Homepage>(homepageQuery),
     sanityClient.fetch<Course[]>(featuredCoursesQuery),
+    sanityClient.fetch<Course[]>(allCoursesQuery),
   ]);
 
   const jsonLd = {
@@ -74,8 +77,7 @@ export default async function HomePage({ params }: HomePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {homepage && <Hero data={homepage} locale={locale as Locale} />}
-
-      <section className="bg-alt py-16">
+ <section className="bg-alt py-10 py-md-16">
         <div className="container">
           <FeaturedSection
             homepage={homepage}
@@ -84,6 +86,15 @@ export default async function HomePage({ params }: HomePageProps) {
           />
         </div>
       </section>
+      <HowItWorks
+        title={homepage?.howItWorksTitle}
+        steps={homepage?.howItWorksSteps}
+        locale={locale as Locale}
+      />
+
+      <UpcomingClasses courses={allCourses} locale={locale as Locale} />
+
+     
       <CtaBanner />
 
     </>
@@ -105,6 +116,7 @@ function FeaturedSection({
 
   return (
     <>
+      <p className="overline text-center color-primary mb-4">{t('featuredCoursesLabel')}</p>
       <h2 className='h4 text-center mt-no mb-10'>
         {homepage?.featuredCoursesTitle?.[locale] ?? t('featuredCourses')}
       </h2>

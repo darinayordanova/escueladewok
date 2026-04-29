@@ -1,0 +1,66 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// ─── Row ──────────────────────────────────────────────────────────────────────
+
+.row {
+  max-width: 100%;
+  border-radius: $radius-md;
+
+  .linkArrow {
+    transition: transform $transition-fast;
+  }
+
+  &:hover {
+
+    .linkArrow { transform: translateX(4px); }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// ─── Image ────────────────────────────────────────────────────────────────────
+
+
+
+.rowImg {
+  border-radius: $radius-md;
+  object-fit: cover;
+}
+
+.rowImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: $color-background-alt;
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+
+.rowBody {
+  min-width: 0;
+
+  p { margin: 0; }
+}
+
+.rowTitle {
+  @include text-truncate;
+}
+
+.rowDesc {
+  @include line-clamp(2);
+}
+
+// ─── CTA ──────────────────────────────────────────────────────────────────────
+
+.rowCta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  flex-shrink: 0;
+  color: $color-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+}

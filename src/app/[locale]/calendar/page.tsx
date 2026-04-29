@@ -41,16 +41,12 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
   const occurrences = expandOccurrences(courses ?? []);
 
   return (
-    <div>
-      <div className="container pb-16 flex flex-wrap-wrap flex-justify-center">
-        <header className={`text-center mb-12 col-12 col-md-8`}>
-          <h1 className={"h3"}>{t('pageTitle')}</h1>
-          <p className={"text-lg color-text-light"}>{t('pageDescription')}</p>
-        </header>
-
-<div className={"col-12"}>
-        <CalendarView occurrences={occurrences} locale={locale as Locale} />
-     </div> </div>
+    <div className="container pb-16">
+      <header className="container--narrow text-center mb-12">
+        <h1 className="h3">{t('pageTitle')}</h1>
+        <p className="text-lg color-text-light">{t('pageDescription')}</p>
+      </header>
+      <CalendarView occurrences={occurrences} locale={locale as Locale} />
     </div>
   );
 }

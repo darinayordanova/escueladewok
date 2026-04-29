@@ -42,13 +42,13 @@ export default async function VouchersPage({ params }: VouchersPageProps) {
   const t = await getTranslations({ locale, namespace: 'vouchers' });
 
   return (
-    <div className="container flex flex-wrap-wrap flex-justify-center">
-      <div className="text-center mb-12 col-12 col-md-8">
-        <h1 className='h3'>{t('pageTitle')}</h1>
-        <p className={"text-lg color-text-light"}>{t('pageDescription')}</p>
+    <div className="container pb-16">
+      <div className="container--narrow text-center mb-12">
+        <h1 className="h3">{t('pageTitle')}</h1>
+        <p className="text-lg color-text-light">{t('pageDescription')}</p>
       </div>
 
-      <div className={"grid gap-6 pb-16 col-12"}>
+      <div className="grid gap-6">
         {VOUCHERS.map(({ key, price }) => (
           <div key={key} className={`col-12 col-md-4 ${styles.card}`}>
             <div className={styles.cardBanner}>

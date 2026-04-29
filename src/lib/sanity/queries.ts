@@ -7,6 +7,8 @@ export const homepageQuery = groq`
     heroSubtitle,
     heroCtaLabel,
     featuredCoursesTitle,
+    howItWorksTitle,
+    "howItWorksSteps": howItWorksSteps[] { _key, title, description },
   }
 `;
 

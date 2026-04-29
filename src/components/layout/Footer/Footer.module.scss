@@ -52,6 +52,32 @@
   max-width: 260px;
 }
 
+// ─── Social links ─────────────────────────────────────────────────────────────
+
+.social {
+  display: flex;
+  gap: $spacing-3;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: color $transition-fast, border-color $transition-fast;
+
+  &:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  @include focus-ring($color: rgba(255, 255, 255, 0.6));
+}
+
 // ─── Contact block ────────────────────────────────────────────────────────────
 
 .contactBlock {

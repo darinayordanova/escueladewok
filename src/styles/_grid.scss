@@ -9,16 +9,24 @@
   width: 100%;
 }
 
+.container--narrow {
+  @include container;
+  max-width: $max-width-narrow;
+}
+
 // ─── Grid container ───────────────────────────────────────────────────────────
 // Usage: <div class="grid">
 .grid {
   @include grid;
 }
 
-// Auto-fit variant — children fill available space equally, space-between feel
-// Usage: <div class="grid grid--auto">  (no .col-* needed on children)
 .grid--auto {
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+.grid--row {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
 }
 
 // Vertical alignment variants
@@ -50,17 +58,22 @@
 @for $i from 1 through $grid-columns {
   .col-#{$i} {
     grid-column: span #{$i};
-    // flex fallback — ignored inside CSS Grid, active inside .flex containers
-    flex: 0 0 math.percentage(calc($i / $grid-columns));
-    max-width: math.percentage(calc($i / $grid-columns));
+   
   }
 }
 
-// .col-auto — size to content, don't span fixed columns
+// .col-auto — shrinks to content width.
+// Works in .grid--row (auto track) or any grid with an explicit `auto` track.
 .col-auto {
   grid-column: auto;
-  flex: 0 0 auto;
-  max-width: none;
+}
+
+// .col-fluid — fills all remaining space.
+// Works in .grid--row (1fr track) or any grid with an explicit `1fr` track.
+// Does NOT work in repeat(12, 1fr) — use col-{n} there instead.
+.col-fluid {
+  grid-column: auto;
+  min-width: 0;
 }
 
 // Responsive overrides
@@ -71,13 +84,11 @@ $breakpoints: ('sm', 'md', 'lg', 'xl');
     @for $i from 1 through $grid-columns {
       .col-#{$bp}-#{$i} {
         grid-column: span #{$i};
-        flex: 0 0 math.percentage(calc($i / $grid-columns));
       }
     }
 
     .col-#{$bp}-auto {
       grid-column: auto;
-      flex: 0 0 auto;
     }
   }
 }
