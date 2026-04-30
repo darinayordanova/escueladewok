@@ -4,6 +4,13 @@ Full-stack marketing and booking platform for **Wok Lab**, an Asian cooking scho
 
 **Live site:** [woklab.es](https://woklab.es) &nbsp;·&nbsp; **Repo:** [github.com/darinayordanova/escueladewok](https://github.com/darinayordanova/escueladewok)
 
+![alt text][desktop]
+
+[desktop]: https://i.postimg.cc/zGqPKmK1/Chat-GPT-Image-Apr-29-2026-01-38-14-PM-1.png "Desktop Mockup"
+
+![alt text][mobile]
+
+[mobile]: https://i.postimg.cc/JnF95TmH/Frame-24-(1).png "Mobile Mockup"
 ---
 
 ## What it does
