@@ -116,47 +116,32 @@
 }
 
 .sheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding-bottom: $spacing-4;
   margin-bottom: $spacing-4;
   border-bottom: 1px solid $color-border;
 }
 
-// ─── Close button — sits above the sheet, over the backdrop ──────────────────
-
 .closeBtn {
-  position: fixed;
-  // Align to the top-right corner of where the sheet will be
-  bottom: 82dvh;
-  bottom: 82vh; // fallback
-  right: $spacing-4;
-  z-index: calc(#{$z-modal} + 1);
-
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: $radius-full;
-  border: none;
-  background-color: transparent;
+  color: $color-text-light;
+  flex-shrink: 0;
   cursor: pointer;
-  color: #fff;
+  transition: color $transition-fast, background-color $transition-fast;
 
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.8);
-  transition: opacity 200ms ease, transform 200ms ease;
-
-  &:focus-visible {
-    outline: 2px solid rgba(#fff, 0.8);
-    outline-offset: 2px;
+  &:hover {
+    color: $color-text;
+    background-color: $color-background-alt;
   }
-}
 
-.closeBtnVisible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: scale(1);
+  @include focus-ring;
 }
 
 .sheetBody {

@@ -25,6 +25,7 @@ interface BookingCardProps {
   price: number;
   currency: string;
   locale: Locale;
+  onAddToCart?: () => void;
 }
 
 const TODAY = new Date().toISOString().split('T')[0];
@@ -40,6 +41,7 @@ export default function BookingCard({
   price,
   currency,
   locale,
+  onAddToCart,
 }: BookingCardProps) {
   const t = useTranslations('courseDetail');
   const tc = useTranslations('cart');
@@ -190,6 +192,7 @@ export default function BookingCard({
   function handleAddToCart() {
     if (!selectedDate || !selectedTime) return;
     addItem(buildCartItem(), 1);
+    onAddToCart?.();
   }
 
   // ── Calendar grid ─────────────────────────────────────────────────────────

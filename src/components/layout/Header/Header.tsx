@@ -27,63 +27,39 @@ export default function Header() {
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
-      <div className={`container flex flex-justify-between flex-align-center ${styles.container} py-1 py-md-2`}>
-        <Link href="/" >
+      <div className={`container ${styles.container}`}>
+
+        {/* Mobile burger + drawer — first in DOM = left on mobile */}
+        <MobileMenu />
+
+        {/* Logo — centred on mobile, left on desktop */}
+        <Link href="/" className={styles.logoLink}>
           <Image src="/logo.svg" className={styles.logo} alt="Wok Lab" width={100} height={60} priority />
         </Link>
 
         {/* Desktop nav — hidden on mobile */}
         <nav className={styles.nav} aria-label="Main navigation">
           <ul className={styles.navList}>
-            <li>
-              <Link href="/" className={styles.navLink}>
-                {t('home')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/courses" className={styles.navLink}>
-                {t('courses')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/calendar" className={styles.navLink}>
-                {t('calendar')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/corporate" className={styles.navLink}>
-                {t('corporate')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/vouchers" className={styles.navLink}>
-                {t('vouchers')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className={styles.navLink}>
-                {t('contact')}
-              </Link>
-            </li>
+            <li><Link href="/" className={styles.navLink}>{t('home')}</Link></li>
+            <li><Link href="/courses" className={styles.navLink}>{t('courses')}</Link></li>
+            <li><Link href="/calendar" className={styles.navLink}>{t('calendar')}</Link></li>
+            <li><Link href="/corporate" className={styles.navLink}>{t('corporate')}</Link></li>
+            <li><Link href="/vouchers" className={styles.navLink}>{t('vouchers')}</Link></li>
+            <li><Link href="/contact" className={styles.navLink}>{t('contact')}</Link></li>
           </ul>
         </nav>
 
-        {/* Desktop language switcher */}
+        {/* Language switcher — desktop only */}
         <div className={styles.desktopLang}>
           <LanguageSwitcher />
-           {/* Cart button */}
-        <button type="button" className={styles.cartBtn} onClick={openCart} aria-label="Open cart">
-          <ShoppingCart size={22} />
-          {totalItems > 0 && (
-            <span className={styles.cartBadge}>{totalItems}</span>
-          )}
-        </button>
         </div>
 
-       
+        {/* Cart — always visible; right on mobile, after lang on desktop */}
+        <button type="button" className={styles.cartBtn} onClick={openCart} aria-label="Open cart">
+          <ShoppingCart size={22} />
+          {totalItems > 0 && <span className={styles.cartBadge}>{totalItems}</span>}
+        </button>
 
-        {/* Mobile burger + drawer */}
-        <MobileMenu />
       </div>
     </header>
   );

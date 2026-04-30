@@ -14,14 +14,28 @@
 }
 
 .container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
   height: $header-height-sm;
 
   @include respond-to('md') {
+    display: flex;
+    justify-content: space-between;
     height: $header-height;
   }
 }
 
+.logoLink {
+  justify-self: center;
+
+  @include respond-to('md') {
+    justify-self: auto;
+  }
+}
+
 .logo {
+  display: block;
   height: calc($header-height-sm - $spacing-6);
   width: auto;
 

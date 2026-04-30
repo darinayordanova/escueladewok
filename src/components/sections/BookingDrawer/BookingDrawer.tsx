@@ -7,6 +7,7 @@ import BookingCard from '@/components/sections/BookingCard/BookingCard';
 import { Close } from '@/components/ui/icons';
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
 import Button from '@/components/ui/Button/Button';
+import { useCart } from '@/context/CartContext';
 import styles from './BookingDrawer.module.scss';
 
 interface BookingDrawerProps {
@@ -24,6 +25,7 @@ interface BookingDrawerProps {
 
 export default function BookingDrawer(props: BookingDrawerProps) {
   const t = useTranslations('courseDetail');
+  const { openCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -64,7 +66,6 @@ export default function BookingDrawer(props: BookingDrawerProps) {
 
   return (
     <div className={styles.root} aria-hidden={undefined}>
-      {/* ── Fixed bottom trigger bar ──────────────────────────────────────── */}
       <div className={styles.bar}>
         <div className={`flex flex-align-center flex-justify-between gap-4 ${styles.barInner}`}>
           <span className="font-bold text-xl m-no">
@@ -83,25 +84,12 @@ export default function BookingDrawer(props: BookingDrawerProps) {
         </div>
       </div>
 
-      {/* ── Backdrop ─────────────────────────────────────────────────────── */}
       <div
         className={`${styles.backdrop} ${isOpen ? styles.backdropVisible : ''}`}
         onClick={close}
         aria-hidden="true"
       />
 
-      {/* ── Close button — floats above the sheet, over the backdrop ─────── */}
-      <button
-        ref={closeRef}
-        type="button"
-        onClick={close}
-        className={`${styles.closeBtn} ${isOpen ? styles.closeBtnVisible : ''}`}
-        aria-label="Close booking panel"
-      >
-        <Close size={22} />
-      </button>
-
-      {/* ── Slide-up sheet ───────────────────────────────────────────────── */}
       <div
         ref={sheetRef}
         id="booking-sheet"
@@ -111,18 +99,24 @@ export default function BookingDrawer(props: BookingDrawerProps) {
         className={`${styles.sheet} ${isOpen ? styles.sheetOpen : ''}`}
         aria-hidden={!isOpen || undefined}
       >
-        {/* Drag handle */}
         <div className={styles.handle} aria-hidden="true" />
 
-        {/* Sheet header */}
-        <div className={`${styles.sheetHeader}`}>
+        <div className={styles.sheetHeader}>
           <p className="font-heading font-bold text-lg m-no">{t('schedule')}</p>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={close}
+            className={styles.closeBtn}
+            aria-label="Close booking panel"
+          >
+            <Close size={22} />
+          </button>
         </div>
 
-        {/* BookingCard content */}
         <div className={styles.sheetBody}>
           <Suspense>
-            <BookingCard {...props} />
+            <BookingCard {...props} onAddToCart={() => { close(); openCart(); }} />
           </Suspense>
         </div>
       </div>
