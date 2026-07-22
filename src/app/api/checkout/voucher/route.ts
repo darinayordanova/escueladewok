@@ -3,15 +3,16 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe/client';
 
 interface VoucherCheckoutBody {
-  voucherKey: 'classVoucher' | 'giftCard25' | 'giftCard50';
+  voucherKey: 'classVoucher' | 'classVoucherForTwo' | 'giftCard25' | 'giftCard50';
   locale: string;
   cancelPath: string;
 }
 
 const VOUCHER_PRODUCTS = {
-  classVoucher: { name: 'Cooking Class Gift Voucher', amount: 69, currency: 'eur' },
-  giftCard25:   { name: 'Gift Card — 25 €',           amount: 25, currency: 'eur' },
-  giftCard50:   { name: 'Gift Card — 50 €',           amount: 50, currency: 'eur' },
+  classVoucher:       { name: 'Cooking Class Gift Voucher',       amount: 69,  currency: 'eur' },
+  classVoucherForTwo: { name: 'Cooking Class Gift Voucher for 2', amount: 138, currency: 'eur' },
+  giftCard25:         { name: 'Gift Card — 25 €',                 amount: 25,  currency: 'eur' },
+  giftCard50:         { name: 'Gift Card — 50 €',                 amount: 50,  currency: 'eur' },
 } as const;
 
 export async function POST(request: Request) {

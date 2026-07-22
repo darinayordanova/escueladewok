@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button/Button';
 
 interface Props {
-  voucherKey: 'classVoucher' | 'giftCard25' | 'giftCard50';
+  voucherKey: 'classVoucher' | 'classVoucherForTwo' | 'giftCard25' | 'giftCard50';
   locale: string;
   label: string;
 }

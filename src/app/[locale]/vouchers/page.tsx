@@ -32,9 +32,10 @@ export async function generateMetadata({ params }: VouchersPageProps): Promise<M
 }
 
 const VOUCHERS = [
-  { key: 'classVoucher', price: '69 €' },
-  { key: 'giftCard25', price: '25 €' },
-  { key: 'giftCard50', price: '50 €' },
+  { key: 'classVoucher',       price: '69 €'  },
+  { key: 'classVoucherForTwo', price: '138 €' },
+  { key: 'giftCard25',         price: '25 €'  },
+  { key: 'giftCard50',         price: '50 €'  },
 ] as const;
 
 export default async function VouchersPage({ params }: VouchersPageProps) {
@@ -48,9 +49,10 @@ export default async function VouchersPage({ params }: VouchersPageProps) {
         <p className="text-lg color-text-light">{t('pageDescription')}</p>
       </div>
 
-      <div className="grid gap-6">
+<div className="grid">
+      <div className={`grid gap-6 ${styles.cardGrid}`}>
         {VOUCHERS.map(({ key, price }) => (
-          <div key={key} className={`col-12 col-md-4 ${styles.card}`}>
+          <div key={key} className={`col-12 col-md-6 ${styles.card}`}>
             <div className={styles.cardBanner}>
               <span className={styles.cardPrice}>{price}</span>
             </div>
@@ -62,6 +64,7 @@ export default async function VouchersPage({ params }: VouchersPageProps) {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

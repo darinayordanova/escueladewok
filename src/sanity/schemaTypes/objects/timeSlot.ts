@@ -1,5 +1,7 @@
 import { defineField, defineType } from 'sanity';
 
+import { MultiDateCalendar } from '../../components/MultiDateCalendar';
+
 export const timeSlot = defineType({
   name: 'timeSlot',
   title: 'Time Slot',
@@ -27,7 +29,8 @@ export const timeSlot = defineType({
       title: 'Dates',
       type: 'array',
       of: [{ type: 'date' }],
-      description: 'Add every date this course runs at the above start time',
+      description: 'Click dates to add or remove them. Navigate months with the arrows.',
+      components: { input: MultiDateCalendar },
     }),
   ],
   preview: {

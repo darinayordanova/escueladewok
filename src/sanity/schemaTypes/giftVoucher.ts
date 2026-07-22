@@ -14,6 +14,7 @@ export const giftVoucher = defineType({
       options: {
         list: [
           { title: 'Cooking Class', value: 'classVoucher' },
+          { title: 'Cooking Class for Two', value: 'classVoucherForTwo' },
           { title: 'Gift Card 25 €', value: 'giftCard25' },
           { title: 'Gift Card 50 €', value: 'giftCard50' },
         ],

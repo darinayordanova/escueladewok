@@ -140,7 +140,7 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
 
 async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const meta = session.metadata ?? {};
-  const voucherKey = meta.voucher_key as 'classVoucher' | 'giftCard25' | 'giftCard50';
+  const voucherKey = meta.voucher_key as 'classVoucher' | 'classVoucherForTwo' | 'giftCard25' | 'giftCard50';
 
   // Idempotency guard — skip if already processed
   const existing = await sanityWriteClient.fetch<string | null>(

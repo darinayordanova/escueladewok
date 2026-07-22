@@ -2,6 +2,20 @@
 @use '@/styles/mixins' as *;
 
 
+.cardGrid {
+  grid-column: span 12;
+
+@include respond-to('sm') {
+    grid-column: span 12;
+  }
+
+  @include respond-to('lg') {
+    grid-column: 3 / span 8;
+  }
+
+   
+}
+
 .card {
   display: flex;
   flex-direction: column;

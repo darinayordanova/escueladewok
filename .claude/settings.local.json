@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Read(//c/Users/darij/AppData/Local/Temp/claude/C--Users-darij-Documents-GitHub-escueladewok/21651d79-6669-4bad-bbd5-001fd2a02e6e/tasks/**)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d['version']\\)\")",
+      "Bash(mkdir -p \"C:/Users/darij/Documents/GitHub/escueladewok/src/app/[locale]/terms\")",
+      "Bash(mkdir -p \"C:/Users/darij/Documents/GitHub/escueladewok/src/app/[locale]/privacy\")",
+      "Bash(node:*)",
+      "Bash(xargs grep:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(curl -sL \"https://github.com/googlefonts/Fraunces/raw/main/fonts/ttf/static/Fraunces_9pt-Bold.ttf\" -o /c/Users/darij/Documents/GitHub/escueladewok/public/fonts/Fraunces-Bold.ttf)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(curl -sL \"https://github.com/googlefonts/Montserrat/raw/main/fonts/ttf/Montserrat-Regular.ttf\" -o /c/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Regular.ttf)",
+      "Bash(curl -sL \"https://github.com/googlefonts/Montserrat/raw/main/fonts/ttf/Montserrat-Bold.ttf\" -o /c/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Bold.ttf)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/ttf/static/Fraunces_9pt-Regular.ttf\" -o \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Fraunces-Regular.ttf\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/ttf/static/Fraunces_9pt-Bold.ttf\" -o \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Fraunces-Bold.ttf\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/googlefonts/Montserrat/main/fonts/ttf/Montserrat-Regular.ttf\" -o \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Regular.ttf\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/googlefonts/Montserrat/main/fonts/ttf/Montserrat-Bold.ttf\" -o \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Bold.ttf\")",
+      "Bash(xxd \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Fraunces-Regular.ttf\")",
+      "Bash(xxd \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Regular.ttf\")",
+      "Bash(curl -sI \"https://raw.githubusercontent.com/JulietaUla/Montserrat/master/fonts/ttf/Montserrat-Regular.ttf\")",
+      "Bash(curl -sI \"https://raw.githubusercontent.com/undotone/Fraunces/main/fonts/ttf/Fraunces-Regular.ttf\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/JulietaUla/Montserrat/master/fonts/ttf/Montserrat-Regular.ttf\" -o \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Regular.ttf\" -w \"%{http_code}\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/JulietaUla/Montserrat/master/fonts/ttf/Montserrat-Bold.ttf\" -o \"C:/Users/darij/Documents/GitHub/escueladewok/public/fonts/Montserrat-Bold.ttf\" -w \"%{http_code}\")",
+      "Bash(curl -s \"https://api.github.com/repos/googlefonts/Fraunces/contents/fonts/ttf\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(x['name']\\) for x in d] if isinstance\\(d,list\\) else print\\(d.get\\('message','error'\\)\\)\")",
+      "Bash(curl -s \"https://api.github.com/repos/googlefonts/Fraunces/contents/fonts\")",
+      "Bash(curl -s -A \"Mozilla/4.0 \\(MSIE 5\\)\" \"https://fonts.googleapis.com/css?family=Fraunces:400,700\")",
+      "PowerShell(Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/ttf/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf\" -OutFile \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf\"; Write-Host \"exit:$LastExitCode size:$\\(\\(Get-Item 'C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf'\\).Length\\)\")",
+      "PowerShell(Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf\" -OutFile \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf\"; $size = \\(Get-Item 'C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf'\\).Length; Write-Host \"size: $size\")"
+    ]
+  }
+}

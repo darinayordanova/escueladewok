@@ -230,9 +230,10 @@ export async function generateVoucherPdf(props: VoucherPdfProps): Promise<Buffer
 
 export function formatVoucherTypeName(voucherKey: string): string {
   switch (voucherKey) {
-    case 'classVoucher': return 'Cooking Class Gift Voucher';
-    case 'giftCard25':   return 'Gift Card €25';
-    case 'giftCard50':   return 'Gift Card €50';
-    default:             return 'Gift Voucher';
+    case 'classVoucher':       return 'Cooking Class Gift Voucher';
+    case 'classVoucherForTwo': return 'Cooking Class Gift Voucher for 2';
+    case 'giftCard25':         return 'Gift Card €25';
+    case 'giftCard50':         return 'Gift Card €50';
+    default:                   return 'Gift Voucher';
   }
 }
