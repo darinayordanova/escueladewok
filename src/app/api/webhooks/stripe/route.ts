@@ -160,12 +160,20 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const recipientEmail   = session.custom_fields?.find((f) => f.key === 'recipient_email')?.text?.value ?? customerEmail;
   const recipientMessage = session.custom_fields?.find((f) => f.key === 'message')?.text?.value         ?? '';
 
-  // 1. Create Stripe coupon + promo code
+  // 1. Expiry date (12 months)
+  const expiresAt = new Date();
+  expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+  const expiresAtUnix     = Math.floor(expiresAt.getTime() / 1000);
+  const expiresAtISO      = expiresAt.toISOString().split('T')[0];
+  const expiresAtDisplay  = expiresAt.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // 2. Create Stripe coupon + promo code
   const coupon = await getStripe().coupons.create({
     amount_off: session.amount_total!,
     currency,
     duration: 'once',
     max_redemptions: 1,
+    redeem_by: expiresAtUnix,
     name: formatVoucherTypeName(voucherKey),
     metadata: { stripe_session_id: session.id, voucher_key: voucherKey },
   });
@@ -173,14 +181,9 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const promoCode = await getStripe().promotionCodes.create({
     promotion: { type: 'coupon', coupon: coupon.id },
     max_redemptions: 1,
+    expires_at: expiresAtUnix,
     metadata: { stripe_session_id: session.id },
   });
-
-  // 2. Expiry date (12 months)
-  const expiresAt = new Date();
-  expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-  const expiresAtISO     = expiresAt.toISOString().split('T')[0];
-  const expiresAtDisplay = expiresAt.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 
   // 3. Generate PDF
   const voucherTypeName = formatVoucherTypeName(voucherKey, locale);
