@@ -166,7 +166,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     currency,
     duration: 'once',
     max_redemptions: 1,
-    name: `Gift Voucher — ${formatVoucherTypeName(voucherKey)}`,
+    name: formatVoucherTypeName(voucherKey),
     metadata: { stripe_session_id: session.id, voucher_key: voucherKey },
   });
 
