@@ -16,6 +16,10 @@
     "label": "How it works",
     "fallbackTitle": "Four steps to an unforgettable evening"
   },
+  "testimonials": {
+    "label": "What our students say",
+    "fallbackTitle": "Experiences that speak for themselves"
+  },
   "upcomingClasses": {
     "label": "What's on",
     "title": "Upcoming Classes",

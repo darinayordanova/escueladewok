@@ -177,6 +177,13 @@ export interface HowItWorksStep {
   description?: LocaleText;
 }
 
+export interface Testimonial {
+  _key: string;
+  quote: LocaleText;
+  author: string;
+  role?: string;
+}
+
 export interface Homepage {
   _id: string;
   _type: 'homepage';
@@ -186,6 +193,8 @@ export interface Homepage {
   featuredCoursesTitle: LocaleString;
   howItWorksTitle?: LocaleString;
   howItWorksSteps?: HowItWorksStep[];
+  testimonialsTitle?: LocaleString;
+  testimonials?: Testimonial[];
 }
 
 // ─── Course sessions & bookings ───────────────────────────────────────────────

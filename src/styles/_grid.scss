@@ -57,8 +57,8 @@
 
 @for $i from 1 through $grid-columns {
   .col-#{$i} {
-    grid-column: span #{$i};
-   
+    grid-column-start: auto;
+    grid-column-end: span #{$i};
   }
 }
 
@@ -83,7 +83,8 @@ $breakpoints: ('sm', 'md', 'lg', 'xl');
   @include respond-to($bp) {
     @for $i from 1 through $grid-columns {
       .col-#{$bp}-#{$i} {
-        grid-column: span #{$i};
+        grid-column-start: auto;
+        grid-column-end: span #{$i};
       }
     }
 

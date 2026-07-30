@@ -9,6 +9,8 @@ export const homepageQuery = groq`
     featuredCoursesTitle,
     howItWorksTitle,
     "howItWorksSteps": howItWorksSteps[] { _key, title, description },
+    testimonialsTitle,
+    "testimonials": testimonials[] { _key, quote, author, role },
   }
 `;
 

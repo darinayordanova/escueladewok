@@ -14,6 +14,7 @@ import type { Course, Homepage, Locale } from '@/types';
 import styles from './page.module.scss';
 import CtaBanner from '@/components/sections/CtaBanner/CtaBanner';
 import HowItWorks from '@/components/sections/HowItWorks/HowItWorks';
+import Testimonials from '@/components/sections/Testimonials/Testimonials';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
@@ -94,7 +95,12 @@ export default async function HomePage({ params }: HomePageProps) {
 
       <UpcomingClasses courses={allCourses} locale={locale as Locale} />
 
-     
+      <Testimonials
+        title={homepage?.testimonialsTitle}
+        testimonials={homepage?.testimonials}
+        locale={locale as Locale}
+      />
+
       <CtaBanner />
 
     </>

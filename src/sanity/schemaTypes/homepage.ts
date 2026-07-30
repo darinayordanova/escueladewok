@@ -49,6 +49,35 @@ export const homepage = defineType({
       }],
       validation: r => r.max(6),
     }),
+
+    defineField({
+      name: 'testimonialsTitle',
+      title: 'Testimonials — Section Title',
+      type: 'localeString',
+    }),
+    defineField({
+      name: 'testimonials',
+      title: 'Testimonials',
+      type: 'array',
+      of: [{
+        type: 'object',
+        name: 'testimonial',
+        fields: [
+          defineField({ name: 'quote', title: 'Quote', type: 'localeText', validation: r => r.required() }),
+          defineField({ name: 'author', title: 'Author Name', type: 'string', validation: r => r.required() }),
+          defineField({ name: 'role', title: 'Role / Location (optional)', type: 'string' }),
+        ],
+        preview: {
+          select: { author: 'author', quote: 'quote.en' },
+          prepare({ author, quote }: { author?: string; quote?: string }) {
+            return {
+              title: author ?? 'Testimonial',
+              subtitle: quote ? `"${quote.slice(0, 60)}…"` : '',
+            };
+          },
+        },
+      }],
+    }),
   ],
   preview: {
     prepare() {

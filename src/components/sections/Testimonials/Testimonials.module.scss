@@ -1,0 +1,21 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+
+.quote {
+  font-family: $font-heading;
+  font-size: 4rem;
+  line-height: 1;
+  color: $color-primary;
+  opacity: 0.2;
+  position: absolute;
+  top: $spacing-3;
+  left: $spacing-6;
+  pointer-events: none;
+}
+
+.author {
+&::before {
+    content: '— ';
+  }
+}

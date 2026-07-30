@@ -63,7 +63,7 @@ export default function UpcomingClasses({ courses, locale }: UpcomingClassesProp
                 key={selectedDate}
                 items={occurrences}
                 itemsPerPage={2}
-                renderItem={(occ) => <CourseRow key={`${occ.course}-${occ.date}-${occ.startTime}`} occ={occ} locale={locale} />}
+                renderItem={(occ) => <CourseRow key={`${occ.course.slug.current}-${occ.date}-${occ.startTime}`} occ={occ} locale={locale} />}
                 showControls={false}
                 showDots={occurrences.length > 2}
                 align="end"
