@@ -5,6 +5,7 @@ import { sendConfirmationEmail, sendOwnerNotificationEmail, sendVoucherBuyerEmai
 import { generateVoucherPdf, formatVoucherTypeName } from '@/lib/pdf/voucherPdf';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
+import type { Locale } from '@/types';
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -141,6 +142,7 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
 async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const meta = session.metadata ?? {};
   const voucherKey = meta.voucher_key as 'classVoucher' | 'classVoucherForTwo' | 'giftCard25' | 'giftCard50';
+  const locale: Locale = meta.locale === 'es' ? 'es' : 'en';
 
   // Idempotency guard — skip if already processed
   const existing = await sanityWriteClient.fetch<string | null>(
@@ -178,10 +180,10 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const expiresAt = new Date();
   expiresAt.setFullYear(expiresAt.getFullYear() + 1);
   const expiresAtISO     = expiresAt.toISOString().split('T')[0];
-  const expiresAtDisplay = expiresAt.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+  const expiresAtDisplay = expiresAt.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 
   // 3. Generate PDF
-  const voucherTypeName = formatVoucherTypeName(voucherKey);
+  const voucherTypeName = formatVoucherTypeName(voucherKey, locale);
   const pdfBuffer = await generateVoucherPdf({
     code: promoCode.code,
     voucherTypeName,
@@ -191,6 +193,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     recipientName,
     recipientMessage: recipientMessage || undefined,
     validUntil: expiresAtDisplay,
+    locale,
   });
 
   // 4. Save to Sanity
@@ -214,7 +217,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   });
 
   // 5. Send emails
-  const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer };
+  const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer, locale };
 
   await Promise.allSettled([
     sendVoucherBuyerEmail(sharedData).catch((err) => console.error('[voucher] buyer email failed:', err)),

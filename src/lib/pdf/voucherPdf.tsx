@@ -2,6 +2,8 @@ import { Document, Image, Link, Page, StyleSheet, Text, View, renderToBuffer } f
 import React from 'react';
 import sharp from 'sharp';
 
+import type { Locale } from '@/types';
+
 const RED = '#860A15';
 const TEXT = '#1A0E0E';
 const STONE = '#7A5C5C';
@@ -146,6 +148,44 @@ async function buildLogoPng(): Promise<string> {
 }
 
 
+const VOUCHER_PDF_TEXT: Record<Locale, {
+  badge: string;
+  headerSub: string;
+  value: string;
+  for: string;
+  code: string;
+  validUntil: string;
+  footerPrefix: string;
+  footerLinkLabel: string;
+  footerSuffix: string;
+  footerQuestions: string;
+}> = {
+  en: {
+    badge: 'GIFT VOUCHER',
+    headerSub: 'An unforgettable hands-on cooking experience in the heart of Madrid. From the wok to the table.',
+    value: 'Value',
+    for: 'FOR',
+    code: 'VOUCHER CODE',
+    validUntil: 'Valid until',
+    footerPrefix: 'Enter this code at checkout on ',
+    footerLinkLabel: 'woklab.es',
+    footerSuffix: ' to redeem your voucher.',
+    footerQuestions: 'Questions? info@woklab.es',
+  },
+  es: {
+    badge: 'VALE REGALO',
+    headerSub: 'Una experiencia culinaria inolvidable y práctica en el corazón de Madrid. Del wok a la mesa.',
+    value: 'Valor',
+    for: 'PARA',
+    code: 'CÓDIGO DEL VALE',
+    validUntil: 'Válido hasta el',
+    footerPrefix: 'Introduce este código al finalizar tu compra en ',
+    footerLinkLabel: 'woklab.es',
+    footerSuffix: ' para canjear tu vale.',
+    footerQuestions: '¿Preguntas? info@woklab.es',
+  },
+};
+
 interface VoucherPdfProps {
   code: string;
   voucherTypeName: string;
@@ -155,6 +195,7 @@ interface VoucherPdfProps {
   recipientName?: string;
   recipientMessage?: string;
   validUntil: string;
+  locale: Locale;
 }
 
 function VoucherDocument({
@@ -166,11 +207,13 @@ function VoucherDocument({
   recipientName,
   recipientMessage,
   validUntil,
+  locale,
   headerSrc,
   logoSrc,
 }: VoucherPdfProps & { headerSrc: string; logoSrc: string }) {
   const displayName = recipientName || buyerName;
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
+  const t = VOUCHER_PDF_TEXT[locale] ?? VOUCHER_PDF_TEXT.en;
 
   return (
     <Document title="Wok Lab — Gift Voucher" author="Wok Lab">
@@ -180,18 +223,18 @@ function VoucherDocument({
           {/* Background: converted from SVG via sharp */}
           <Image src={headerSrc} style={s.headerBg} />
           <Image src={logoSrc} style={s.logo} />
-          <Text style={s.giftBadge}>GIFT VOUCHER</Text>
-          <Text style={s.headerSub}>An unforgettable hands-on cooking experience in the heart of Madrid. From the wok to the table.</Text>
+          <Text style={s.giftBadge}>{t.badge}</Text>
+          <Text style={s.headerSub}>{t.headerSub}</Text>
         </View>
 
         {/* Body */}
         <View style={s.body}>
           <Text style={s.voucherType}>{voucherTypeName}</Text>
           {/* Amount */}
-          <Text style={s.amountText}>Value: {amount} {currencySymbol}</Text>
+          <Text style={s.amountText}>{t.value}: {amount} {currencySymbol}</Text>
           <View style={s.divider} />
 {/* Recipient */}
-          <Text style={s.sectionLabel}>FOR</Text>
+          <Text style={s.sectionLabel}>{t.for}</Text>
           <Text style={s.recipientName}>{displayName}</Text>
               {/* Personal message */}
           {recipientMessage ? (
@@ -201,20 +244,20 @@ function VoucherDocument({
           ) : null}
           <View style={s.divider} />
           {/* Code */}
-            <Text style={s.codeLabel}>VOUCHER CODE</Text>
+            <Text style={s.codeLabel}>{t.code}</Text>
 
             <View style={s.codeWrap}>
               <Text style={s.code}>{code}</Text>
               </View>
-            <Text style={s.validUntil}>Valid until {validUntil}</Text>
-        
+            <Text style={s.validUntil}>{t.validUntil} {validUntil}</Text>
+
         </View>
 
         {/* Footer */}
         <View style={s.footer}>
           <Text style={s.footerText}>
-            Enter this code at checkout on <Link style={s.link} src="https://woklab.es">woklab.es</Link> to redeem your voucher.{'\n'}
-            Questions? info@woklab.es
+            {t.footerPrefix}<Link style={s.link} src="https://woklab.es">{t.footerLinkLabel}</Link>{t.footerSuffix}{'\n'}
+            {t.footerQuestions}
           </Text>
         </View>
       </Page>
@@ -228,12 +271,13 @@ export async function generateVoucherPdf(props: VoucherPdfProps): Promise<Buffer
   return Buffer.from(arrayBuffer);
 }
 
-export function formatVoucherTypeName(voucherKey: string): string {
-  switch (voucherKey) {
-    case 'classVoucher':       return 'Cooking Class Gift Voucher';
-    case 'classVoucherForTwo': return 'Cooking Class Gift Voucher for 2';
-    case 'giftCard25':         return 'Gift Card €25';
-    case 'giftCard50':         return 'Gift Card €50';
-    default:                   return 'Gift Voucher';
-  }
+const VOUCHER_TYPE_NAMES: Record<string, Record<Locale, string>> = {
+  classVoucher:       { en: 'Cooking Class Gift Voucher',       es: 'Vale Regalo — Clase de Cocina' },
+  classVoucherForTwo: { en: 'Cooking Class Gift Voucher for 2', es: 'Vale Regalo — Clase de Cocina para 2' },
+  giftCard25:         { en: 'Gift Card €25',                    es: 'Tarjeta Regalo €25' },
+  giftCard50:         { en: 'Gift Card €50',                    es: 'Tarjeta Regalo €50' },
+};
+
+export function formatVoucherTypeName(voucherKey: string, locale: Locale = 'en'): string {
+  return VOUCHER_TYPE_NAMES[voucherKey]?.[locale] ?? (locale === 'es' ? 'Vale Regalo' : 'Gift Voucher');
 }

@@ -76,7 +76,7 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
               {voucherKey && (
                 <div className={styles.row}>
                   <dt>{t('voucher')}</dt>
-                  <dd>{formatVoucherTypeName(voucherKey)}</dd>
+                  <dd>{formatVoucherTypeName(voucherKey, l)}</dd>
                 </div>
               )}
               <div className={styles.row}>

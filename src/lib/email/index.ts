@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
 import type { ConfirmationEmailData } from '@/types';
+import type { Locale } from '@/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
@@ -19,19 +20,61 @@ export interface VoucherEmailData {
   currency: string;
   validUntil: string;
   pdfBuffer: Buffer;
+  locale: Locale;
 }
 
+const VOUCHER_BUYER_EMAIL_TEXT: Record<Locale, {
+  subject: (voucherTypeName: string) => string;
+  tagline: string;
+  greeting: (buyerName: string) => string;
+  intro: (recipientName: string, recipientEmail: string) => string;
+  voucher: string;
+  code: string;
+  amount: string;
+  validUntil: string;
+  recipient: string;
+  questions: string;
+}> = {
+  en: {
+    subject: (voucherTypeName) => `Your gift voucher — ${voucherTypeName}`,
+    tagline: 'Chinese Cooking Classes · Madrid',
+    greeting: (buyerName) => `Hi ${buyerName},`,
+    intro: (recipientName, recipientEmail) =>
+      `Your gift voucher purchase is confirmed! We've sent it to <strong>${recipientName}</strong> (${recipientEmail}). A PDF copy is attached for your records.`,
+    voucher: 'Voucher',
+    code: 'Code',
+    amount: 'Amount',
+    validUntil: 'Valid until',
+    recipient: 'Recipient',
+    questions: 'If you have any questions, reply to this email.',
+  },
+  es: {
+    subject: (voucherTypeName) => `Tu vale regalo — ${voucherTypeName}`,
+    tagline: 'Clases de Cocina China · Madrid',
+    greeting: (buyerName) => `Hola ${buyerName},`,
+    intro: (recipientName, recipientEmail) =>
+      `¡Tu compra del vale regalo está confirmada! Lo hemos enviado a <strong>${recipientName}</strong> (${recipientEmail}). Adjuntamos una copia en PDF para tus archivos.`,
+    voucher: 'Vale',
+    code: 'Código',
+    amount: 'Importe',
+    validUntil: 'Válido hasta',
+    recipient: 'Destinatario',
+    questions: 'Si tienes alguna pregunta, responde a este correo.',
+  },
+};
+
 export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
-  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer } = data;
+  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale } = data;
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
+  const t = VOUCHER_BUYER_EMAIL_TEXT[locale] ?? VOUCHER_BUYER_EMAIL_TEXT.en;
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: buyerEmail,
-    subject: `Your gift voucher — ${voucherTypeName}`,
+    subject: t.subject(voucherTypeName),
     attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
     html: `
-      <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
+      <!DOCTYPE html><html lang="${locale}"><head><meta charset="UTF-8" />
       <style>
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;margin:0;padding:0;background:#f9f5f0}
         .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
@@ -47,37 +90,76 @@ export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
         .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
       </style></head>
       <body><div class="wrapper">
-        <div class="header"><h1>WOK LAB</h1><p>Chinese Cooking Classes · Madrid</p></div>
+        <div class="header"><h1>WOK LAB</h1><p>${t.tagline}</p></div>
         <div class="body">
-          <p>Hi ${buyerName},</p>
-          <p>Your gift voucher purchase is confirmed! We've sent it to <strong>${recipientName}</strong> (${recipientEmail}). A PDF copy is attached for your records.</p>
+          <p>${t.greeting(buyerName)}</p>
+          <p>${t.intro(recipientName, recipientEmail)}</p>
           <div class="detail-box"><table>
-            <tr><td>Voucher</td><td>${voucherTypeName}</td></tr>
-            <tr><td>Code</td><td><strong>${code}</strong></td></tr>
-            <tr><td>Amount</td><td>${amount} ${currencySymbol}</td></tr>
-            <tr><td>Valid until</td><td>${validUntil}</td></tr>
-            <tr><td>Recipient</td><td>${recipientName}</td></tr>
+            <tr><td>${t.voucher}</td><td>${voucherTypeName}</td></tr>
+            <tr><td>${t.code}</td><td><strong>${code}</strong></td></tr>
+            <tr><td>${t.amount}</td><td>${amount} ${currencySymbol}</td></tr>
+            <tr><td>${t.validUntil}</td><td>${validUntil}</td></tr>
+            <tr><td>${t.recipient}</td><td>${recipientName}</td></tr>
           </table></div>
-          <p>If you have any questions, reply to this email.</p>
+          <p>${t.questions}</p>
         </div>
-        <div class="footer"><p>Wok Lab &mdash; Chinese Cooking Classes</p></div>
+        <div class="footer"><p>Wok Lab &mdash; ${t.tagline}</p></div>
       </div></body></html>`,
   });
 
   if (error) throw new Error(`Failed to send voucher buyer email: ${error.message}`);
 }
 
+const VOUCHER_RECIPIENT_EMAIL_TEXT: Record<Locale, {
+  subject: (buyerName: string) => string;
+  tagline: string;
+  greeting: (recipientName: string) => string;
+  intro: (buyerName: string) => string;
+  yourCode: string;
+  validUntil: string;
+  voucher: string;
+  value: string;
+  redeem: string;
+  seeYou: string;
+}> = {
+  en: {
+    subject: (buyerName) => `You've received a gift from ${buyerName}!`,
+    tagline: 'Chinese Cooking Classes · Madrid',
+    greeting: (recipientName) => `Hi ${recipientName},`,
+    intro: (buyerName) => `<strong>${buyerName}</strong> has sent you a cooking experience as a gift!`,
+    yourCode: 'Your voucher code',
+    validUntil: 'Valid until',
+    voucher: 'Voucher',
+    value: 'Value',
+    redeem: 'Enter the code at checkout on <a href="https://woklab.es">woklab.es</a> to redeem your voucher. The PDF attached can be printed or kept digitally.',
+    seeYou: 'See you in the kitchen!',
+  },
+  es: {
+    subject: (buyerName) => `¡Has recibido un regalo de ${buyerName}!`,
+    tagline: 'Clases de Cocina China · Madrid',
+    greeting: (recipientName) => `Hola ${recipientName},`,
+    intro: (buyerName) => `¡<strong>${buyerName}</strong> te ha regalado una experiencia culinaria!`,
+    yourCode: 'Tu código de vale',
+    validUntil: 'Válido hasta',
+    voucher: 'Vale',
+    value: 'Valor',
+    redeem: 'Introduce el código al finalizar tu compra en <a href="https://woklab.es">woklab.es</a> para canjear tu vale. El PDF adjunto se puede imprimir o guardar digitalmente.',
+    seeYou: '¡Nos vemos en la cocina!',
+  },
+};
+
 export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'buyerEmail' | 'sendDate'>) {
-  const { buyerName, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer } = data;
+  const { buyerName, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale } = data;
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
+  const t = VOUCHER_RECIPIENT_EMAIL_TEXT[locale] ?? VOUCHER_RECIPIENT_EMAIL_TEXT.en;
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: recipientEmail,
-    subject: `You've received a gift from ${buyerName}! 🎁`,
+    subject: t.subject(buyerName),
     attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
     html: `
-      <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
+      <!DOCTYPE html><html lang="${locale}"><head><meta charset="UTF-8" />
       <style>
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;margin:0;padding:0;background:#f9f5f0}
         .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
@@ -97,23 +179,23 @@ export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'bu
         .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
       </style></head>
       <body><div class="wrapper">
-        <div class="header"><h1>WOK LAB</h1><p>Chinese Cooking Classes · Madrid</p></div>
+        <div class="header"><h1>WOK LAB</h1><p>${t.tagline}</p></div>
         <div class="body">
-          <p>Hi ${recipientName},</p>
-          <p><strong>${buyerName}</strong> has sent you a cooking experience as a gift! 🎉</p>
+          <p>${t.greeting(recipientName)}</p>
+          <p>${t.intro(buyerName)}</p>
           <div class="code-box">
-            <p class="code-label">Your voucher code</p>
+            <p class="code-label">${t.yourCode}</p>
             <p class="code">${code}</p>
-            <p class="valid">Valid until ${validUntil}</p>
+            <p class="valid">${t.validUntil} ${validUntil}</p>
           </div>
           <div class="detail-box"><table>
-            <tr><td>Voucher</td><td>${voucherTypeName}</td></tr>
-            <tr><td>Value</td><td>${amount} ${currencySymbol}</td></tr>
+            <tr><td>${t.voucher}</td><td>${voucherTypeName}</td></tr>
+            <tr><td>${t.value}</td><td>${amount} ${currencySymbol}</td></tr>
           </table></div>
-          <p>Enter the code at checkout on <a href="https://woklab.es">woklab.es</a> to redeem your voucher. The PDF attached can be printed or kept digitally.</p>
-          <p>See you in the kitchen! 🍳</p>
+          <p>${t.redeem}</p>
+          <p>${t.seeYou}</p>
         </div>
-        <div class="footer"><p>Wok Lab &mdash; Chinese Cooking Classes &mdash; info@woklab.es</p></div>
+        <div class="footer"><p>Wok Lab &mdash; ${t.tagline} &mdash; info@woklab.es</p></div>
       </div></body></html>`,
   });
 
