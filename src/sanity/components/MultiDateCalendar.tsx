@@ -78,6 +78,37 @@ export function MultiDateCalendar(props: ArrayOfPrimitivesInputProps) {
         ))}
       </div>
 
+      {/* Date cells */}
+      <div style={grid7}>
+        {cells.map((cell, i) => {
+          if (!cell) return <div key={`pad-${i}`} />
+          const dateStr = toDateStr(cell)
+          const isSel = selected.has(dateStr)
+          const isToday = dateStr === today
+          return (
+            <button
+              key={dateStr}
+              type="button"
+              onClick={() => toggle(dateStr)}
+              disabled={!!readOnly}
+              style={{
+                padding: '5px 0',
+                borderRadius: 4,
+                border: isToday && !isSel ? '1.5px solid #2276FC' : '1.5px solid transparent',
+                background: isSel ? '#2276FC' : 'transparent',
+                color: isSel ? '#fff' : 'inherit',
+                cursor: readOnly ? 'default' : 'pointer',
+                fontSize: 13,
+                fontWeight: isSel ? 700 : 400,
+                width: '100%',
+              }}
+            >
+              {cell.getDate()}
+            </button>
+          )
+        })}
+      </div>
+
       {/* Selected dates summary */}
       <div style={{ marginTop: 14, borderTop: '1px solid #e5e7eb', paddingTop: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -88,28 +119,7 @@ export function MultiDateCalendar(props: ArrayOfPrimitivesInputProps) {
             <button type="button" onClick={clearAll} style={clearBtn}>Clear all</button>
           )}
         </div>
-        {sortedDates.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-            {sortedDates.map(d => (
-              <span
-                key={d}
-                onClick={() => toggle(d)}
-                style={{
-                  background: '#f0f4ff',
-                  color: '#2276FC',
-                  borderRadius: 4,
-                  padding: '2px 8px',
-                  fontSize: 12,
-                  cursor: readOnly ? 'default' : 'pointer',
-                  border: '1px solid #c7d7ff',
-                }}
-                title="Click to remove"
-              >
-                {d}
-              </span>
-            ))}
-          </div>
-        )}
+       
       </div>
     </div>
   )
