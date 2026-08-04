@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import FilteredCourseGrid from '@/components/sections/FilteredCourseGrid/FilteredCourseGrid';
 import { sanityClient } from '@/lib/sanity/client';
 import { corporateCoursesQuery } from '@/lib/sanity/queries';
-import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
+import { buildPageMetadata } from '@/lib/seo';
 import type { Course, Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -16,21 +16,13 @@ interface CorporatePageProps {
 export async function generateMetadata({ params }: CorporatePageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'corporate' });
-  const title = t('pageTitle');
-  const description = t('pageDescription');
 
-  return {
-    title,
-    description,
-    alternates: buildAlternates('/corporate'),
-    openGraph: {
-      title,
-      description,
-      url: `${SITE_URL}/${locale}/corporate`,
-      locale: OG_LOCALE[locale] ?? 'en_US',
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
-    },
-  };
+  return buildPageMetadata({
+    locale,
+    path: '/corporate',
+    title: t('pageTitle'),
+    description: t('pageDescription'),
+  });
 }
 
 export default async function CorporatePage({ params }: CorporatePageProps) {

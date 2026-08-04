@@ -39,10 +39,10 @@ export default async function Footer() {
           <p className={styles.tagline}>{t('tagline')}</p>
 
           <div className={styles.social}>
-            <a href="https://www.instagram.com/woklab.madrid" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Instagram">
+            <a href="https://www.instagram.com/woklab.es" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Instagram">
               <Instagram size={20} />
             </a>
-            <a href="https://www.facebook.com/woklabmadrid" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Facebook">
+            <a href="https://www.facebook.com/profile.php?id=61573209041792" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Facebook">
               <Facebook size={20} />
             </a>
           </div>

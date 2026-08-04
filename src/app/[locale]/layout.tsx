@@ -10,8 +10,18 @@ import ScrollToTop from '@/components/layout/ScrollToTop';
 import CartDrawer from '@/components/ui/CartDrawer/CartDrawer';
 import { CartProvider } from '@/context/CartContext';
 import { routing } from '@/i18n/routing';
-import { DEFAULT_OG_IMAGE, OG_LOCALE, SITE_NAME, SITE_URL } from '@/lib/seo';
-import type { Locale } from '@/types';
+import { sanityClient } from '@/lib/sanity/client';
+import { contactPageQuery } from '@/lib/sanity/queries';
+import {
+  DEFAULT_OG_IMAGE,
+  OG_LOCALE,
+  SITE_NAME,
+  SITE_URL,
+  SOCIAL_LINKS,
+  STUDIO_ADDRESS,
+  STUDIO_GEO,
+} from '@/lib/seo';
+import type { ContactPage, Locale } from '@/types';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -50,9 +60,9 @@ export async function generateMetadata({
     },
     alternates: {
       languages: {
-        en: `${SITE_URL}/en`,
-        es: `${SITE_URL}/es`,
-        'x-default': `${SITE_URL}/en`,
+        en: '/en',
+        es: '/es',
+        'x-default': '/en',
       },
     },
   };
@@ -65,10 +75,31 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     notFound();
   }
 
-  const messages = await getMessages();
+  const [messages, contact] = await Promise.all([
+    getMessages(),
+    sanityClient.fetch<ContactPage>(contactPageQuery),
+  ]);
+
+  const localBusinessJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${SITE_URL}/#localbusiness`,
+    name: SITE_NAME,
+    image: DEFAULT_OG_IMAGE,
+    url: SITE_URL,
+    address: STUDIO_ADDRESS,
+    geo: STUDIO_GEO,
+    priceRange: '€€',
+    sameAs: SOCIAL_LINKS,
+    ...(contact?.phone && { telephone: contact.phone }),
+  };
 
   return (
     <NextIntlClientProvider locale={locale as Locale} messages={messages}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+      />
       <CartProvider>
         <ScrollToTop />
         <Header />

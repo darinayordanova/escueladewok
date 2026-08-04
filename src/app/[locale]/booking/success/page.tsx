@@ -5,8 +5,9 @@ import { getTranslations } from 'next-intl/server';
 import { Check } from '@/components/ui/icons';
 import Link from '@/components/ui/Link/Link';
 import { formatDate } from '@/lib/courses/timeslots';
-import { getStripe } from '@/lib/stripe/client';
 import { formatVoucherTypeName } from '@/lib/pdf/voucherPdf';
+import { buildPageMetadata } from '@/lib/seo';
+import { getStripe } from '@/lib/stripe/client';
 import type { Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -28,7 +29,10 @@ export async function generateMetadata({ params, searchParams }: SuccessPageProp
   }
   const ns = isVoucher ? 'voucherSuccess' : 'bookingSuccess';
   const t = await getTranslations({ locale, namespace: ns });
-  return { title: t('title'), robots: { index: false, follow: false } };
+  return {
+    ...buildPageMetadata({ locale, path: '/booking/success', title: t('title') }),
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function BookingSuccessPage({ params, searchParams }: SuccessPageProps) {

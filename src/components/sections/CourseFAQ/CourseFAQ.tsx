@@ -1,11 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { Children, isValidElement, useState, type ReactNode } from 'react';
 
 import { ChevronDown } from '@/components/ui/icons';
 import type { Locale } from '@/types';
 
 import styles from './CourseFAQ.module.scss';
+
+/** Flatten a FAQ answer's JSX into plain text for the FAQPage JSON-LD. */
+function extractText(node: ReactNode): string {
+  if (node == null || typeof node === 'boolean') return '';
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join(' ');
+  if (isValidElement(node)) {
+    const props = node.props as { children?: ReactNode };
+    return Children.toArray(props.children).map(extractText).join(' ');
+  }
+  return '';
+}
 
 interface FAQItem {
   q: string;
@@ -146,8 +158,25 @@ export default function CourseFAQ({ locale }: CourseFAQProps) {
     setOpenIndex((prev) => (prev === i ? null : i));
   }
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: extractText(item.a).replace(/\s+/g, ' ').trim(),
+      },
+    })),
+  };
+
   return (
     <section className="mt-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <h2 className={`h5 pb-3 mb-no ${styles.title}`}>{TITLE[locale]}</h2>
       <dl className={styles.list}>
         {items.map((item, i) => {

@@ -53,6 +53,24 @@ export function formatDate(
 
 // ─── Date utilities ───────────────────────────────────────────────────────────
 
+/** UTC offset (e.g. "+02:00") in effect in Madrid on the given date, accounting for DST. */
+function madridOffset(dateStr: string): string {
+  const probe = new Date(`${dateStr}T12:00:00Z`);
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Madrid',
+    timeZoneName: 'shortOffset',
+  }).formatToParts(probe);
+  const tzName = parts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+1';
+  const hours = parseInt(tzName.replace('GMT', ''), 10) || 1;
+  const sign = hours >= 0 ? '+' : '-';
+  return `${sign}${String(Math.abs(hours)).padStart(2, '0')}:00`;
+}
+
+/** Combine a "YYYY-MM-DD" date and "HH:MM" time into an ISO 8601 datetime with the Europe/Madrid UTC offset. */
+export function toMadridISOString(date: string, time: string): string {
+  return `${date}T${time}:00${madridOffset(date)}`;
+}
+
 /** Today's date as "YYYY-MM-DD" in local time. */
 export function todayISO(): string {
   const now = new Date();

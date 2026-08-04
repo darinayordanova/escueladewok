@@ -5,7 +5,7 @@ import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
 import TeamGrid from '@/components/sections/TeamGrid/TeamGrid';
 import { sanityClient } from '@/lib/sanity/client';
 import { aboutPageQuery } from '@/lib/sanity/queries';
-import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
+import { buildPageMetadata } from '@/lib/seo';
 import type { AboutPage, Locale } from '@/types';
 
 
@@ -17,21 +17,13 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
   const { locale } = await params;
   const page = await sanityClient.fetch<AboutPage>(aboutPageQuery);
   const l = locale as Locale;
-  const title = page?.title?.[l];
-  const description = page?.subtitle?.[l];
 
-  return {
-    title,
-    description,
-    alternates: buildAlternates('/about'),
-    openGraph: {
-      title,
-      description,
-      url: `${SITE_URL}/${locale}/about`,
-      locale: OG_LOCALE[locale] ?? 'en_US',
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
-    },
-  };
+  return buildPageMetadata({
+    locale,
+    path: '/about',
+    title: page?.title?.[l],
+    description: page?.subtitle?.[l],
+  });
 }
 
 export default async function AboutPageRoute({ params }: AboutPageProps) {

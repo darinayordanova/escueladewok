@@ -136,6 +136,11 @@ export const course = defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'seo',
+    }),
   ],
   preview: {
     select: {

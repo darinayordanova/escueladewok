@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { sanityClient } from '@/lib/sanity/client';
 import { privacyPageQuery } from '@/lib/sanity/queries';
+import { buildPageMetadata } from '@/lib/seo';
 import type { LegalPage, Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -19,8 +20,12 @@ export async function generateMetadata({ params }: PrivacyPageProps): Promise<Me
   const l = locale as Locale;
 
   return {
-    title: page?.title?.[l] ?? t('privacy'),
-    description: t('privacyDescription'),
+    ...buildPageMetadata({
+      locale,
+      path: '/privacy',
+      title: page?.title?.[l] ?? t('privacy'),
+      description: t('privacyDescription'),
+    }),
     robots: { index: false, follow: false },
   };
 }

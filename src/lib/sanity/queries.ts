@@ -11,6 +11,7 @@ export const homepageQuery = groq`
     "howItWorksSteps": howItWorksSteps[] { _key, title, description },
     testimonialsTitle,
     "testimonials": testimonials[] { _key, quote, author, role },
+    seo,
   }
 `;
 
@@ -114,7 +115,8 @@ export const courseBySlugQuery = groq`
       image { ..., asset-> }
     },
     allergens,
-    brochure { asset-> }
+    brochure { asset-> },
+    seo,
   }
 `;
 

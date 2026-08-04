@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Wok Lab — Clases de cocina asiática en Madrid",
+    "title": "Clases de cocina asiática en Madrid",
     "description": "Descubre el arte de la cocina china. Clases prácticas y divertidas para todos los niveles."
   },
   "navigation": {
@@ -149,7 +149,7 @@
       "title": "Envíanos un mensaje",
       "name": "Tu nombre",
       "namePlaceholder": "Ana García",
-      "email": "Tu correo",
+      "email": "Tu correo electrónico",
       "emailPlaceholder": "ana@ejemplo.com",
       "message": "Mensaje",
       "messagePlaceholder": "¿En qué podemos ayudarte?",

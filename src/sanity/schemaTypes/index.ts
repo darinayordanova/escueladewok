@@ -13,6 +13,7 @@ import { menuItem } from './objects/menuItem';
 import { imageGallery } from './objects/sections/imageGallery';
 import { imageSection } from './objects/sections/imageSection';
 import { textSection } from './objects/sections/textSection';
+import { seo } from './objects/seo';
 import { teamMember } from './objects/teamMember';
 import { timeSlot } from './objects/timeSlot';
 
@@ -24,6 +25,7 @@ export const schemaTypes = [
   timeSlot,
   menuItem,
   teamMember,
+  seo,
   // Page builder section types
   textSection,
   imageSection,

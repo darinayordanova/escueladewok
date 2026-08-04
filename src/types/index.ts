@@ -11,6 +11,17 @@ export interface LocaleText {
   es: string;
 }
 
+// ─── SEO ──────────────────────────────────────────────────────────────────────
+export interface LocaleStringOptional {
+  en?: string;
+  es?: string;
+}
+
+export interface SeoFields {
+  metaTitle?: LocaleStringOptional;
+  metaDescription?: LocaleStringOptional;
+}
+
 // ─── Sanity ───────────────────────────────────────────────────────────────────
 export interface SanityImage {
   _type: 'image';
@@ -116,6 +127,7 @@ export interface Course {
   brochure?: SanityFile;
   instructor?: LocaleString;
   featured?: boolean;
+  seo?: SeoFields;
 }
 
 /** A single expanded occurrence: one course on one specific date at one time */
@@ -195,6 +207,7 @@ export interface Homepage {
   howItWorksSteps?: HowItWorksStep[];
   testimonialsTitle?: LocaleString;
   testimonials?: Testimonial[];
+  seo?: SeoFields;
 }
 
 // ─── Course sessions & bookings ───────────────────────────────────────────────

@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { sanityClient } from '@/lib/sanity/client';
 import { termsPageQuery } from '@/lib/sanity/queries';
+import { buildPageMetadata } from '@/lib/seo';
 import type { LegalPage, Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -19,8 +20,12 @@ export async function generateMetadata({ params }: TermsPageProps): Promise<Meta
   const l = locale as Locale;
 
   return {
-    title: page?.title?.[l] ?? t('terms'),
-    description: t('termsDescription'),
+    ...buildPageMetadata({
+      locale,
+      path: '/terms',
+      title: page?.title?.[l] ?? t('terms'),
+      description: t('termsDescription'),
+    }),
     robots: { index: false, follow: false },
   };
 }

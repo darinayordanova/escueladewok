@@ -13,11 +13,11 @@ import CourseAllergens from '@/components/sections/CourseAllergens/CourseAllerge
 import CourseFAQ from '@/components/sections/CourseFAQ/CourseFAQ';
 import CourseMenu from '@/components/sections/CourseMenu/CourseMenu';
 import CuisinePill from '@/components/ui/CuisinePill/CuisinePill';
-import { getFutureDateEntries } from '@/lib/courses/timeslots';
+import { getFutureDateEntries, toMadridISOString } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
 import { confirmedBookingsForCourseQuery, courseBySlugQuery } from '@/lib/sanity/queries';
-import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_NAME, SITE_URL } from '@/lib/seo';
+import { buildPageMetadata, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, STUDIO_ADDRESS } from '@/lib/seo';
 import { portableTextToString } from '@/lib/portableTextToString';
 import type { BookingCountMap, Course, Locale } from '@/types';
 import { PortableText } from '@portabletext/react';
@@ -36,32 +36,28 @@ export async function generateMetadata({ params }: CourseDetailPageProps): Promi
   const course = await sanityClient.fetch<Course>(courseBySlugQuery, { slug });
   if (!course) return {};
 
-  const title = course.title[l];
+  const title = course.seo?.metaTitle?.[l] || course.title[l];
   const descBlocks = course.description?.[l];
-  const description = descBlocks ? portableTextToString(descBlocks) : undefined;
+  const description = course.seo?.metaDescription?.[l] || (descBlocks ? portableTextToString(descBlocks) : undefined);
   const ogImage = course.image
     ? urlFor(course.image).width(1200).height(630).url()
     : DEFAULT_OG_IMAGE;
-  return {
+
+  return buildPageMetadata({
+    locale,
+    path: `/courses/${slug}`,
     title,
     description,
-    alternates: buildAlternates(`/courses/${slug}`),
-    openGraph: {
-      title,
-      description,
-      url: `${SITE_URL}/${locale}/courses/${slug}`,
-      locale: OG_LOCALE[locale] ?? 'en_US',
-      type: 'article',
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
-    },
-  };
+    image: ogImage,
+  });
 }
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
   const { locale, slug } = await params;
-  const [t, tCourses] = await Promise.all([
+  const [t, tCourses, tNav] = await Promise.all([
     getTranslations({ locale, namespace: 'courseDetail' }),
     getTranslations({ locale, namespace: 'courses' }),
+    getTranslations({ locale, namespace: 'navigation' }),
   ]);
 
   const [course, sessionCounts] = await Promise.all([
@@ -90,6 +86,24 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
   }
 
   const ogImage = image ? urlFor(image).width(1200).height(630).url() : DEFAULT_OG_IMAGE;
+  const courseUrl = `${SITE_URL}/${locale}/courses/${slug}`;
+
+  const hasCourseInstance = dateEntries.map((entry) => ({
+    '@type': 'CourseInstance',
+    courseMode: 'onsite',
+    ...(duration && { duration: `PT${duration}M` }),
+    startDate: toMadridISOString(entry.date, entry.startTime),
+    endDate: toMadridISOString(entry.date, entry.endTime),
+    location: {
+      '@type': 'Place',
+      name: SITE_NAME,
+      address: STUDIO_ADDRESS,
+    },
+    instructor: {
+      '@type': 'Person',
+      name: instructorName,
+    },
+  }));
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -97,7 +111,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     name: title[l],
     description: descriptionPlain,
     image: ogImage,
-    url: `${SITE_URL}/${locale}/courses/${slug}`,
+    url: courseUrl,
     provider: {
       '@type': 'Organization',
       name: SITE_NAME,
@@ -110,9 +124,20 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
         price: price.toString(),
         priceCurrency: currency ?? 'EUR',
         availability: 'https://schema.org/InStock',
-        url: `${SITE_URL}/${locale}/courses/${slug}`,
+        url: courseUrl,
       },
     }),
+    ...(hasCourseInstance.length > 0 && { hasCourseInstance }),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: tNav('home'), item: `${SITE_URL}/${locale}` },
+      { '@type': 'ListItem', position: 2, name: tNav('courses'), item: `${SITE_URL}/${locale}/courses` },
+      { '@type': 'ListItem', position: 3, name: title[l], item: courseUrl },
+    ],
   };
 
   return (
@@ -120,6 +145,10 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="container">
         {/* ── Hero image ── */}

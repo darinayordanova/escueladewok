@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
+import { buildPageMetadata } from '@/lib/seo';
 
 import VoucherBuyButton from './VoucherBuyButton';
 
@@ -14,21 +14,13 @@ interface VouchersPageProps {
 export async function generateMetadata({ params }: VouchersPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'vouchers' });
-  const title = t('pageTitle');
-  const description = t('pageDescription');
 
-  return {
-    title,
-    description,
-    alternates: buildAlternates('/vouchers'),
-    openGraph: {
-      title,
-      description,
-      url: `${SITE_URL}/${locale}/vouchers`,
-      locale: OG_LOCALE[locale] ?? 'en_US',
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
-    },
-  };
+  return buildPageMetadata({
+    locale,
+    path: '/vouchers',
+    title: t('pageTitle'),
+    description: t('pageDescription'),
+  });
 }
 
 const VOUCHERS = [

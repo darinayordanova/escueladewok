@@ -5,7 +5,7 @@ import ContactForm from '@/components/sections/ContactForm/ContactForm';
 import Map from '@/components/ui/Map/Map';
 import { sanityClient } from '@/lib/sanity/client';
 import { contactPageQuery } from '@/lib/sanity/queries';
-import { buildAlternates, DEFAULT_OG_IMAGE, OG_LOCALE, SITE_URL } from '@/lib/seo';
+import { buildPageMetadata } from '@/lib/seo';
 import type { ContactPage, Locale } from '@/types';
 
 import styles from './page.module.scss';
@@ -19,21 +19,13 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
   const t = await getTranslations({ locale, namespace: 'contact' });
   const page = await sanityClient.fetch<ContactPage>(contactPageQuery);
   const l = locale as Locale;
-  const title = page?.title?.[l] ?? t('pageTitle');
-  const description = page?.subtitle?.[l] ?? t('pageDescription');
 
-  return {
-    title,
-    description,
-    alternates: buildAlternates('/contact'),
-    openGraph: {
-      title,
-      description,
-      url: `${SITE_URL}/${locale}/contact`,
-      locale: OG_LOCALE[locale] ?? 'en_US',
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: title }],
-    },
-  };
+  return buildPageMetadata({
+    locale,
+    path: '/contact',
+    title: page?.title?.[l] ?? t('pageTitle'),
+    description: page?.subtitle?.[l] ?? t('pageDescription'),
+  });
 }
 
 export default async function ContactPageRoute({ params }: ContactPageProps) {
