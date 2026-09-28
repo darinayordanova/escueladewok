@@ -100,9 +100,9 @@ export const homepage = defineType({
     }),
     defineField({
       name: 'galleryImages',
-      title: 'Gallery — Photos',
+      title: 'Gallery — Photos & Videos',
       type: 'array',
-      description: 'Shown as scattered polaroids (cropped to 4:5 — set the hotspot on each photo). 4, 8 or 12 photos fill the rows best on desktop.',
+      description: 'Shown as scattered polaroids, cropped to 4:5 (set the hotspot on each photo). Videos loop silently with no controls. 4, 8 or 12 items fill the rows best on desktop.',
       of: [{
         type: 'image',
         options: { hotspot: true },
@@ -125,6 +125,46 @@ export const homepage = defineType({
           select: { media: 'asset', caption: 'caption.en', alt: 'alt.en' },
           prepare({ media, caption, alt }: { media?: unknown; caption?: string; alt?: string }) {
             return { title: caption || alt || 'Photo', media: media as never };
+          },
+        },
+      }, {
+        type: 'object',
+        name: 'galleryVideo',
+        title: 'Video',
+        fields: [
+          defineField({
+            name: 'video',
+            title: 'Video file',
+            type: 'file',
+            options: { accept: 'video/mp4,video/webm' },
+            description: 'A short clip (5–15 s), MP4 (H.264), ideally under 5 MB. Sound is never played, so it can be removed. Portrait (4:5 or 9:16) fits the frame best.',
+            validation: r => r.required(),
+          }),
+          defineField({
+            name: 'poster',
+            title: 'Cover image (recommended)',
+            type: 'image',
+            options: { hotspot: true },
+            description: 'Shown while the video loads, and instead of the video for visitors who have reduced motion turned on.',
+          }),
+          defineField({
+            name: 'alt',
+            title: 'Description',
+            type: 'localeString',
+            description: 'Describe what happens in the clip, for screen readers.',
+            validation: r => r.required(),
+          }),
+          defineField({
+            name: 'caption',
+            title: 'Caption (optional)',
+            type: 'localeString',
+            description: 'Short, handwritten-style note under the video.',
+          }),
+        ],
+        preview: {
+          select: { media: 'poster', caption: 'caption.en', alt: 'alt.en' },
+          prepare({ media, caption, alt }: { media?: unknown; caption?: string; alt?: string }) {
+            return { title: `▶ ${caption || alt || 'Video'}`, media: media as never };
           },
         },
       }],

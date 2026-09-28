@@ -21,13 +21,21 @@ export const homepageQuery = groq`
     "galleryImages": galleryImages[] {
       _key,
       _type,
-      asset,
-      crop,
-      hotspot,
       alt,
       caption,
-      "lqip": asset->metadata.lqip,
-      "dimensions": asset->metadata.dimensions { width, height }
+      _type == "image" => {
+        asset,
+        crop,
+        hotspot,
+        "lqip": asset->metadata.lqip,
+        "dimensions": asset->metadata.dimensions { width, height }
+      },
+      _type == "galleryVideo" => {
+        "videoUrl": video.asset->url,
+        "mimeType": video.asset->mimeType,
+        poster { _type, asset, crop, hotspot },
+        "lqip": poster.asset->metadata.lqip
+      }
     },
     seo,
   }

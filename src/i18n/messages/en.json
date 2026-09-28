@@ -28,11 +28,11 @@
   "gallery": {
     "label": "Behind the wok",
     "fallbackTitle": "Moments from our kitchen",
-    "open": "Enlarge photo: {alt}",
-    "dialogLabel": "Photo gallery",
+    "open": "Enlarge: {alt}",
+    "dialogLabel": "Gallery",
     "close": "Close",
-    "previous": "Previous photo",
-    "next": "Next photo"
+    "previous": "Previous",
+    "next": "Next"
   },
   "upcomingClasses": {
     "label": "What's on",

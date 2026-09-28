@@ -28,11 +28,11 @@
   "gallery": {
     "label": "Detrás del wok",
     "fallbackTitle": "Momentos de nuestra cocina",
-    "open": "Ampliar foto: {alt}",
-    "dialogLabel": "Galería de fotos",
+    "open": "Ampliar: {alt}",
+    "dialogLabel": "Galería",
     "close": "Cerrar",
-    "previous": "Foto anterior",
-    "next": "Foto siguiente"
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "upcomingClasses": {
     "label": "Próximamente",

@@ -2,7 +2,7 @@
 @use '@/styles/mixins' as *;
 
 $tape: rgba($color-primary, 0.18);
-$ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
 .section {
   overflow-x: clip; // rotated polaroids can poke past the edges on mobile
@@ -31,6 +31,11 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 // Each polaroid gets its own tilt and a small vertical nudge so the board
 // looks pinned by hand. A 5-step cycle doesn't line up with 2/3/4 columns,
 // so the pattern never reads as a repeating grid.
+//
+// Hover is detected on the <li>, which never moves, and the effect is applied
+// to the polaroid inside it. Hovering the polaroid itself made it flicker:
+// as it moved, its edge slipped out from under the cursor, un-hovered, moved
+// back, and hovered again.
 .item {
   --tilt: -2deg;
   --nudge: 0px;
@@ -42,7 +47,32 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   &:nth-child(5n + 4) { --tilt: 3deg;    --nudge: 8px; }
   &:nth-child(5n + 5) { --tilt: -3deg;   --nudge: -4px; }
 
-  // Washi tape
+  &:hover,
+  &:focus-within {
+    z-index: 1;
+  }
+}
+
+.polaroid {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: $spacing-2 $spacing-2 0;
+  background: $color-background;
+  border-radius: 2px;
+  box-shadow: $shadow-md;
+  cursor: zoom-in;
+  text-align: center;
+  transform: rotate(var(--tilt));
+  transition:
+    transform 450ms $ease-out,
+    box-shadow 450ms $ease-out;
+
+  @include respond-to('md') {
+    padding: $spacing-3 $spacing-3 0;
+  }
+
+  // Washi tape — part of the polaroid so it moves with it.
   &::before {
     content: '';
     position: absolute;
@@ -54,64 +84,37 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     background: $tape;
     transform: translateX(-50%) rotate(calc(var(--tilt) * -1.5));
     pointer-events: none;
-    transition: transform $transition-base;
   }
 
-  &:nth-child(3n + 2)::before {
+  .item:nth-child(3n + 2) &::before {
     left: auto;
     right: -14px;
     transform: rotate(40deg);
   }
 
-  &:nth-child(3n)::before {
+  .item:nth-child(3n) &::before {
     left: -14px;
     transform: rotate(-40deg);
   }
 
-  &:hover,
-  &:focus-within {
-    z-index: 1;
-  }
-}
-
-.polaroid {
-  display: block;
-  width: 100%;
-  padding: $spacing-2 $spacing-2 0;
-  background: $color-background;
-  border-radius: 2px;
-  box-shadow: $shadow-md;
-  cursor: zoom-in;
-  text-align: center;
-  transform: rotate(var(--tilt));
-  transition:
-    transform $transition-slow $ease-bounce,
-    box-shadow $transition-base;
-
-  @include respond-to('md') {
-    padding: $spacing-3 $spacing-3 0;
+  // Lift gently and relax the tilt a little — keeps the hand-pinned feel.
+  @media (hover: hover) {
+    .item:hover & {
+      transform: translateY(-6px) rotate(calc(var(--tilt) * 0.5)) scale(1.03);
+      box-shadow: $shadow-xl;
+    }
   }
 
-  &:hover,
   &:focus-visible {
-    transform: rotate(0deg) scale(1.05);
+    transform: translateY(-6px) rotate(calc(var(--tilt) * 0.5)) scale(1.03);
     box-shadow: $shadow-xl;
-  }
-
-  &:active {
-    transform: rotate(0deg) scale(1.02);
   }
 
   @include focus-ring;
 
   @media (prefers-reduced-motion: reduce) {
     transition: box-shadow $transition-base;
-
-    &:hover,
-    &:focus-visible,
-    &:active {
-      transform: rotate(var(--tilt));
-    }
+    transform: rotate(var(--tilt)) !important;
   }
 }
 
@@ -123,20 +126,27 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   background: $color-background-alt;
 }
 
-.img {
-  object-fit: cover;
-  transition: transform 600ms ease;
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 
-  .polaroid:hover & {
-    transform: scale(1.06);
+.img,
+.video {
+  object-fit: cover;
+  transition: transform 700ms $ease-out;
+
+  @media (hover: hover) {
+    .item:hover & {
+      transform: scale(1.04);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-
-    .polaroid:hover & {
-      transform: none;
-    }
+    transform: none !important;
   }
 }
 
@@ -219,7 +229,7 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 .lightboxPhoto {
   pointer-events: auto;
   min-height: 0;
-  animation: popIn $transition-slow $ease-bounce;
+  animation: popIn 350ms $ease-out;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -228,6 +238,8 @@ $ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
 .lightboxImg {
   display: block;
+  object-fit: contain;
+  background: $color-background-dark;
   width: auto;
   height: auto;
   max-width: 100%;

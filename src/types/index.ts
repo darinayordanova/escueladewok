@@ -205,6 +205,19 @@ export interface HomeGalleryImage extends SanityImage {
   dimensions?: { width: number; height: number };
 }
 
+export interface HomeGalleryVideo {
+  _type: 'galleryVideo';
+  _key: string;
+  videoUrl: string;
+  mimeType?: string;
+  poster?: SanityImage & { crop?: HomeGalleryImage['crop'] };
+  alt?: LocaleString;
+  caption?: LocaleString;
+  lqip?: string;
+}
+
+export type HomeGalleryItem = HomeGalleryImage | HomeGalleryVideo;
+
 export interface Homepage {
   _id: string;
   _type: 'homepage';
@@ -217,7 +230,7 @@ export interface Homepage {
   testimonialsTitle?: LocaleString;
   testimonials?: Testimonial[];
   galleryTitle?: LocaleString;
-  galleryImages?: HomeGalleryImage[];
+  galleryImages?: HomeGalleryItem[];
   seo?: SeoFields;
 }
 

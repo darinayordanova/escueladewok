@@ -2,18 +2,87 @@
 
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { ChevronLeft, ChevronRight, Close } from '@/components/ui/icons';
 import { urlFor } from '@/lib/sanity/image';
-import type { HomeGalleryImage, Locale, LocaleString } from '@/types';
+import type { HomeGalleryItem, HomeGalleryVideo, Locale, LocaleString } from '@/types';
 
 import styles from './PhotoGallery.module.scss';
 
 interface PhotoGalleryProps {
   title?: LocaleString;
-  images?: HomeGalleryImage[];
+  images?: HomeGalleryItem[];
   locale: Locale;
+}
+
+/**
+ * Silent, control-less looping clip. Plays only while on screen (saves battery
+ * and data) and never for visitors who prefer reduced motion — they see the
+ * poster / first frame instead.
+ */
+function LoopingVideo({
+  item,
+  posterUrl,
+  className,
+}: {
+  item: HomeGalleryVideo;
+  posterUrl?: string;
+  className?: string;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+    // Set as a property too: browsers only allow programmatic play when muted,
+    // and React doesn't reliably reflect the `muted` attribute.
+    video.muted = true;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let visible = false;
+
+    function sync() {
+      if (visible && !reduceMotion.matches) video!.play().catch(() => {});
+      else video!.pause();
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0.25 },
+    );
+    observer.observe(video);
+    reduceMotion.addEventListener('change', sync);
+
+    return () => {
+      observer.disconnect();
+      reduceMotion.removeEventListener('change', sync);
+    };
+  }, []);
+
+  // Without a poster, nudge past 0s so mobile Safari paints the first frame.
+  const src = posterUrl ? item.videoUrl : `${item.videoUrl}#t=0.1`;
+
+  return (
+    <video
+      ref={ref}
+      className={className}
+      poster={posterUrl}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      disablePictureInPicture
+      disableRemotePlayback
+      aria-hidden="true"
+      tabIndex={-1}
+    >
+      <source src={src} type={item.mimeType ?? 'video/mp4'} />
+    </video>
+  );
 }
 
 export default function PhotoGallery({ title, images, locale }: PhotoGalleryProps) {
@@ -22,9 +91,11 @@ export default function PhotoGallery({ title, images, locale }: PhotoGalleryProp
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
-  if (!images?.length) return null;
+  // Skip videos whose file is missing (e.g. a draft entry without an upload).
+  const items = images?.filter((it) => it._type !== 'galleryVideo' || it.videoUrl) ?? [];
+  if (!items.length) return null;
 
-  const count = images.length;
+  const count = items.length;
 
   function open(i: number) {
     setOpenIdx(i);
@@ -45,7 +116,7 @@ export default function PhotoGallery({ title, images, locale }: PhotoGalleryProp
     if (e.target === e.currentTarget) dialogRef.current?.close();
   }
 
-  const current = openIdx !== null ? images[openIdx] : null;
+  const current = openIdx !== null ? items[openIdx] : null;
 
   return (
     <section className={`bg-alt py-10 py-md-16 ${styles.section}`} aria-labelledby={headingId}>
@@ -56,11 +127,11 @@ export default function PhotoGallery({ title, images, locale }: PhotoGalleryProp
         </h2>
 
         <ul className={styles.board} role="list">
-          {images.map((img, i) => {
-            const alt = img.alt?.[locale] ?? '';
-            const caption = img.caption?.[locale];
+          {items.map((item, i) => {
+            const alt = item.alt?.[locale] ?? '';
+            const caption = item.caption?.[locale];
             return (
-              <li key={img._key} className={styles.item}>
+              <li key={item._key} className={styles.item}>
                 <button
                   type="button"
                   className={styles.polaroid}
@@ -69,15 +140,27 @@ export default function PhotoGallery({ title, images, locale }: PhotoGalleryProp
                   aria-haspopup="dialog"
                 >
                   <span className={styles.photo}>
-                    <Image
-                      src={urlFor(img).width(480).height(600).auto('format').url()}
-                      alt={alt}
-                      fill
-                      sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 260px"
-                      placeholder={img.lqip ? 'blur' : 'empty'}
-                      blurDataURL={img.lqip}
-                      className={styles.img}
-                    />
+                    {item._type === 'galleryVideo' ? (
+                      <LoopingVideo
+                        item={item}
+                        posterUrl={
+                          item.poster?.asset
+                            ? urlFor(item.poster).width(480).height(600).auto('format').url()
+                            : undefined
+                        }
+                        className={styles.video}
+                      />
+                    ) : (
+                      <Image
+                        src={urlFor(item).width(480).height(600).auto('format').url()}
+                        alt={alt}
+                        fill
+                        sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 260px"
+                        placeholder={item.lqip ? 'blur' : 'empty'}
+                        blurDataURL={item.lqip}
+                        className={styles.img}
+                      />
+                    )}
                   </span>
                   {caption && <span className={styles.caption}>{caption}</span>}
                 </button>
@@ -98,17 +181,33 @@ export default function PhotoGallery({ title, images, locale }: PhotoGalleryProp
         {current && (
           <figure className={styles.lightboxFigure}>
             <div className={styles.lightboxPhoto}>
-              <Image
-                key={current._key}
-                src={urlFor(current.asset).width(1600).fit('max').auto('format').url()}
-                alt={current.alt?.[locale] ?? ''}
-                width={current.dimensions?.width ?? 1600}
-                height={current.dimensions?.height ?? 1200}
-                sizes="90vw"
-                placeholder={current.lqip ? 'blur' : 'empty'}
-                blurDataURL={current.lqip}
-                className={styles.lightboxImg}
-              />
+              {current._type === 'galleryVideo' ? (
+                <>
+                  <LoopingVideo
+                    key={current._key}
+                    item={current}
+                    posterUrl={
+                      current.poster?.asset
+                        ? urlFor(current.poster.asset).width(1200).fit('max').auto('format').url()
+                        : undefined
+                    }
+                    className={styles.lightboxImg}
+                  />
+                  <span className="sr-only">{current.alt?.[locale]}</span>
+                </>
+              ) : (
+                <Image
+                  key={current._key}
+                  src={urlFor(current.asset).width(1600).fit('max').auto('format').url()}
+                  alt={current.alt?.[locale] ?? ''}
+                  width={current.dimensions?.width ?? 1600}
+                  height={current.dimensions?.height ?? 1200}
+                  sizes="90vw"
+                  placeholder={current.lqip ? 'blur' : 'empty'}
+                  blurDataURL={current.lqip}
+                  className={styles.lightboxImg}
+                />
+              )}
             </div>
             <figcaption className={styles.lightboxCaption}>
               <span>{current.caption?.[locale]}</span>
