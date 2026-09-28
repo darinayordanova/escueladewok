@@ -34,7 +34,20 @@
       "Bash(curl -s \"https://api.github.com/repos/googlefonts/Fraunces/contents/fonts\")",
       "Bash(curl -s -A \"Mozilla/4.0 \\(MSIE 5\\)\" \"https://fonts.googleapis.com/css?family=Fraunces:400,700\")",
       "PowerShell(Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/ttf/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf\" -OutFile \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf\"; Write-Host \"exit:$LastExitCode size:$\\(\\(Get-Item 'C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf'\\).Length\\)\")",
-      "PowerShell(Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf\" -OutFile \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf\"; $size = \\(Get-Item 'C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf'\\).Length; Write-Host \"size: $size\")"
+      "PowerShell(Invoke-WebRequest -Uri \"https://raw.githubusercontent.com/googlefonts/Fraunces/main/fonts/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf\" -OutFile \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf\"; $size = \\(Get-Item 'C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\\\\public\\\\fonts\\\\Fraunces-Regular.ttf'\\).Length; Write-Host \"size: $size\")",
+      "Bash(del *)",
+      "Bash(curl -s -o \"C:\\\\Users\\\\darij\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-darij-Documents-GitHub-escueladewok\\\\67447678-31ac-47b5-8c24-0aa588c41140\\\\scratchpad\\\\voucher-test.pdf\" -w \"%{http_code}\\\\n\" \"http://localhost:3000/api/dev/voucher-pdf?type=giftCard25&recipient=Ana%20Garcia&message=Test%20message%20fix\")",
+      "Bash(cd \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\")",
+      "Bash(curl -s -o __TRACKED_VAR__/voucher-es.pdf -w 'es: %{http_code}\\\\n' 'http://localhost:3000/api/dev/voucher-pdf?type=classVoucherForTwo&locale=es')",
+      "Bash(curl -s -o __TRACKED_VAR__/voucher-en.pdf -w 'en: %{http_code}\\\\n' 'http://localhost:3000/api/dev/voucher-pdf?type=classVoucherForTwo&locale=en')",
+      "Bash(curl -s -o __TRACKED_VAR__/voucher-es-2.pdf -w 'es: %{http_code}\\\\n' 'http://localhost:3000/api/dev/voucher-pdf?type=giftCard50&locale=es')",
+      "Bash(where stripe *)",
+      "Bash(stripe --version)",
+      "Bash(where vercel *)",
+      "Bash(git fetch *)",
+      "Bash(git stash *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\"; $job = Start-Job -ScriptBlock { Set-Location \"C:\\\\Users\\\\darij\\\\Documents\\\\GitHub\\\\escueladewok\"; npm run dev }; Start-Sleep -Seconds 2; $job.Id)"
     ]
   }
 }

@@ -1,20 +1,22 @@
 import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
-import Link from '@/components/ui/Link/Link';
 
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
+import CtaBanner from '@/components/sections/CtaBanner/CtaBanner';
 import Hero from '@/components/sections/Hero/Hero';
+import HowItWorks from '@/components/sections/HowItWorks/HowItWorks';
+import PhotoGallery from '@/components/sections/PhotoGallery/PhotoGallery';
+import Testimonials from '@/components/sections/Testimonials/Testimonials';
 import UpcomingClasses from '@/components/sections/UpcomingClasses/UpcomingClasses';
+import Link from '@/components/ui/Link/Link';
 import { sanityClient } from '@/lib/sanity/client';
 import { allCoursesQuery, featuredCoursesQuery, homepageQuery } from '@/lib/sanity/queries';
 import { buildPageMetadata } from '@/lib/seo';
 import type { Course, Homepage, Locale } from '@/types';
 
 import styles from './page.module.scss';
-import CtaBanner from '@/components/sections/CtaBanner/CtaBanner';
-import HowItWorks from '@/components/sections/HowItWorks/HowItWorks';
-import Testimonials from '@/components/sections/Testimonials/Testimonials';
+
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
@@ -68,6 +70,12 @@ export default async function HomePage({ params }: HomePageProps) {
       <Testimonials
         title={homepage?.testimonialsTitle}
         testimonials={homepage?.testimonials}
+        locale={locale as Locale}
+      />
+
+      <PhotoGallery
+        title={homepage?.galleryTitle}
+        images={homepage?.galleryImages}
         locale={locale as Locale}
       />
 

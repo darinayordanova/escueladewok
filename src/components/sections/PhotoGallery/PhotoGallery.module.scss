@@ -1,0 +1,313 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+$tape: rgba($color-primary, 0.18);
+$ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+.section {
+  overflow-x: clip; // rotated polaroids can poke past the edges on mobile
+}
+
+// ─── Board ────────────────────────────────────────────────────────────────────
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-8 $spacing-5;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-10 $spacing-8;
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Each polaroid gets its own tilt and a small vertical nudge so the board
+// looks pinned by hand. A 5-step cycle doesn't line up with 2/3/4 columns,
+// so the pattern never reads as a repeating grid.
+.item {
+  --tilt: -2deg;
+  --nudge: 0px;
+  position: relative;
+  transform: translateY(var(--nudge));
+
+  &:nth-child(5n + 2) { --tilt: 2.5deg;  --nudge: 12px; }
+  &:nth-child(5n + 3) { --tilt: -1deg;   --nudge: -6px; }
+  &:nth-child(5n + 4) { --tilt: 3deg;    --nudge: 8px; }
+  &:nth-child(5n + 5) { --tilt: -3deg;   --nudge: -4px; }
+
+  // Washi tape
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: -10px;
+    left: 50%;
+    width: 72px;
+    height: 22px;
+    background: $tape;
+    transform: translateX(-50%) rotate(calc(var(--tilt) * -1.5));
+    pointer-events: none;
+    transition: transform $transition-base;
+  }
+
+  &:nth-child(3n + 2)::before {
+    left: auto;
+    right: -14px;
+    transform: rotate(40deg);
+  }
+
+  &:nth-child(3n)::before {
+    left: -14px;
+    transform: rotate(-40deg);
+  }
+
+  &:hover,
+  &:focus-within {
+    z-index: 1;
+  }
+}
+
+.polaroid {
+  display: block;
+  width: 100%;
+  padding: $spacing-2 $spacing-2 0;
+  background: $color-background;
+  border-radius: 2px;
+  box-shadow: $shadow-md;
+  cursor: zoom-in;
+  text-align: center;
+  transform: rotate(var(--tilt));
+  transition:
+    transform $transition-slow $ease-bounce,
+    box-shadow $transition-base;
+
+  @include respond-to('md') {
+    padding: $spacing-3 $spacing-3 0;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: $shadow-xl;
+  }
+
+  &:active {
+    transform: rotate(0deg) scale(1.02);
+  }
+
+  @include focus-ring;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: box-shadow $transition-base;
+
+    &:hover,
+    &:focus-visible,
+    &:active {
+      transform: rotate(var(--tilt));
+    }
+  }
+}
+
+.photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: $color-background-alt;
+}
+
+.img {
+  object-fit: cover;
+  transition: transform 600ms ease;
+
+  .polaroid:hover & {
+    transform: scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    .polaroid:hover & {
+      transform: none;
+    }
+  }
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: $spacing-2 $spacing-1;
+  font-family: $font-heading;
+  font-style: italic;
+  font-size: $font-size-sm;
+  line-height: $line-height-tight;
+  color: $color-text-light;
+
+  @include respond-to('md') {
+    min-height: 3.25rem;
+    font-size: $font-size-base;
+  }
+}
+
+// Keep the classic thick polaroid bottom even without a caption.
+.polaroid:not(:has(.caption)) {
+  padding-bottom: $spacing-8;
+
+  @include respond-to('md') {
+    padding-bottom: $spacing-10;
+  }
+}
+
+// ─── Lightbox ─────────────────────────────────────────────────────────────────
+
+:global(html):has(.lightbox[open]) {
+  overflow: hidden;
+}
+
+.lightbox {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: $spacing-12 $spacing-4;
+  border: 0;
+  background: transparent;
+  color: $color-background;
+
+  &[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn $transition-base;
+  }
+
+  &::backdrop {
+    background: rgba($color-background-dark, 0.92);
+  }
+
+  @include respond-to('md') {
+    padding: $spacing-12 $spacing-20;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[open] {
+      animation: none;
+    }
+  }
+}
+
+.lightboxFigure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  pointer-events: none; // let clicks around the photo reach the backdrop
+}
+
+.lightboxPhoto {
+  pointer-events: auto;
+  min-height: 0;
+  animation: popIn $transition-slow $ease-bounce;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.lightboxImg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 10rem);
+  border: $spacing-2 solid $color-background;
+  border-radius: 2px;
+  box-shadow: $shadow-xl;
+}
+
+.lightboxCaption {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-4;
+  width: 100%;
+  margin-top: $spacing-3;
+  font-family: $font-heading;
+  font-style: italic;
+  font-size: $font-size-base;
+  pointer-events: auto;
+}
+
+.lightboxCounter {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: $font-paragraph;
+  font-style: normal;
+  font-size: $font-size-sm;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.lbBtn {
+  position: fixed;
+  @include flex-center;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-full;
+  color: $color-background;
+  background: rgba($color-background, 0.1);
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: rgba($color-background, 0.22);
+  }
+
+  @include focus-ring($color-background);
+}
+
+.lbClose {
+  top: $spacing-4;
+  right: $spacing-4;
+}
+
+.lbPrev,
+.lbNext {
+  bottom: $spacing-4;
+
+  @include respond-to('md') {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+}
+
+.lbPrev {
+  left: $spacing-4;
+}
+
+.lbNext {
+  right: $spacing-4;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) rotate(-2deg);
+  }
+}

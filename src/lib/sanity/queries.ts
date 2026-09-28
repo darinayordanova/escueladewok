@@ -10,7 +10,25 @@ export const homepageQuery = groq`
     howItWorksTitle,
     "howItWorksSteps": howItWorksSteps[] { _key, title, description },
     testimonialsTitle,
-    "testimonials": testimonials[] { _key, quote, author, role },
+    "testimonials": testimonials[] {
+      _key,
+      quote,
+      author,
+      dateTaken,
+      "course": course-> { title, "slug": slug.current }
+    },
+    galleryTitle,
+    "galleryImages": galleryImages[] {
+      _key,
+      _type,
+      asset,
+      crop,
+      hotspot,
+      alt,
+      caption,
+      "lqip": asset->metadata.lqip,
+      "dimensions": asset->metadata.dimensions { width, height }
+    },
     seo,
   }
 `;

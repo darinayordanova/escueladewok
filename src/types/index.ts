@@ -193,7 +193,16 @@ export interface Testimonial {
   _key: string;
   quote: LocaleText;
   author: string;
-  role?: string;
+  course?: { title: LocaleString; slug: string } | null;
+  dateTaken?: string; // "YYYY-MM-DD" — only month/year are displayed
+}
+
+export interface HomeGalleryImage extends SanityImage {
+  _key: string;
+  crop?: { top: number; bottom: number; left: number; right: number };
+  caption?: LocaleString;
+  lqip?: string;
+  dimensions?: { width: number; height: number };
 }
 
 export interface Homepage {
@@ -207,6 +216,8 @@ export interface Homepage {
   howItWorksSteps?: HowItWorksStep[];
   testimonialsTitle?: LocaleString;
   testimonials?: Testimonial[];
+  galleryTitle?: LocaleString;
+  galleryImages?: HomeGalleryImage[];
   seo?: SeoFields;
 }
 

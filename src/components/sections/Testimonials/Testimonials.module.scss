@@ -1,21 +1,205 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ─── Stage ────────────────────────────────────────────────────────────────────
 
-.quote {
-  font-family: $font-heading;
-  font-size: 4rem;
-  line-height: 1;
-  color: $color-primary;
-  opacity: 0.2;
-  position: absolute;
-  top: $spacing-3;
-  left: $spacing-6;
-  pointer-events: none;
+.stage {
+  position: relative;
+  max-width: 680px;
+  margin-inline: auto;
 }
 
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  margin-bottom: $spacing-4;
+}
+
+.mark {
+  display: block;
+  height: 1.75rem;
+  font-family: $font-heading;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: $color-primary;
+  user-select: none;
+}
+
+// ─── Slides ───────────────────────────────────────────────────────────────────
+
+// Only the active slide is in flow, so the container takes its height. Inactive
+// slides are stacked on top (absolutely) to cross-fade. JS sets an explicit
+// height so the change animates instead of jumping.
+.slides {
+  position: relative;
+  overflow: clip;
+  transition: height $transition-slow;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.slide {
+  position: absolute;
+  inset: 0 0 auto;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY($spacing-2);
+  visibility: hidden;
+  transition:
+    opacity $transition-slow,
+    transform $transition-slow,
+    visibility 0s linear 400ms;
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+    transition: none;
+  }
+}
+
+.slideActive {
+  position: relative;
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity $transition-slow,
+    transform $transition-slow,
+    visibility 0s;
+}
+
+.quote {
+  margin: 0;
+
+  p {
+    margin: 0;
+    font-size: $font-size-base;
+    line-height: $line-height-relaxed;
+    color: $color-text-light;
+    text-wrap: pretty;
+
+    @include respond-to('md') {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+// ─── Author ───────────────────────────────────────────────────────────────────
+
 .author {
-&::before {
-    content: '— ';
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin: $spacing-6 0 0;
+}
+
+.avatar {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  background: $color-background-alt;
+  color: $color-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.02em;
+}
+
+.authorText {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-style: normal;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  color: $color-text;
+}
+
+.meta {
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+// ─── Controls ─────────────────────────────────────────────────────────────────
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.btn {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  color: $color-text-light;
+  border: 1px solid $color-border;
+  background: $color-background;
+  cursor: pointer;
+  transition:
+    color $transition-fast,
+    background-color $transition-fast,
+    border-color $transition-fast;
+
+  &:hover {
+    color: $color-background;
+    background: $color-primary;
+    border-color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-1;
+  min-width: 64px;
+}
+
+.counter {
+  font-size: $font-size-xs;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.current {
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+}
+
+.total {
+  color: $color-text-muted;
+}
+
+.bar {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: $color-background-alt;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.barFill {
+  position: absolute;
+  inset: 0;
+  background: $color-primary;
+  transform-origin: left;
+  transition: transform $transition-slow;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }

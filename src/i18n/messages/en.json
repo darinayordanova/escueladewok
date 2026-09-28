@@ -18,7 +18,21 @@
   },
   "testimonials": {
     "label": "What our students say",
-    "fallbackTitle": "Experiences that speak for themselves"
+    "fallbackTitle": "Experiences that speak for themselves",
+    "carousel": "carousel",
+    "slide": "testimonial",
+    "slideOf": "{index} of {total}",
+    "previous": "Previous testimonial",
+    "next": "Next testimonial"
+  },
+  "gallery": {
+    "label": "Behind the wok",
+    "fallbackTitle": "Moments from our kitchen",
+    "open": "Enlarge photo: {alt}",
+    "dialogLabel": "Photo gallery",
+    "close": "Close",
+    "previous": "Previous photo",
+    "next": "Next photo"
   },
   "upcomingClasses": {
     "label": "What's on",
@@ -99,6 +113,9 @@
     "spotsLeft": "{count} spot left",
     "spotsLeftPlural": "{count} spots left",
     "soldOut": "Sold out",
+    "bookingClosed": "Closed",
+    "bookingClosedTitle": "Booking closed",
+    "bookingClosedSub": "Online booking for this class has closed. Please choose another date.",
     "proceedToPayment": "Proceed to payment",
     "processing": "Redirecting to payment…",
     "checkout": {
@@ -211,7 +228,10 @@
     "checkout": "Checkout",
     "processing": "Redirecting to payment…",
     "addToCart": "Add to cart",
-    "buyNow": "Book now"
+    "buyNow": "Book now",
+    "errorBookingClosed": "Booking has closed for {course}. Please remove it and choose another date.",
+    "errorSoldOut": "There aren't enough spots left for {course}. Please lower the quantity or choose another date.",
+    "errorGeneric": "Something went wrong. Please try again."
   },
   "vouchers": {
     "pageTitle": "Gift Vouchers",

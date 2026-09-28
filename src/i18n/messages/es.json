@@ -18,7 +18,21 @@
   },
   "testimonials": {
     "label": "Lo que dicen nuestros alumnos",
-    "fallbackTitle": "Experiencias que hablan por sí solas"
+    "fallbackTitle": "Experiencias que hablan por sí solas",
+    "carousel": "carrusel",
+    "slide": "testimonio",
+    "slideOf": "{index} de {total}",
+    "previous": "Testimonio anterior",
+    "next": "Siguiente testimonio"
+  },
+  "gallery": {
+    "label": "Detrás del wok",
+    "fallbackTitle": "Momentos de nuestra cocina",
+    "open": "Ampliar foto: {alt}",
+    "dialogLabel": "Galería de fotos",
+    "close": "Cerrar",
+    "previous": "Foto anterior",
+    "next": "Foto siguiente"
   },
   "upcomingClasses": {
     "label": "Próximamente",
@@ -99,6 +113,9 @@
     "spotsLeft": "{count} plaza disponible",
     "spotsLeftPlural": "{count} plazas disponibles",
     "soldOut": "Completo",
+    "bookingClosed": "Cerrado",
+    "bookingClosedTitle": "Reservas cerradas",
+    "bookingClosedSub": "Las reservas online para esta clase están cerradas. Por favor, elige otra fecha.",
     "proceedToPayment": "Continuar al pago",
     "processing": "Redirigiendo al pago…",
     "checkout": {
@@ -211,7 +228,10 @@
     "checkout": "Pagar",
     "processing": "Redirigiendo al pago…",
     "addToCart": "Añadir al carrito",
-    "buyNow": "Reservar ahora"
+    "buyNow": "Reservar ahora",
+    "errorBookingClosed": "Las reservas para {course} están cerradas. Elimínalo y elige otra fecha.",
+    "errorSoldOut": "No quedan plazas suficientes para {course}. Reduce la cantidad o elige otra fecha.",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
   },
   "vouchers": {
     "pageTitle": "Tarjetas Regalo",

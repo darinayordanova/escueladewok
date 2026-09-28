@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 
-import { sendConfirmationEmail, sendOwnerNotificationEmail, sendVoucherBuyerEmail, sendVoucherRecipientEmail } from '@/lib/email';
+import {
+  sendConfirmationEmail,
+  sendOwnerNotificationEmail,
+  sendVoucherBuyerEmail,
+  sendVoucherOwnerNotificationEmail,
+  sendVoucherRecipientEmail,
+} from '@/lib/email';
 import { generateVoucherPdf, formatVoucherTypeName } from '@/lib/pdf/voucherPdf';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
@@ -66,6 +72,7 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     return;
   }
   const items = parseItems(meta);
+  const locale: Locale = meta.locale === 'es' ? 'es' : 'en';
 
   const paymentIntentId =
     typeof session.payment_intent === 'string'
@@ -77,6 +84,28 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
   const customerPhone = session.customer_details?.phone ?? '';
   const dietaryRestrictions =
     session.custom_fields?.find((f) => f.key === 'dietary')?.text?.value ?? '';
+
+  const addr = session.customer_details?.address;
+  const billingAddress = addr
+    ? [addr.line1, addr.line2, addr.postal_code, addr.city, addr.state, addr.country].filter(Boolean).join(', ')
+    : undefined;
+
+  // Voucher/promo code usage
+  const discountAmountCents = session.total_details?.amount_discount ?? 0;
+  const voucherUsed = discountAmountCents > 0;
+  let voucherCode: string | undefined;
+  if (voucherUsed) {
+    const promo = session.discounts?.[0]?.promotion_code;
+    const promoId = typeof promo === 'string' ? promo : promo?.id;
+    if (promoId) {
+      try {
+        const promotionCode = await getStripe().promotionCodes.retrieve(promoId);
+        voucherCode = promotionCode.code;
+      } catch (err) {
+        console.error('Failed to resolve promotion code for owner notification:', err);
+      }
+    }
+  }
 
   // Find all courseSession docs with pending attendees for this Stripe session
   const sessions = await sanityWriteClient.fetch<{ _id: string; attendeeKeys: string[] }[]>(
@@ -108,14 +137,28 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     ),
   );
 
+  // Enrich course names from Sanity (metadata only carries the slug)
+  const courseIds = [...new Set(items.map((item) => item.courseId).filter(Boolean))];
+  const courses = courseIds.length
+    ? await sanityWriteClient.fetch<{ _id: string; title: { en: string; es: string } }[]>(
+        `*[_type == "course" && _id in $ids] { _id, title }`,
+        { ids: courseIds },
+      )
+    : [];
+  const titleById = new Map(courses.map((c) => [c._id, c.title]));
+
   // Build course list for emails
   const courseLines = items.map((item) => ({
-    courseName: item.courseSlug, // will be enriched from Sanity if needed
+    courseName: titleById.get(item.courseId)?.[locale] ?? titleById.get(item.courseId)?.en ?? item.courseSlug,
     courseDate: item.date,
     timeRange: `${item.startTime} – ${item.endTime}`,
+    quantity: item.quantity,
   }));
 
   const firstItem = items[0];
+  const totalGuests = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalAmount = session.amount_total ? session.amount_total / 100 : 0;
+  const currency = session.currency?.toUpperCase() ?? '';
 
   await Promise.allSettled([
     sendConfirmationEmail({
@@ -124,17 +167,23 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
       courseName: courseLines.map((c) => c.courseName).join(', '),
       courseDate: firstItem?.date ?? '',
       timeRange: courseLines.map((c) => c.timeRange).join(' / '),
-      amount: session.amount_total ? session.amount_total / 100 : 0,
-      currency: session.currency?.toUpperCase() ?? '',
+      amount: totalAmount,
+      currency,
     }).catch((err) => console.error('Failed to send confirmation email:', err)),
     sendOwnerNotificationEmail({
-      courseName: courseLines.map((c) => c.courseName).join(', '),
-      courseDate: firstItem?.date ?? '',
-      timeRange: courseLines.map((c) => `${c.courseDate} ${c.timeRange}`).join(' | '),
+      items: courseLines,
+      totalGuests,
+      totalAmount,
+      currency,
       customerName,
       customerEmail,
       customerPhone,
       dietaryRestrictions,
+      billingAddress,
+      voucherUsed,
+      voucherCode,
+      discountAmount: voucherUsed ? discountAmountCents / 100 : undefined,
+      locale,
     }).catch((err) => console.error('Failed to send owner notification email:', err)),
   ]);
 }
@@ -225,6 +274,9 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   await Promise.allSettled([
     sendVoucherBuyerEmail(sharedData).catch((err) => console.error('[voucher] buyer email failed:', err)),
     sendVoucherRecipientEmail(sharedData).catch((err) => console.error('[voucher] recipient email failed:', err)),
+    sendVoucherOwnerNotificationEmail({ ...sharedData, recipientMessage: recipientMessage || undefined }).catch((err) =>
+      console.error('[voucher] owner notification email failed:', err),
+    ),
   ]);
 
   await sanityWriteClient.patch(sanityDoc._id).set({ sentAt: new Date().toISOString() }).commit();

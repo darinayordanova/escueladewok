@@ -15,6 +15,7 @@ export default function CartDrawer() {
   const t = useTranslations('cart');
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice, clearCart } = useCart();
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading'>('idle');
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Trap focus + close on Escape
@@ -32,6 +33,7 @@ export default function CartDrawer() {
   async function handleCheckout() {
     if (items.length === 0) return;
     setCheckoutStatus('loading');
+    setCheckoutError(null);
     try {
       const locale = document.documentElement.lang || 'en';
       const res = await fetch('/api/checkout', {
@@ -56,10 +58,21 @@ export default function CartDrawer() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Unknown error');
+      if (!res.ok) {
+        setCheckoutError(
+          data.code === 'booking_closed'
+            ? t('errorBookingClosed', { course: data.courseTitle })
+            : data.code === 'sold_out'
+              ? t('errorSoldOut', { course: data.courseTitle })
+              : t('errorGeneric'),
+        );
+        setCheckoutStatus('idle');
+        return;
+      }
       clearCart();
       window.location.href = data.url;
     } catch {
+      setCheckoutError(t('errorGeneric'));
       setCheckoutStatus('idle');
     }
   }
@@ -113,6 +126,9 @@ export default function CartDrawer() {
                 <span className={styles.totalLabel}>{t('total')}</span>
                 <span className={styles.totalPrice}>{totalPrice.toFixed(2)} EUR</span>
               </div>
+              {checkoutError && (
+                <p className={styles.error} role="alert">{checkoutError}</p>
+              )}
               <Button
                 onClick={handleCheckout}
                 disabled={checkoutStatus === 'loading'}

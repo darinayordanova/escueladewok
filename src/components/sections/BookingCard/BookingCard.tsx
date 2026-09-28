@@ -8,7 +8,7 @@ import { Link } from '@/i18n/navigation';
 import Input from '@/components/ui/Input/Input';
 import Button from '@/components/ui/Button/Button';
 import { useCart } from '@/context/CartContext';
-import { slotSpots } from '@/lib/courses/timeslots';
+import { isBookingOpen, slotSpots } from '@/lib/courses/timeslots';
 
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
 
@@ -86,6 +86,8 @@ export default function BookingCard({
   const [waitlistEmail, setWaitlistEmail] = useState('');
   const [waitlistStatus, setWaitlistStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading'>('idle');
+  // Captured once so every slot is judged against the same moment.
+  const [now] = useState(() => Date.now());
 
   // ── Derived ───────────────────────────────────────────────────────────────
   const timesForDate: DateEntry[] = selectedDate ? (entriesByDate[selectedDate] ?? []) : [];
@@ -94,13 +96,20 @@ export default function BookingCard({
     ? (bookingCounts[`${selectedDate}|${selectedTime}`] ?? 0)
     : 0;
   const spotsLeft = selectedEntry ? Math.max(0, maxParticipants - confirmedCount) : 0;
-  const isSoldOut = !!selectedEntry && spotsLeft === 0;
+  const isClosed = !!selectedEntry && !slotOpen(selectedDate, selectedTime);
+  const isSoldOut = !!selectedEntry && !isClosed && spotsLeft === 0;
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+  function slotOpen(date: string, time: string) {
+    return isBookingOpen(date, time, bookingCounts[`${date}|${time}`] ?? 0, now);
+  }
+
   function spotsForDate(date: string) {
     const entries = entriesByDate[date] ?? [];
+    // Closed slots count as having no spots left.
     const left = entries.reduce(
-      (sum, e) => sum + slotSpots(maxParticipants, bookingCounts, date, e.startTime),
+      (sum, e) =>
+        sum + (slotOpen(date, e.startTime) ? slotSpots(maxParticipants, bookingCounts, date, e.startTime) : 0),
       0,
     );
     return { left, total: entries.length * maxParticipants };
@@ -303,7 +312,8 @@ export default function BookingCard({
               <div className={styles.timeGrid}>
                 {timesForDate.map((entry) => {
                   const spots = slotSpots(maxParticipants, bookingCounts, selectedDate, entry.startTime);
-                  const full = spots === 0;
+                  const closed = !slotOpen(selectedDate, entry.startTime);
+                  const full = closed || spots === 0;
                   const active = selectedTime === entry.startTime;
 
                   return (
@@ -322,7 +332,11 @@ export default function BookingCard({
                         {entry.startTime} – {entry.endTime}
                       </span>
                       <span className={styles.slotSpots}>
-                        {full ? t('soldOut') : t('spotsLeftShort', { count: spots })}
+                        {closed
+                          ? t('bookingClosed')
+                          : full
+                            ? t('soldOut')
+                            : t('spotsLeftShort', { count: spots })}
                       </span>
                     </button>
                   );
@@ -333,7 +347,12 @@ export default function BookingCard({
 
           {/* ── Waitlist / CTA ────────────────────────────────────────── */}
           {selectedEntry && (
-            isSoldOut ? (
+            isClosed ? (
+              <div className={styles.waitlist}>
+                <p className={styles.waitlistTitle}>{t('bookingClosedTitle')}</p>
+                <p className={styles.waitlistSub}>{t('bookingClosedSub')}</p>
+              </div>
+            ) : isSoldOut ? (
               <div className={styles.waitlist}>
                 <p className={styles.waitlistTitle}>{t('waitlistTitle')}</p>
                 <p className={styles.waitlistSub}>{t('waitlistSub')}</p>

@@ -181,6 +181,13 @@
   flex-shrink: 0;
 }
 
+.error {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-snug;
+  color: $color-primary;
+}
+
 .total {
   display: flex;
   justify-content: space-between;

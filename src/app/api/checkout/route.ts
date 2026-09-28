@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 
-import { addMinutesToTime } from '@/lib/courses/timeslots';
+import { addMinutesToTime, isBookingOpen } from '@/lib/courses/timeslots';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
 
@@ -60,10 +60,17 @@ export async function POST(request: Request) {
         { courseSlug: item.courseSlug, date: item.date, startTime: item.startTime, since: thirtyMinutesAgo },
       );
 
+      if (!isBookingOpen(item.date, item.startTime, existing?.confirmedCount ?? 0)) {
+        return NextResponse.json(
+          { error: `Booking is closed for ${item.courseTitle}`, code: 'booking_closed', courseTitle: item.courseTitle },
+          { status: 409 },
+        );
+      }
+
       const taken = (existing?.confirmedCount ?? 0) + (existing?.recentPendingCount ?? 0);
       if (taken + item.quantity > item.maxParticipants) {
         return NextResponse.json(
-          { error: `Not enough spots available for ${item.courseTitle}` },
+          { error: `Not enough spots available for ${item.courseTitle}`, code: 'sold_out', courseTitle: item.courseTitle },
           { status: 409 },
         );
       }

@@ -23,6 +23,10 @@
   transform: translateX(calc(var(--idx, 0) * -100%));
 }
 
+.noTransition {
+  transition: none;
+}
+
 .slide {
   flex: 0 0 100%;
   min-width: 0;

@@ -5,7 +5,7 @@ import type { Locale } from '@/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
-const OWNER_EMAIL = 'Xingyutian2001@gmail.com';
+const OWNER_EMAIL = process.env.OWNER_EMAIL ?? 'info@woklab.es';
 
 // ─── Voucher emails ───────────────────────────────────────────────────────────
 
@@ -202,21 +202,109 @@ export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'bu
   if (error) throw new Error(`Failed to send voucher recipient email: ${error.message}`);
 }
 
-export async function sendOwnerNotificationEmail(data: {
-  courseName: string;
-  courseDate: string;
-  timeRange: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  dietaryRestrictions?: string;
-}) {
-  const { courseName, courseDate, timeRange, customerName, customerEmail, customerPhone, dietaryRestrictions } = data;
+export async function sendVoucherOwnerNotificationEmail(data: VoucherEmailData & { recipientMessage?: string }) {
+  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale, recipientMessage } = data;
+  const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: OWNER_EMAIL,
-    subject: `New booking: ${courseName} — ${customerName}`,
+    subject: `New voucher purchase: ${voucherTypeName} — ${buyerName}`,
+    attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
+    html: `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head><meta charset="UTF-8" /><style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a1a; margin: 0; padding: 0; background: #f9f5f0; }
+          .wrapper { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+          .header { background: #c0392b; padding: 32px; text-align: center; }
+          .header h1 { color: #fff; margin: 0; font-size: 24px; }
+          .body { padding: 32px; }
+          .body p { margin: 0 0 16px; line-height: 1.6; }
+          .details { background: #f9f5f0; border-radius: 8px; padding: 24px; margin: 16px 0; }
+          .details table { width: 100%; border-collapse: collapse; }
+          .details td { padding: 8px 0; vertical-align: top; }
+          .details td:first-child { font-weight: 600; width: 40%; }
+          .note { font-size: 13px; color: #7a5c5c; }
+        </style></head>
+        <body>
+          <div class="wrapper">
+            <div class="header"><h1>New Voucher Purchase</h1></div>
+            <div class="body">
+              <p class="note">A PDF copy of this voucher is attached — resend it if the customer loses theirs.</p>
+              <div class="details">
+                <table>
+                  <tr><td>Voucher type</td><td>${voucherTypeName}</td></tr>
+                  <tr><td>Code</td><td><strong>${code}</strong></td></tr>
+                  <tr><td>Amount</td><td>${amount} ${currencySymbol}</td></tr>
+                  <tr><td>Valid until</td><td>${validUntil}</td></tr>
+                  <tr><td>Buyer name</td><td>${buyerName}</td></tr>
+                  <tr><td>Buyer email</td><td>${buyerEmail}</td></tr>
+                  <tr><td>Recipient name</td><td>${recipientName}</td></tr>
+                  <tr><td>Recipient email</td><td>${recipientEmail}</td></tr>
+                  ${recipientMessage ? `<tr><td>Personal message</td><td>${recipientMessage}</td></tr>` : ''}
+                  <tr><td>Language</td><td>${locale === 'es' ? 'Spanish' : 'English'}</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  });
+
+  if (error) throw new Error(`Failed to send voucher owner notification email: ${error.message}`);
+}
+
+export interface OwnerBookingItem {
+  courseName: string;
+  courseDate: string;
+  timeRange: string;
+  quantity: number;
+}
+
+export interface OwnerBookingNotificationData {
+  items: OwnerBookingItem[];
+  totalGuests: number;
+  totalAmount: number;
+  currency: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  dietaryRestrictions?: string;
+  billingAddress?: string;
+  voucherUsed: boolean;
+  voucherCode?: string;
+  discountAmount?: number;
+  locale: Locale;
+}
+
+export async function sendOwnerNotificationEmail(data: OwnerBookingNotificationData) {
+  const {
+    items,
+    totalGuests,
+    totalAmount,
+    currency,
+    customerName,
+    customerEmail,
+    customerPhone,
+    dietaryRestrictions,
+    billingAddress,
+    voucherUsed,
+    voucherCode,
+    discountAmount,
+    locale,
+  } = data;
+
+  const guestLabel = totalGuests === 1 ? 'guest' : 'guests';
+  const voucherLabel = voucherUsed
+    ? `Yes${voucherCode ? ` — ${voucherCode}` : ''}${discountAmount ? ` (-${discountAmount} ${currency})` : ''}`
+    : 'No';
+
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: OWNER_EMAIL,
+    subject: `New booking: ${items.map((i) => i.courseName).join(', ')} — ${customerName} (${totalGuests} ${guestLabel})`,
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -230,20 +318,34 @@ export async function sendOwnerNotificationEmail(data: {
           .details table { width: 100%; border-collapse: collapse; }
           .details td { padding: 8px 0; vertical-align: top; }
           .details td:first-child { font-weight: 600; width: 40%; }
+          .items-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+          .items-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #7a5c5c; padding: 6px 8px; border-bottom: 2px solid #e0d5d0; }
+          .items-table td { padding: 8px; border-bottom: 1px solid #eee; font-size: 14px; }
         </style></head>
         <body>
           <div class="wrapper">
             <div class="header"><h1>New Booking</h1></div>
             <div class="body">
+              <table class="items-table">
+                <tr><th>Course</th><th>Date</th><th>Time</th><th>Guests</th></tr>
+                ${items
+                  .map(
+                    (item) =>
+                      `<tr><td>${item.courseName}</td><td>${item.courseDate}</td><td>${item.timeRange}</td><td>${item.quantity}</td></tr>`,
+                  )
+                  .join('')}
+              </table>
               <div class="details">
                 <table>
-                  <tr><td>Course</td><td>${courseName}</td></tr>
-                  <tr><td>Date</td><td>${courseDate}</td></tr>
-                  <tr><td>Time</td><td>${timeRange}</td></tr>
+                  <tr><td>Total guests</td><td>${totalGuests}</td></tr>
+                  <tr><td>Total paid</td><td>${totalAmount} ${currency}</td></tr>
+                  <tr><td>Paid with voucher</td><td>${voucherLabel}</td></tr>
                   <tr><td>Name</td><td>${customerName}</td></tr>
                   <tr><td>Email</td><td>${customerEmail}</td></tr>
                   <tr><td>Phone</td><td>${customerPhone || '—'}</td></tr>
+                  ${billingAddress ? `<tr><td>Billing address</td><td>${billingAddress}</td></tr>` : ''}
                   ${dietaryRestrictions ? `<tr><td>Dietary</td><td>${dietaryRestrictions}</td></tr>` : ''}
+                  <tr><td>Language</td><td>${locale === 'es' ? 'Spanish' : 'English'}</td></tr>
                 </table>
               </div>
             </div>

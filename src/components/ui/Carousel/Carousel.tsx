@@ -27,8 +27,8 @@ export default function Carousel<T>({
   showDots = true,
   align = 'center',
 }: CarouselProps<T>) {
-  const [pageIdx, setPageIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [withTransition, setWithTransition] = useState(true);
 
   const pages = useMemo(() => {
     const result: T[][] = [];
@@ -38,32 +38,87 @@ export default function Carousel<T>({
     return result;
   }, [items, itemsPerPage]);
 
+  const loop = pages.length > 1;
+
+  // When looping, pad the track with a clone of the last page before the first
+  // and a clone of the first page after the last. That way "next" from the last
+  // slide (or "prev" from the first) keeps animating in the same direction —
+  // into the clone — instead of jumping backwards across the whole track.
+  const track = useMemo(() => {
+    if (!loop) return pages.map((page, i) => ({ page, realPageIdx: i }));
+    return [
+      { page: pages[pages.length - 1], realPageIdx: pages.length - 1 },
+      ...pages.map((page, i) => ({ page, realPageIdx: i })),
+      { page: pages[0], realPageIdx: 0 },
+    ];
+  }, [loop, pages]);
+
+  // Index into `track`. Real page 0 lives at trackIdx 1 once looping (0 is the clone).
+  const [trackIdx, setTrackIdx] = useState(loop ? 1 : 0);
+
+  // Reset if the page count changes (e.g. items load in after the initial render).
+  // Adjusted during render rather than in an effect, per React's guidance for
+  // resetting state in response to a prop change.
+  const resetKey = `${loop}-${pages.length}`;
+  const [prevResetKey, setPrevResetKey] = useState(resetKey);
+  if (resetKey !== prevResetKey) {
+    setPrevResetKey(resetKey);
+    setWithTransition(false);
+    setTrackIdx(loop ? 1 : 0);
+  }
+
+  const pageIdx = loop
+    ? (((trackIdx - 1) % pages.length) + pages.length) % pages.length
+    : trackIdx;
+
+  function move(delta: number) {
+    setWithTransition(true);
+    setTrackIdx((i) => i + delta);
+  }
+
   useEffect(() => {
     if (paused || pages.length <= 1) return;
-    const id = setInterval(
-      () => setPageIdx(i => (i + 1) % pages.length),
-      autoPlayMs,
-    );
+    const id = setInterval(() => move(1), autoPlayMs);
     return () => clearInterval(id);
   }, [paused, pages.length, autoPlayMs]);
 
   if (pages.length === 0) return null;
 
-  function navigate(idx: number) {
+  function goTo(idx: number) {
     setPaused(true);
-    setPageIdx(idx);
+    setWithTransition(true);
+    setTrackIdx(loop ? idx + 1 : idx);
+  }
+
+  function step(delta: 1 | -1) {
+    setPaused(true);
+    move(delta);
+  }
+
+  // Once the "slide into the clone" animation finishes, snap invisibly back to
+  // the matching real slide so the loop can repeat indefinitely.
+  function handleTransitionEnd(e: React.TransitionEvent<HTMLDivElement>) {
+    if (!loop || e.propertyName !== 'transform' || e.target !== e.currentTarget) return;
+    if (trackIdx === 0) {
+      setWithTransition(false);
+      setTrackIdx(pages.length);
+    } else if (trackIdx === track.length - 1) {
+      setWithTransition(false);
+      setTrackIdx(1);
+    }
   }
 
   return (
     <div className={[styles.carousel, className].filter(Boolean).join(' ')}>
       <div className={styles.trackWrap}>
         <div
-          className={styles.track}
-          style={{ '--idx': pageIdx } as React.CSSProperties}
+          className={`${styles.track} ${withTransition ? '' : styles.noTransition}`}
+          style={{ '--idx': trackIdx } as React.CSSProperties}
+          onTransitionEnd={handleTransitionEnd}
         >
-          {pages.map((page, pi) => (
+          {track.map(({ page, realPageIdx }, pi) => (
             <div key={pi} className={styles.slide}>
-              {page.map((item, ii) => renderItem(item, pi * itemsPerPage + ii))}
+              {page.map((item, ii) => renderItem(item, realPageIdx * itemsPerPage + ii))}
             </div>
           ))}
         </div>
@@ -75,13 +130,13 @@ export default function Carousel<T>({
             <button
             type="button"
             className={styles.btn}
-            onClick={() => navigate((pageIdx - 1 + pages.length) % pages.length)}
+            onClick={() => step(-1)}
             aria-label="Previous"
           >
             <ChevronLeft size={18} />
           </button>
           )}
-          
+
 
           {showDots && (
             <div className={styles.dots}>
@@ -90,7 +145,7 @@ export default function Carousel<T>({
                   key={i}
                   type="button"
                   className={`${styles.dot} ${i === pageIdx ? styles.dotActive : ''}`}
-                onClick={() => navigate(i)}
+                onClick={() => goTo(i)}
                 aria-label={`Page ${i + 1}`}
               />
             ))}
@@ -99,7 +154,7 @@ export default function Carousel<T>({
           {showControls&&(<button
             type="button"
             className={styles.btn}
-            onClick={() => navigate((pageIdx + 1) % pages.length)}
+            onClick={() => step(1)}
             aria-label="Next"
           >
             <ChevronRight size={18} />

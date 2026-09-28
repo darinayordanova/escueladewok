@@ -15,6 +15,27 @@ export function slotSpots(
   return Math.max(0, maxParticipants - (bookingCounts[`${date}|${startTime}`] ?? 0));
 }
 
+// ─── Booking window ───────────────────────────────────────────────────────────
+
+/**
+ * A class with no confirmed bookings closes this many hours before it starts.
+ * Once at least one person has booked, it stays open until the start time.
+ */
+export const EMPTY_CLASS_CUTOFF_HOURS = 48;
+
+/** Whether a class (by Madrid-local date + start time) can still be booked. */
+export function isBookingOpen(
+  date: string,
+  startTime: string,
+  confirmedCount: number,
+  now: number = Date.now(),
+): boolean {
+  const start = Date.parse(toMadridISOString(date, startTime));
+  if (now >= start) return false;
+  if (confirmedCount > 0) return true;
+  return start - now > EMPTY_CLASS_CUTOFF_HOURS * 60 * 60 * 1000;
+}
+
 // ─── Time arithmetic ──────────────────────────────────────────────────────────
 
 /** Add minutes to a "HH:MM" string and return the resulting "HH:MM" string. */

@@ -65,18 +65,71 @@ export const homepage = defineType({
         fields: [
           defineField({ name: 'quote', title: 'Quote', type: 'localeText', validation: r => r.required() }),
           defineField({ name: 'author', title: 'Author Name', type: 'string', validation: r => r.required() }),
-          defineField({ name: 'role', title: 'Role / Location (optional)', type: 'string' }),
+          defineField({
+            name: 'course',
+            title: 'Course Taken (optional)',
+            type: 'reference',
+            to: [{ type: 'course' }],
+            description: 'Shown under the author name, localized using that course\'s own title.',
+          }),
+          defineField({
+            name: 'dateTaken',
+            title: 'Month/Year Taken (optional)',
+            type: 'date',
+            options: { dateFormat: 'MMMM YYYY' },
+            description: 'Only the month and year are displayed on the site.',
+          }),
         ],
         preview: {
-          select: { author: 'author', quote: 'quote.en' },
-          prepare({ author, quote }: { author?: string; quote?: string }) {
+          select: { author: 'author', quote: 'quote.en', courseTitle: 'course.title.en' },
+          prepare({ author, quote, courseTitle }: { author?: string; quote?: string; courseTitle?: string }) {
             return {
-              title: author ?? 'Testimonial',
+              title: courseTitle ? `${author ?? 'Testimonial'} — ${courseTitle}` : author ?? 'Testimonial',
               subtitle: quote ? `"${quote.slice(0, 60)}…"` : '',
             };
           },
         },
       }],
+    }),
+
+    defineField({
+      name: 'galleryTitle',
+      title: 'Gallery — Section Title',
+      type: 'localeString',
+      description: 'Shown under the testimonials. Leave the images empty to hide the section.',
+    }),
+    defineField({
+      name: 'galleryImages',
+      title: 'Gallery — Photos',
+      type: 'array',
+      description: 'Shown as scattered polaroids (cropped to 4:5 — set the hotspot on each photo). 4, 8 or 12 photos fill the rows best on desktop.',
+      of: [{
+        type: 'image',
+        options: { hotspot: true },
+        fields: [
+          defineField({
+            name: 'alt',
+            title: 'Alt text',
+            type: 'localeString',
+            description: 'Describe the photo for screen readers and SEO.',
+            validation: r => r.required(),
+          }),
+          defineField({
+            name: 'caption',
+            title: 'Caption (optional)',
+            type: 'localeString',
+            description: 'Short, handwritten-style note under the photo, e.g. "Dumpling night 🥟".',
+          }),
+        ],
+        preview: {
+          select: { media: 'asset', caption: 'caption.en', alt: 'alt.en' },
+          prepare({ media, caption, alt }: { media?: unknown; caption?: string; alt?: string }) {
+            return { title: caption || alt || 'Photo', media: media as never };
+          },
+        },
+      }],
+      options: { layout: 'grid' },
+      validation: r => r.max(12),
     }),
 
     defineField({
