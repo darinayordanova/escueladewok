@@ -140,27 +140,29 @@ export default function PhotoGallery({ title, images, locale }: PhotoGalleryProp
                   aria-haspopup="dialog"
                 >
                   <span className={styles.photo}>
-                    {item._type === 'galleryVideo' ? (
-                      <LoopingVideo
-                        item={item}
-                        posterUrl={
-                          item.poster?.asset
-                            ? urlFor(item.poster).width(480).height(600).auto('format').url()
-                            : undefined
-                        }
-                        className={styles.video}
-                      />
-                    ) : (
-                      <Image
-                        src={urlFor(item).width(480).height(600).auto('format').url()}
-                        alt={alt}
-                        fill
-                        sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 260px"
-                        placeholder={item.lqip ? 'blur' : 'empty'}
-                        blurDataURL={item.lqip}
-                        className={styles.img}
-                      />
-                    )}
+                    <span className={styles.media}>
+                      {item._type === 'galleryVideo' ? (
+                        <LoopingVideo
+                          item={item}
+                          posterUrl={
+                            item.poster?.asset
+                              ? urlFor(item.poster).width(480).height(600).auto('format').url()
+                              : undefined
+                          }
+                          className={styles.video}
+                        />
+                      ) : (
+                        <Image
+                          src={urlFor(item).width(480).height(600).auto('format').url()}
+                          alt={alt}
+                          fill
+                          sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 260px"
+                          placeholder={item.lqip ? 'blur' : 'empty'}
+                          blurDataURL={item.lqip}
+                          className={styles.img}
+                        />
+                      )}
+                    </span>
                   </span>
                   {caption && <span className={styles.caption}>{caption}</span>}
                 </button>

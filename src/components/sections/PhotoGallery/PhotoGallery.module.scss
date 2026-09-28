@@ -10,21 +10,28 @@ $ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
 // ─── Board ────────────────────────────────────────────────────────────────────
 
+// Flex (not grid) so a partly filled last row is spread out instead of
+// hugging the left. Items have an exact column width, so full rows have no
+// free space and look identical to a grid.
 .board {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-8 $spacing-5;
+  --cols: 2;
+  --col-gap: #{$spacing-5};
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $spacing-8 var(--col-gap);
   margin: 0;
   padding: 0;
   list-style: none;
 
   @include respond-to('md') {
-    grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-10 $spacing-8;
+    --cols: 3;
+    --col-gap: #{$spacing-8};
+    row-gap: $spacing-10;
   }
 
   @include respond-to('lg') {
-    grid-template-columns: repeat(4, 1fr);
+    --cols: 4;
   }
 }
 
@@ -39,6 +46,7 @@ $ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 .item {
   --tilt: -2deg;
   --nudge: 0px;
+  flex: 0 0 calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
   position: relative;
   transform: translateY(var(--nudge));
 
@@ -61,6 +69,7 @@ $ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   background: $color-background;
   border-radius: 2px;
   box-shadow: $shadow-md;
+  outline: 1px solid transparent; // smooths the frame's own edge while tilted
   cursor: zoom-in;
   text-align: center;
   transform: rotate(var(--tilt));
@@ -122,6 +131,25 @@ $ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   display: block;
   aspect-ratio: 4 / 5;
+
+  // Rotated <video> layers are composited without anti-aliasing, which leaves
+  // a jagged stair-step edge. This overlay paints a white inner frame
+  // (anti-aliased, like any normal content) on top of the media. It reaches
+  // 1px past the media on every side, so no sliver of the photo can peek out
+  // around it — that's why clipping lives on .media, not here.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: 1;
+    box-shadow: inset 0 0 0 3px $color-background;
+    pointer-events: none;
+  }
+}
+
+.media {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: $color-background-alt;
 }
@@ -251,7 +279,7 @@ $ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
 .lightboxCaption {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: $spacing-4;
   width: 100%;
   margin-top: $spacing-3;

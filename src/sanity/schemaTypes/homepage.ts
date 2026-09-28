@@ -128,18 +128,14 @@ export const homepage = defineType({
           },
         },
       }, {
-        type: 'object',
+        // A `file` member (not an object wrapping one) so videos can be
+        // dropped straight onto the gallery, just like images.
+        type: 'file',
         name: 'galleryVideo',
         title: 'Video',
+        description: 'A short clip (5–15 s), MP4 (H.264), ideally under 5 MB. Sound is never played, so it can be removed. Portrait (4:5 or 9:16) fits the frame best.',
+        options: { accept: 'video/mp4,video/webm,.mp4,.webm' },
         fields: [
-          defineField({
-            name: 'video',
-            title: 'Video file',
-            type: 'file',
-            options: { accept: 'video/mp4,video/webm' },
-            description: 'A short clip (5–15 s), MP4 (H.264), ideally under 5 MB. Sound is never played, so it can be removed. Portrait (4:5 or 9:16) fits the frame best.',
-            validation: r => r.required(),
-          }),
           defineField({
             name: 'poster',
             title: 'Cover image (recommended)',

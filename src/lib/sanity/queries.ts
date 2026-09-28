@@ -31,8 +31,8 @@ export const homepageQuery = groq`
         "dimensions": asset->metadata.dimensions { width, height }
       },
       _type == "galleryVideo" => {
-        "videoUrl": video.asset->url,
-        "mimeType": video.asset->mimeType,
+        "videoUrl": asset->url,
+        "mimeType": asset->mimeType,
         poster { _type, asset, crop, hotspot },
         "lqip": poster.asset->metadata.lqip
       }
