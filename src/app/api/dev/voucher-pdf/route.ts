@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   const pdf = await generateVoucherPdf({
     code: 'DEMO-1234',
     voucherTypeName: formatVoucherTypeName(voucherKey, locale),
-    amount: 69,
+    amount: 89,
     currency: 'eur',
     buyerName: 'Jane Smith',
     recipientName: searchParams.get('recipient') ?? (locale === 'es' ? 'Ana García' : 'Ana García'),

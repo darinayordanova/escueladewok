@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: VouchersPageProps): Promise<M
 }
 
 const VOUCHERS = [
-  { key: 'classVoucher',       price: '69 €'  },
-  { key: 'classVoucherForTwo', price: '138 €' },
+  { key: 'classVoucher',       price: '89 €'  },
+  { key: 'classVoucherForTwo', price: '178 €' },
   { key: 'giftCard25',         price: '25 €'  },
   { key: 'giftCard50',         price: '50 €'  },
 ] as const;
