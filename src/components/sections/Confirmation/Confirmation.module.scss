@@ -13,6 +13,10 @@
 // Phone: heading, voucher, next steps. Desktop: heading and steps left, voucher right.
 .layout {
   display: grid;
+  grid-template-areas:
+    'intro'
+    'aside'
+    'next';
   gap: $spacing-8;
 
   @include respond-to('lg') {
