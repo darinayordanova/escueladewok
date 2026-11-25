@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+
 import { NextResponse } from 'next/server';
 
 import { addMinutesToTime, isBookingOpen } from '@/lib/courses/timeslots';

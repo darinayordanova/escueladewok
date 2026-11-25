@@ -1,0 +1,289 @@
+@use 'sass:math';
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// The voucher PDF's own colours and page size (lib/pdf/voucherPdf, lib/voucherThemes → VOUCHER_PAGE)
+$pdf-stone: #7A5C5C;
+$pdf-ash: #C4AEAE;
+$pdf-linen: #F5F0F0;
+$pdf-petal: #FBE8EA;
+$page-width: 595.28;
+$page-height: 283.46;
+$panel-width: 180;
+
+// One PDF point, scaled to the page's width — every size below is copied 1:1 from the PDF styles
+@function pt($value) {
+  @return calc(var(--pt) * #{$value});
+}
+
+// Linen stage the voucher sits on; room at the bottom for the envelope
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: $spacing-8 $spacing-4 $spacing-10;
+  background-color: $color-background-alt;
+  border-radius: 0 50px 0 50px;
+  overflow: hidden;
+
+  @include respond-to('md') {
+    padding: $spacing-12 $spacing-8 $spacing-16;
+  }
+}
+
+// ─── Envelope (printed card only): DL, a touch larger than the voucher ────────
+
+.envelope {
+  position: absolute;
+  left: 50%;
+  bottom: -14%;
+  width: min(96%, 580px);
+  aspect-ratio: 2.2;
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: 0 10px 30px rgba($color-text, 0.1);
+  opacity: 0;
+  transform: translate(-50%, 30%);
+
+  // Flap
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 55%;
+    background: linear-gradient(to bottom right, transparent 49.5%, $color-border-light 50%) left / 50% 100% no-repeat,
+      linear-gradient(to bottom left, transparent 49.5%, $color-border-light 50%) right / 50% 100% no-repeat;
+    border-bottom: 1px solid rgba($color-primary, 0.08);
+  }
+
+  @include motion {
+    transition: transform 500ms $ease-out, opacity 300ms ease;
+  }
+
+  .physical & {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+// ─── The 21:10 page ───────────────────────────────────────────────────────────
+
+// Holds the page and turns it in 3D (components/ui/Tilt)
+.tilt {
+  position: relative;
+  width: min(100%, 540px);
+
+  @include motion {
+    transition: transform 500ms $ease-out;
+  }
+
+  // Printed: tucked into the envelope
+  .physical & {
+    transform: translateY(-12%) rotate(-1.5deg);
+  }
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  container-type: inline-size;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 24px 48px rgba($color-text, 0.18);
+  overflow: hidden;
+}
+
+.sheet {
+  --pt: calc(100cqw / #{$page-width});
+  display: flex;
+  aspect-ratio: math.div($page-width, $page-height);
+  font-family: $font-paragraph;
+  color: $color-text;
+
+  p,
+  dl,
+  dd {
+    margin: 0;
+  }
+}
+
+// ─── Design panel: the shared artwork (lib/voucherThemes → voucherPanelSvg) ──
+
+.panel {
+  position: relative;
+  flex-shrink: 0;
+  width: pt($panel-width);
+  padding: pt(22);
+  background: var(--voucher-panel) left top / 100% 100% no-repeat;
+  color: var(--voucher-ink);
+
+  @include motion {
+    animation: panel-in 450ms $ease-out;
+  }
+}
+
+@keyframes panel-in {
+  from { opacity: 0.4; }
+}
+
+.logo {
+  position: relative;
+  display: block;
+  width: pt(72);
+  height: pt(51);
+  object-fit: contain;
+  object-position: left top;
+
+  // Brand red logo, white on dark designs
+  .dark & {
+    filter: brightness(0) invert(1);
+  }
+}
+
+// The theme's illustration, at the PDF's position (--x, --y, --w in points)
+.art {
+  position: absolute;
+  left: calc(var(--pt) * var(--x));
+  top: calc(var(--pt) * var(--y));
+  width: calc(var(--pt) * var(--w));
+  height: auto;
+}
+
+// ─── Details ──────────────────────────────────────────────────────────────────
+
+.details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding: pt(24) pt(26) pt(20);
+}
+
+.voucherType {
+  font-family: $font-heading;
+  font-size: pt(16);
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+  letter-spacing: pt(-0.2);
+}
+
+.price {
+  display: inline-block;
+  margin-left: pt(7);
+  font-family: $font-paragraph;
+  font-size: pt(10);
+  font-weight: $font-weight-medium;
+  letter-spacing: 0;
+  color: $pdf-stone;
+
+  @include motion {
+    animation: price-in 400ms $ease-out;
+  }
+}
+
+@keyframes price-in {
+  from { opacity: 0; }
+}
+
+.sheet .intro {
+  margin-top: pt(3);
+  font-size: pt(7.5);
+  line-height: 1.5;
+  color: $pdf-stone;
+}
+
+.divider {
+  flex-shrink: 0;
+  height: 1px;
+  margin: pt(10) 0;
+  background-color: $pdf-ash;
+}
+
+.names {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: pt(8);
+}
+
+.sheet .label {
+  margin-bottom: pt(3);
+  font-size: pt(7);
+  font-weight: $font-weight-semibold;
+  letter-spacing: pt(1.4);
+  color: $pdf-stone;
+}
+
+.name {
+  overflow: hidden;
+  font-family: $font-heading;
+  font-size: pt(14);
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: $pdf-ash;
+}
+
+.sheet .message {
+  display: -webkit-box;
+  margin-top: pt(10);
+  padding: pt(7) pt(9);
+  overflow: hidden;
+  border-radius: pt(5);
+  background-color: $pdf-linen;
+  font-family: $font-heading;
+  font-size: pt(9.5);
+  font-weight: $font-weight-semibold;
+  font-style: italic;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+// Pushed to the bottom, like the PDF's spacer
+.codeRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: pt(8);
+  margin-top: auto;
+  padding-top: pt(8);
+}
+
+.code {
+  width: fit-content;
+  padding: pt(6) pt(9);
+  border-radius: pt(3);
+  background-color: $pdf-petal;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: pt(13);
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  letter-spacing: pt(3);
+  color: $color-primary;
+}
+
+.validUntil {
+  font-size: pt(8);
+  text-align: right;
+  color: $pdf-stone;
+}
+
+.sheet .footer {
+  margin-top: pt(8);
+  padding-top: pt(6);
+  border-top: 1px solid $pdf-ash;
+  font-size: pt(7);
+  line-height: 1.5;
+  color: $pdf-stone;
+}
+
+.link {
+  font-weight: $font-weight-medium;
+  color: $color-primary;
+}

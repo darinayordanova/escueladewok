@@ -108,6 +108,11 @@ export const allCoursesQuery = groq`
   }
 `;
 
+// Titles and photos of the classes in a booking (success page)
+export const bookedCoursesQuery = groq`
+  *[_type == "course" && slug.current in $slugs] { "slug": slug.current, title, image }
+`;
+
 export const courseBySlugQuery = groq`
   *[_type == "course" && slug.current == $slug][0] {
     _id,

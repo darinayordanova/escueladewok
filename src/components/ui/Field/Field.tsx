@@ -1,5 +1,7 @@
 import { useId, type ReactNode } from 'react';
 
+import { Info } from '@/components/ui/icons';
+
 import styles from './Field.module.scss';
 
 /** Props a Field hands to its control so label, hint and error are wired up for assistive tech. */
@@ -15,6 +17,8 @@ export interface FieldProps {
   /** Hide the label visually but keep it for screen readers. */
   hideLabel?: boolean;
   hint?: string;
+  /** Extra detail behind an ⓘ next to the label, shown on hover or focus. */
+  info?: string;
   error?: string;
   required?: boolean;
   /** Control id — generated when omitted. */
@@ -31,6 +35,7 @@ export default function Field({
   label,
   hideLabel = false,
   hint,
+  info,
   error,
   required,
   id,
@@ -49,12 +54,22 @@ export default function Field({
   return (
     <div className={[styles.field, className ?? ''].filter(Boolean).join(' ')}>
       {label && (
-        <label htmlFor={controlId} className={hideLabel ? 'sr-only' : styles.label}>
-          {label}
-          {required && (
-            <span className={styles.required} aria-hidden="true"> *</span>
+        <div className={styles.labelRow}>
+          <label htmlFor={controlId} className={hideLabel ? 'sr-only' : styles.label}>
+            {label}
+            {required && (
+              <span className={styles.required} aria-hidden="true"> *</span>
+            )}
+          </label>
+          {info && !hideLabel && (
+            <span className={styles.info}>
+              <button type="button" className={styles.infoTrigger} aria-label={info}>
+                <Info size={14} />
+              </button>
+              <span className={styles.tooltip} aria-hidden="true">{info}</span>
+            </span>
           )}
-        </label>
+        </div>
       )}
 
       {children({

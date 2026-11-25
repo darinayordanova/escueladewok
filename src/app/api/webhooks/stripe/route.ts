@@ -8,9 +8,12 @@ import {
   sendVoucherOwnerNotificationEmail,
   sendVoucherRecipientEmail,
 } from '@/lib/email';
-import { generateVoucherPdf, formatVoucherTypeName } from '@/lib/pdf/voucherPdf';
+import { generateVoucherPdf } from '@/lib/pdf/voucherPdf';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
+import { postPrintedVoucherToSlack } from '@/lib/slack/printedVoucher';
 import { getStripe } from '@/lib/stripe/client';
+import { formatVoucherDate, formatVoucherTypeName, voucherAmount, voucherExpiry, voucherSendAt, type VoucherFormat, type VoucherKey } from '@/lib/vouchers';
+import { isVoucherTheme, type VoucherTheme } from '@/lib/voucherThemes';
 import type { Locale } from '@/types';
 
 export async function POST(request: Request) {
@@ -155,7 +158,6 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     quantity: item.quantity,
   }));
 
-  const firstItem = items[0];
   const totalGuests = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalAmount = session.amount_total ? session.amount_total / 100 : 0;
   const currency = session.currency?.toUpperCase() ?? '';
@@ -164,11 +166,10 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
     sendConfirmationEmail({
       to: customerEmail,
       recipientName: customerName,
-      courseName: courseLines.map((c) => c.courseName).join(', '),
-      courseDate: firstItem?.date ?? '',
-      timeRange: courseLines.map((c) => c.timeRange).join(' / '),
+      items: courseLines,
       amount: totalAmount,
       currency,
+      locale,
     }).catch((err) => console.error('Failed to send confirmation email:', err)),
     sendOwnerNotificationEmail({
       items: courseLines,
@@ -190,7 +191,9 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
 
 async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const meta = session.metadata ?? {};
-  const voucherKey = meta.voucher_key as 'classVoucher' | 'classVoucherForTwo' | 'giftCard25' | 'giftCard50';
+  const voucherKey = meta.voucher_key as VoucherKey;
+  const format: VoucherFormat = meta.voucher_format === 'physical' ? 'physical' : 'digital';
+  const theme: VoucherTheme = isVoucherTheme(meta.voucher_theme) ? meta.voucher_theme : 'classic';
   const locale: Locale = meta.locale === 'es' ? 'es' : 'en';
 
   // Idempotency guard — skip if already processed
@@ -202,23 +205,37 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
 
   const customerName  = session.customer_details?.name  ?? '';
   const customerEmail = session.customer_details?.email ?? '';
-  const amount        = session.amount_total ? session.amount_total / 100 : 0;
+  // The voucher is worth the chosen amount; the total can also include printing and postage
+  const amount        = voucherAmount(voucherKey) ?? (session.amount_total ? session.amount_total / 100 : 0);
   const currency      = session.currency ?? 'eur';
 
-  const recipientName    = session.custom_fields?.find((f) => f.key === 'recipient_name')?.text?.value  ?? customerName;
-  const recipientEmail   = session.custom_fields?.find((f) => f.key === 'recipient_email')?.text?.value ?? customerEmail;
-  const recipientMessage = session.custom_fields?.find((f) => f.key === 'message')?.text?.value         ?? '';
+  // Names and message come from the vouchers page (metadata); older sessions used Stripe custom fields
+  const customField = (key: string) => session.custom_fields?.find((f) => f.key === key)?.text?.value ?? '';
+  const recipientName    = meta.recipient_name || customField('recipient_name') || customerName;
+  const senderName       = meta.sender_name || customerName;
+  const recipientEmail   = meta.recipient_email || customField('recipient_email');
+  // Emailed to the recipient at 9:00 Madrid time on the chosen date, or straight away
+  const sendAt           = recipientEmail ? voucherSendAt(meta.send_date) : undefined;
+  const sendOn           = sendAt ? formatVoucherDate(new Date(sendAt), locale) : undefined;
+  const recipientMessage = meta.message || customField('message');
+  const shipping         = session.collected_information?.shipping_details;
+  const shippingLines    = shipping
+    ? [shipping.name, shipping.address.line1, shipping.address.line2, `${shipping.address.postal_code ?? ''} ${shipping.address.city ?? ''}`.trim(), shipping.address.state, shipping.address.country]
+        .filter((line): line is string => !!line)
+    : [];
+  const shippingAddress  = shippingLines.length ? shippingLines.join(', ') : undefined;
+  // Asked for on printed cards — some couriers need it
+  const shippingPhone    = format === 'physical' ? session.customer_details?.phone ?? undefined : undefined;
 
   // 1. Expiry date (12 months)
-  const expiresAt = new Date();
-  expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+  const expiresAt = voucherExpiry();
   const expiresAtUnix     = Math.floor(expiresAt.getTime() / 1000);
   const expiresAtISO      = expiresAt.toISOString().split('T')[0];
-  const expiresAtDisplay  = expiresAt.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+  const expiresAtDisplay  = formatVoucherDate(expiresAt, locale);
 
   // 2. Create Stripe coupon + promo code
   const coupon = await getStripe().coupons.create({
-    amount_off: session.amount_total!,
+    amount_off: Math.round(amount * 100),
     currency,
     duration: 'once',
     max_redemptions: 1,
@@ -241,9 +258,10 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     voucherTypeName,
     amount,
     currency,
-    buyerName: customerName,
+    buyerName: senderName,
     recipientName,
     recipientMessage: recipientMessage || undefined,
+    theme,
     validUntil: expiresAtDisplay,
     locale,
   });
@@ -257,9 +275,15 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     currency,
     buyerName: customerName,
     buyerEmail: customerEmail,
+    senderName,
     recipientName,
-    recipientEmail,
+    ...(recipientEmail ? { recipientEmail } : {}),
+    ...(sendAt ? { sendAt } : {}),
     ...(recipientMessage ? { recipientMessage } : {}),
+    format,
+    theme,
+    ...(shippingAddress ? { shippingAddress } : {}),
+    ...(shippingPhone ? { shippingPhone } : {}),
     stripeSessionId: session.id,
     stripeCouponId: coupon.id,
     stripePromotionCodeId: promoCode.id,
@@ -269,14 +293,34 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   });
 
   // 5. Send emails
-  const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer, locale };
+  const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer, locale, format, sendAt, sendOn };
 
   await Promise.allSettled([
     sendVoucherBuyerEmail(sharedData).catch((err) => console.error('[voucher] buyer email failed:', err)),
-    sendVoucherRecipientEmail(sharedData).catch((err) => console.error('[voucher] recipient email failed:', err)),
-    sendVoucherOwnerNotificationEmail({ ...sharedData, recipientMessage: recipientMessage || undefined }).catch((err) =>
+    // Only when the buyer gave the recipient's address; otherwise the buyer passes it on
+    recipientEmail
+      ? sendVoucherRecipientEmail({ ...sharedData, buyerName: senderName, recipientMessage: recipientMessage || undefined }).catch((err) => console.error('[voucher] recipient email failed:', err))
+      : Promise.resolve(),
+    sendVoucherOwnerNotificationEmail({ ...sharedData, recipientMessage: recipientMessage || undefined, format, theme, shippingAddress, shippingPhone }).catch((err) =>
       console.error('[voucher] owner notification email failed:', err),
     ),
+    // Printed cards go to the team's Slack channel, ready to print and post
+    format === 'physical'
+      ? postPrintedVoucherToSlack({
+          code: promoCode.code,
+          voucherTypeName,
+          amount,
+          theme,
+          recipientName,
+          senderName,
+          message: recipientMessage || undefined,
+          buyerName: customerName,
+          buyerEmail: customerEmail,
+          shippingLines,
+          shippingPhone,
+          pdfBuffer,
+        }).catch((err) => console.error('[voucher] Slack post failed:', err))
+      : Promise.resolve(),
   ]);
 
   await sanityWriteClient.patch(sanityDoc._id).set({ sentAt: new Date().toISOString() }).commit();

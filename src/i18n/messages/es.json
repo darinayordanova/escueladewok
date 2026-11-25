@@ -218,27 +218,36 @@
   },
   "voucherSuccess": {
     "title": "¡Tarjeta regalo comprada!",
-    "subtitle": "Tu regalo está en camino.",
-    "voucher": "Bono",
-    "recipient": "Enviado a",
-    "scheduledFor": "Programado para",
-    "amountPaid": "Importe pagado",
-    "emailNoteSent": "El bono ha sido enviado por email a {email}.",
-    "emailNoteScheduled": "El bono será enviado por email a {email} el {date}.",
-    "emailNoteBuyer": "Se ha enviado una confirmación a tu correo.",
-    "browseVouchers": "Ver más tarjetas regalo"
+    "subtitle": "Tu regalo para {name} está en camino.",
+    "subtitleReady": "Tu regalo para {name} está listo para entregar.",
+    "stepsLabel": "Próximos pasos",
+    "stepPaid": "Pago recibido",
+    "stepCopy": "Te hemos enviado el recibo y una copia del vale",
+    "stepPrint": "Imprimimos tu tarjeta y la enviamos",
+    "stepTracking": "Número de seguimiento por email",
+    "stepTrackingDetail": "En cuanto salga la tarjeta, para que puedas seguirla.",
+    "stepSent": "Vale enviado por email a {name}",
+    "stepScheduled": "Se enviará a {name} el {date}",
+    "stepScheduledDetail": "A las 9:00 (hora de Madrid), a {email}",
+    "stepGive": "Entrégaselo a {name}",
+    "stepGiveDetail": "Imprime el PDF o reenvíalo por email.",
+    "browseClasses": "Ver nuestras clases",
+    "browseVouchers": "Comprar otro vale"
   },
   "bookingSuccess": {
     "title": "¡Reserva confirmada!",
-    "subtitle": "Estamos deseando cocinar contigo.",
-    "course": "Curso",
-    "date": "Fecha",
-    "time": "Horario",
-    "name": "Nombre",
-    "email": "Email",
-    "amountPaid": "Importe pagado",
-    "emailNote": "Se ha enviado una confirmación a tu correo.",
-    "backToCourses": "Ver más cursos"
+    "subtitle": "Tenemos muchas ganas de cocinar contigo.",
+    "subtitleNamed": "Nos vemos en la cocina, {name}.",
+    "stepsLabel": "Próximos pasos",
+    "stepPaid": "Pago recibido",
+    "stepEmail": "Confirmación enviada a tu email",
+    "stepSeeYou": "Te esperamos el {date} a las {time}",
+    "stepSeeYouMany": "Te esperamos en la cocina",
+    "directions": "Cómo llegar",
+    "guests": "{count, plural, one {# persona} other {# personas}}",
+    "classFallback": "Clase de cocina",
+    "browseClasses": "Ver más clases",
+    "giftVoucher": "Regala una clase"
   },
   "about": {
     "team": "Conoce al equipo"
@@ -329,17 +338,67 @@
   },
   "vouchers": {
     "pageTitle": "Tarjetas Regalo",
-    "pageDescription": "Regala una experiencia culinaria. Nuestras tarjetas regalo son perfectas para cualquier ocasión.",
-    "classVoucher": "Clase de Cocina",
-    "classVoucherDesc": "Una experiencia culinaria práctica para una persona. Canjeable en cualquier clase disponible.",
-    "classVoucherForTwo": "Clase de Cocina para Dos",
-    "classVoucherForTwoDesc": "Una experiencia culinaria práctica para dos personas. Canjeable en cualquier clase disponible.",
-    "giftCard25": "Tarjeta Regalo — 25 €",
-    "giftCard25Desc": "Una tarjeta regalo por valor de 25 €. Válida para cualquier clase o producto.",
-    "giftCard50": "Tarjeta Regalo — 50 €",
-    "giftCard50Desc": "Una tarjeta regalo por valor de 50 €. Válida para cualquier clase o producto.",
-    "buyVoucher": "Comprar",
-    "validityNote": "Válida durante 12 meses desde la fecha de compra."
+    "pageDescription": "Regala una clase de cocina en Wok Lab. Elige un importe, escribe una nota y envíala por email o como tarjeta impresa.",
+    "options": {
+      "giftCard25": "Para cualquier clase",
+      "giftCard50": "Para cualquier clase",
+      "classVoucher": "Una clase de cocina",
+      "classVoucherForTwo": "Una clase para dos"
+    },
+    "form": {
+      "amount": "Importe",
+      "format": "Formato",
+      "digital": "Digital",
+      "digitalHint": "PDF por email, el día que elijas",
+      "physical": "Tarjeta impresa",
+      "physicalHint": "Envío dentro de España",
+      "to": "Para",
+      "toPlaceholder": "Su nombre",
+      "toRequired": "Indica para quién es el vale",
+      "from": "De",
+      "fromPlaceholder": "Tu nombre",
+      "fromRequired": "Indica tu nombre",
+      "message": "Mensaje (opcional)",
+      "messagePlaceholder": "¡Feliz cumpleaños! Guárdame un dumpling.",
+      "messageCount": "{count}/{max}",
+      "total": "Total",
+      "breakdown": "Vale de {voucher} + {fee} de impresión y envío",
+      "checkout": "Continuar al pago",
+      "processing": "Abriendo el pago…",
+      "error": "No hemos podido abrir el pago. Inténtalo de nuevo.",
+      "terms": "Válido 12 meses en cualquier clase. Pago seguro con Stripe.",
+      "design": "Diseño",
+      "recipientEmail": "Email del destinatario",
+      "recipientEmailPlaceholder": "su@email.com",
+      "recipientEmailRequired": "Indica el email al que enviar el vale",
+      "recipientEmailInvalid": "Revisa el email",
+      "sendDate": "Enviar el",
+      "sendDatePlaceholder": "Ahora mismo",
+      "sendDateClear": "Enviar ahora mismo",
+      "sendDateHint": "Hasta 30 días después, a las 9:00 (hora de Madrid).",
+      "sendMyself": "Prefiero enviarle el vale yo"
+    },
+    "preview": {
+      "toFallback": "Su nombre",
+      "fromFallback": "Tu nombre"
+    },
+    "themes": {
+      "classic": {
+        "name": "Clásico"
+      },
+      "christmas": {
+        "name": "Navidad"
+      },
+      "birthday": {
+        "name": "Cumpleaños"
+      },
+      "celebration": {
+        "name": "Celebración"
+      },
+      "valentines": {
+        "name": "San Valentín"
+      }
+    }
   },
   "notFound": {
     "title": "Este plato no está en la carta.",

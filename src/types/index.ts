@@ -310,9 +310,13 @@ export interface CartItem {
 export interface ConfirmationEmailData {
   to: string;
   recipientName: string;
-  courseName: string;
-  courseDate: string;  // human-readable formatted date
-  timeRange: string;   // "18:30 – 21:30"
+  items: {
+    courseName: string;
+    courseDate: string;  // YYYY-MM-DD
+    timeRange: string;   // "18:30 – 21:30"
+    quantity: number;
+  }[];
   amount: number;
   currency: string;
+  locale: Locale;
 }

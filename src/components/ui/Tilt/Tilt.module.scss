@@ -1,0 +1,42 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.scene {
+  perspective: 900px;
+}
+
+.tilt {
+  position: relative;
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  // Settles back slowly when the mouse leaves; follows quickly while it moves
+  transition: transform 600ms $ease-out;
+
+  &[data-active] {
+    transition-duration: 120ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+  }
+}
+
+// Light catching the card where the mouse is
+.glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(#fff, 0.35), transparent 55%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+
+  .tilt[data-active] > & {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    display: none;
+  }
+}

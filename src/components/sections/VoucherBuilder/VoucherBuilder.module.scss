@@ -1,0 +1,277 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Preview first on phones so the voucher is seen before the form; side by side from lg
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $spacing-10;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: $spacing-16;
+  }
+}
+
+.previewColumn {
+  display: grid;
+  gap: $spacing-6;
+  order: -1;
+
+  @include respond-to('lg') {
+    order: 0;
+    position: sticky;
+    top: calc(#{$header-height} + #{$spacing-6});
+  }
+}
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
+.form {
+  display: grid;
+  gap: $spacing-8;
+}
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  @include eyebrow;
+  margin-bottom: $spacing-3;
+  padding: 0;
+}
+
+// Design swatches sit under the voucher they change
+.designPicker {
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+}
+
+.legendValue {
+  color: $color-text;
+}
+
+// Design swatches: a cut of each voucher front
+.themes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: $spacing-2;
+
+  @include respond-to('sm') {
+    gap: $spacing-3;
+  }
+}
+
+.swatch {
+  position: relative;
+  display: block;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: transform $transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  // Selected: a red ring, set off from the swatch
+  &:has(.radio:checked) .swatchArt {
+    box-shadow: 0 0 0 2px $color-background, 0 0 0 4px $color-primary;
+  }
+
+  &:has(.radio:focus-visible) {
+    outline: 2px solid $color-primary;
+    outline-offset: 6px;
+  }
+}
+
+.swatchArt {
+  display: block;
+  aspect-ratio: 0.8;
+  border-radius: $radius-md;
+  background:
+    var(--voucher-art) center 85% / 78% auto no-repeat,
+    var(--voucher-panel) center 70% / cover no-repeat,
+    var(--voucher-bg);
+  box-shadow: inset 0 0 0 1px rgba($color-text, 0.08);
+  transition: box-shadow $transition-fast;
+}
+
+.amounts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $spacing-3;
+
+  @include respond-to('sm') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.formats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $spacing-3;
+}
+
+// One radio tile style for amounts and formats
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  padding: $spacing-4;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background-color: $color-background;
+  cursor: pointer;
+  transition: border-color $transition-fast, background-color $transition-fast, box-shadow $transition-fast, transform $transition-fast;
+
+  &:hover {
+    border-color: $color-primary;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:has(.radio:checked) {
+    border-color: $color-primary;
+    background-color: rgba($color-primary, 0.04);
+    box-shadow: inset 0 0 0 1px $color-primary;
+  }
+
+  &:has(.radio:focus-visible) {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.radio {
+  @include visually-hidden;
+}
+
+.tileAmount {
+  font-family: $font-heading;
+  font-size: $font-size-h6;
+  font-weight: $font-weight-semibold;
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+  line-height: 1.1;
+  color: $color-text;
+
+  .tile:has(.radio:checked) & {
+    color: $color-primary;
+  }
+}
+
+.tileHint {
+  font-size: $font-size-xs;
+  line-height: 1.4;
+  color: $color-text-muted;
+}
+
+.formatTitle {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-2;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text;
+}
+
+.fee {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-primary;
+  white-space: nowrap;
+}
+
+.names {
+  display: grid;
+  gap: $spacing-6;
+
+  @include respond-to('sm') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+// Digital only — slides in under the format it belongs to
+.delivery {
+  display: grid;
+  gap: $spacing-4;
+
+  @include motion {
+    animation: delivery-in 300ms $ease-out;
+  }
+}
+
+@keyframes delivery-in {
+  from { opacity: 0; transform: translateY(-6px); }
+}
+
+// ─── Total & submit ───────────────────────────────────────────────────────────
+
+.total {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding-top: $spacing-6;
+  border-top: 1px solid $color-border-subtle;
+}
+
+.totalLabel {
+  margin: 0;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+}
+
+.breakdown {
+  margin: $spacing-1 0 0;
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+}
+
+.totalPrice {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: 2.25rem;
+  font-weight: $font-weight-semibold;
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.totalValue {
+  display: inline-block;
+
+  @include motion {
+    animation: total-in 300ms $ease-out;
+  }
+}
+
+@keyframes total-in {
+  from { opacity: 0.4; transform: translateY(-4px); }
+}
+
+.submitError {
+  margin: -$spacing-4 0 0;
+  font-size: $font-size-sm;
+  color: $color-error;
+}
+
+.small {
+  margin: -$spacing-4 0 0;
+  font-size: $font-size-xs;
+  text-align: center;
+  color: $color-text-muted;
+}

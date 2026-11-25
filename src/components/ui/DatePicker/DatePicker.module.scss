@@ -19,6 +19,14 @@
   &.controlOpen {
     @include control-focus;
   }
+
+  &.controlDisabled {
+    @include control-disabled;
+
+    .trigger {
+      cursor: inherit;
+    }
+  }
 }
 
 .trigger {

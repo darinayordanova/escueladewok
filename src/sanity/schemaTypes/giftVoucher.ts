@@ -25,6 +25,32 @@ export const giftVoucher = defineType({
     // Buyer
     defineField({ name: 'buyerName', title: 'Buyer Name', type: 'string', readOnly: true }),
     defineField({ name: 'buyerEmail', title: 'Buyer Email', type: 'string', readOnly: true }),
+    defineField({
+      name: 'format',
+      title: 'Format',
+      type: 'string',
+      readOnly: true,
+      options: { list: [{ title: 'Digital', value: 'digital' }, { title: 'Printed card', value: 'physical' }] },
+    }),
+    defineField({
+      name: 'theme',
+      title: 'Design',
+      type: 'string',
+      readOnly: true,
+      options: {
+        list: [
+          { title: 'Classic', value: 'classic' },
+          { title: 'Christmas', value: 'christmas' },
+          { title: 'Birthday', value: 'birthday' },
+          { title: 'Celebration', value: 'celebration' },
+          { title: "Valentine's", value: 'valentines' },
+        ],
+      },
+    }),
+    defineField({ name: 'sendAt', title: 'Emailed to recipient at', type: 'datetime', readOnly: true }),
+    defineField({ name: 'shippingAddress', title: 'Post to', type: 'text', rows: 2, readOnly: true }),
+    defineField({ name: 'shippingPhone', title: 'Phone (for the courier)', type: 'string', readOnly: true }),
+    defineField({ name: 'senderName', title: 'From (on the voucher)', type: 'string', readOnly: true }),
     // Recipient (optional)
     defineField({ name: 'recipientName', title: 'Recipient Name', type: 'string', readOnly: true }),
     defineField({ name: 'recipientEmail', title: 'Recipient Email', type: 'string', readOnly: true }),

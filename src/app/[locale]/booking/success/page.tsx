@@ -2,15 +2,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { Check } from '@/components/ui/icons';
-import Link from '@/components/ui/Link/Link';
-import { formatDate } from '@/lib/courses/timeslots';
-import { formatVoucherTypeName } from '@/lib/pdf/voucherPdf';
+import BookingConfirmation, { type BookedClass } from '@/components/sections/BookingConfirmation/BookingConfirmation';
+import VoucherConfirmation from '@/components/sections/VoucherConfirmation/VoucherConfirmation';
+import { sanityClient } from '@/lib/sanity/client';
+import { bookedCoursesQuery } from '@/lib/sanity/queries';
 import { buildPageMetadata } from '@/lib/seo';
 import { getStripe } from '@/lib/stripe/client';
-import type { Locale } from '@/types';
-
-import styles from './page.module.scss';
+import type { LocaleString } from '@/types';
 
 interface SuccessPageProps {
   params: Promise<{ locale: string }>;
@@ -38,7 +36,6 @@ export async function generateMetadata({ params, searchParams }: SuccessPageProp
 export default async function BookingSuccessPage({ params, searchParams }: SuccessPageProps) {
   const { locale } = await params;
   const { session_id } = await searchParams;
-  const l = locale as Locale;
 
   if (!session_id) notFound();
 
@@ -59,113 +56,51 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
 
   // ── Voucher success ──────────────────────────────────────────────────────────
   if (meta.purchase_type === 'voucher') {
-    const t = await getTranslations({ locale, namespace: 'voucherSuccess' });
-    const recipientName  = session.custom_fields?.find((f) => f.key === 'recipient_name')?.text?.value  ?? customerName;
-    const recipientEmail = session.custom_fields?.find((f) => f.key === 'recipient_email')?.text?.value ?? customerEmail;
-    const sendDate       = session.custom_fields?.find((f) => f.key === 'send_date')?.text?.value       ?? '';
-    const voucherKey     = meta.voucher_key ?? '';
-    const isSent         = !sendDate || sendDate <= new Date().toISOString().split('T')[0];
-
+    const shipping = session.collected_information?.shipping_details;
     return (
-      <div className="bg-alt">
-        <div className="container flex flex-justify-center py-16">
-          <div className={styles.card}>
-            <div className={`bg-success color-white p-2 inline-flex flex-align-center ${styles.icon}`}>
-              <Check size={28} />
-            </div>
-            <h1 className="h4">{t('title')}</h1>
-            <p className="text-lg color-text-light">{t('subtitle')}</p>
-
-            <dl className={styles.details}>
-              {voucherKey && (
-                <div className={styles.row}>
-                  <dt>{t('voucher')}</dt>
-                  <dd>{formatVoucherTypeName(voucherKey, l)}</dd>
-                </div>
-              )}
-              <div className={styles.row}>
-                <dt>{isSent ? t('recipient') : t('scheduledFor')}</dt>
-                <dd>
-                  {recipientName}{recipientEmail !== recipientName ? ` — ${recipientEmail}` : ''}
-                  {!isSent && sendDate ? ` · ${sendDate}` : ''}
-                </dd>
-              </div>
-              {customerName && (
-                <div className={styles.row}>
-                  <dt>{t('amountPaid')}</dt>
-                  <dd>{amount} {currency}</dd>
-                </div>
-              )}
-            </dl>
-
-            <p className={styles.emailNote}>
-              {isSent
-                ? t('emailNoteSent', { email: recipientEmail })
-                : t('emailNoteScheduled', { email: recipientEmail, date: sendDate })}
-            </p>
-            <p className={styles.emailNote}>{t('emailNoteBuyer')}</p>
-
-            <Link href="/vouchers" hasArrow>{t('browseVouchers')}</Link>
-          </div>
-        </div>
-      </div>
+      <VoucherConfirmation
+        locale={locale}
+        order={{
+          meta,
+          customerName,
+          customerEmail,
+          amountPaid: amount,
+          currency,
+          postTo: shipping
+            ? [shipping.address.line1, `${shipping.address.postal_code ?? ''} ${shipping.address.city ?? ''}`.trim()].filter(Boolean).join(', ')
+            : undefined,
+        }}
+      />
     );
   }
 
   // ── Booking success ──────────────────────────────────────────────────────────
-  const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
-
   const itemCount = parseInt(meta.item_count ?? '1', 10);
-  const items = Array.from({ length: itemCount }, (_, i) => ({
-    date:      meta[`item_${i}_date`] ?? meta.date ?? '',
-    startTime: meta[`item_${i}_time`] ?? meta.startTime ?? '',
-    endTime:   meta[`item_${i}_end`]  ?? meta.endTime ?? '',
-    quantity:  parseInt(meta[`item_${i}_qty`] ?? '1', 10),
-  }));
+  const slugs = Array.from({ length: itemCount }, (_, i) => meta[`item_${i}_slug`]).filter(Boolean);
+  const courses = slugs.length
+    ? await sanityClient
+        .fetch<{ slug: string; title: LocaleString; image?: BookedClass['image'] }[]>(bookedCoursesQuery, { slugs })
+        .catch(() => [])
+    : [];
 
   return (
-    <div className="bg-alt">
-      <div className="container flex flex-justify-center py-16">
-        <div className={styles.card}>
-          <div className={`bg-success color-white p-2 inline-flex flex-align-center ${styles.icon}`}>
-            <Check size={28} />
-          </div>
-          <h1 className="h4">{t('title')}</h1>
-          <p className="text-lg color-text-light">{t('subtitle')}</p>
-
-          <dl className={styles.details}>
-            {items.map((item, i) => (
-              <div key={i} className={styles.row}>
-                <dt>{t('date')}</dt>
-                <dd>
-                  {formatDate(item.date, l, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                  {' · '}{item.startTime} – {item.endTime}
-                  {item.quantity > 1 && ` · ×${item.quantity}`}
-                </dd>
-              </div>
-            ))}
-            {customerName && (
-              <div className={styles.row}>
-                <dt>{t('name')}</dt>
-                <dd>{customerName}</dd>
-              </div>
-            )}
-            {customerEmail && (
-              <div className={styles.row}>
-                <dt>{t('email')}</dt>
-                <dd>{customerEmail}</dd>
-              </div>
-            )}
-            <div className={styles.row}>
-              <dt>{t('amountPaid')}</dt>
-              <dd>{amount} {currency}</dd>
-            </div>
-          </dl>
-
-          <p className={styles.emailNote}>{t('emailNote')}</p>
-          <Link href="/courses" hasArrow>{t('backToCourses')}</Link>
-        </div>
-      </div>
-    </div>
+    <BookingConfirmation
+      locale={locale}
+      customerName={customerName}
+      customerEmail={customerEmail}
+      amountPaid={amount}
+      currency={currency}
+      classes={Array.from({ length: itemCount }, (_, i) => {
+        const course = courses.find((c) => c.slug === meta[`item_${i}_slug`]);
+        return {
+          title:     course?.title,
+          image:     course?.image,
+          date:      meta[`item_${i}_date`] ?? meta.date ?? '',
+          startTime: meta[`item_${i}_time`] ?? meta.startTime ?? '',
+          endTime:   meta[`item_${i}_end`]  ?? meta.endTime ?? '',
+          quantity:  parseInt(meta[`item_${i}_qty`] ?? '1', 10),
+        };
+      })}
+    />
   );
 }

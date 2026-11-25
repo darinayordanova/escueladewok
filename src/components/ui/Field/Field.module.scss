@@ -8,8 +8,66 @@
   min-width: 0;
 }
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+}
+
 .label {
   @include eyebrow;
+}
+
+// ─── ⓘ with a tooltip (hover or keyboard focus; a tap focuses it on touch) ────
+
+.info {
+  position: relative;
+  display: inline-flex;
+}
+
+.infoTrigger {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $color-text-muted;
+  cursor: help;
+
+  &:hover,
+  &:focus-visible {
+    color: $color-primary;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + #{$spacing-2});
+  left: 50%;
+  z-index: $z-dropdown;
+  width: max-content;
+  max-width: 240px;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $radius-md;
+  background-color: $color-text;
+  box-shadow: $shadow-md;
+  font-size: $font-size-xs;
+  line-height: $line-height-base;
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 4px);
+
+  @include motion {
+    transition: opacity 150ms ease, transform 150ms $ease-out, visibility 150ms;
+  }
+
+  .info:hover &,
+  .info:focus-within & {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
 }
 
 .required {

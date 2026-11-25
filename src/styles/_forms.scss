@@ -68,6 +68,11 @@
   font: inherit;
   outline: none;
 
+  // The surrounding box shows focus (red border + ring); no second outline inside it
+  &:focus-visible {
+    outline: none;
+  }
+
   &::placeholder {
     color: $color-text-muted;
     opacity: 1;

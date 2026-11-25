@@ -14,8 +14,13 @@ interface DatePickerProps {
   onChange: (v: string) => void;
   /** Dates with classes — get a dot, and are the only selectable days when provided. */
   availableDates?: Set<string>;
+  /** Last selectable date (YYYY-MM-DD). */
+  maxDate?: string;
+  disabled?: boolean;
   label?: string;
   hideLabel?: boolean;
+  /** Extra detail behind an ⓘ next to the label. */
+  info?: string;
   placeholder: string;
   clearLabel: string;
   locale: string;
@@ -27,8 +32,11 @@ export default function DatePicker({
   value,
   onChange,
   availableDates,
+  maxDate,
+  disabled,
   label,
   hideLabel,
+  info,
   placeholder,
   clearLabel,
   locale,
@@ -75,15 +83,16 @@ export default function DatePicker({
   }
 
   return (
-    <Field label={label} hideLabel={hideLabel} id={id} className={className}>
+    <Field label={label} hideLabel={hideLabel} info={info} id={id} className={className}>
       {(control) => (
         <div ref={containerRef} className={styles.wrapper}>
-          <div className={[styles.control, open ? styles.controlOpen : ''].filter(Boolean).join(' ')}>
+          <div className={[styles.control, open ? styles.controlOpen : '', disabled ? styles.controlDisabled : ''].filter(Boolean).join(' ')}>
             <button
               ref={triggerRef}
               type="button"
               className={styles.trigger}
               onClick={() => setOpen((o) => !o)}
+              disabled={disabled}
               aria-expanded={open}
               aria-haspopup="dialog"
               id={control.id}
@@ -94,21 +103,21 @@ export default function DatePicker({
               {!value && <ChevronDown size={18} className={styles.chevron} />}
             </button>
 
-            {value && (
+            {value && !disabled && (
               <button type="button" className={styles.clear} onClick={() => onChange('')} aria-label={clearLabel}>
                 <Close size={14} />
               </button>
             )}
           </div>
 
-          {open && (
+          {open && !disabled && (
             <div className={styles.popover} role="dialog" aria-label={label ?? placeholder}>
               <MonthCalendar
                 value={value}
                 onSelect={handleSelect}
                 locale={locale}
                 initialDate={firstAvailable}
-                isDateDisabled={(date) => date < today || (!!availableDates && !availableDates.has(date))}
+                isDateDisabled={(date) => date < today || (!!maxDate && date > maxDate) || (!!availableDates && !availableDates.has(date))}
                 renderIndicator={(date) => (availableDates?.has(date) ? <CalendarDot /> : null)}
               />
             </div>

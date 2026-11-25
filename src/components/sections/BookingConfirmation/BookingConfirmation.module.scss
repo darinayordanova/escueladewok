@@ -1,0 +1,101 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.classes {
+  display: grid;
+  gap: $spacing-6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  // Several classes sit side by side on wide screens
+  &.many {
+    @include respond-to('md') {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+// A class "ticket": photo on top, then what and when
+.ticket {
+  overflow: hidden;
+  border-radius: $radius-lg;
+  background-color: $color-background;
+  box-shadow: 0 24px 48px rgba($color-text, 0.12);
+}
+
+.photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: $color-primary;
+}
+
+.image {
+  object-fit: cover;
+
+  @include motion {
+    transition: transform 600ms $ease-out;
+  }
+
+  .ticket:hover & {
+    transform: scale(1.03);
+  }
+}
+
+// No photo: the brand ornament on red
+.pattern {
+  width: 40%;
+  height: auto;
+  opacity: 0.35;
+  filter: brightness(0) invert(1);
+}
+
+.body {
+  padding: $spacing-6;
+  // Torn-ticket edge between photo and details
+  border-top: 2px dashed $color-border-light;
+}
+
+.classTitle {
+  margin: 0 0 $spacing-4;
+  font-family: $font-heading;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $color-text;
+}
+
+.facts {
+  display: grid;
+  gap: $spacing-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-sm;
+    color: $color-text-light;
+
+    svg {
+      flex-shrink: 0;
+      color: $color-primary;
+    }
+  }
+}
+
+.directions {
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: $color-primary-dark;
+  }
+}

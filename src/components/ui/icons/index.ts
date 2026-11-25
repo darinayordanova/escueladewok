@@ -19,3 +19,4 @@ export { default as Users } from './Users';
 export { default as Globe } from './Globe';
 export { default as Plus } from './Plus';
 export { default as Minus } from './Minus';
+export { default as Info } from './Info';

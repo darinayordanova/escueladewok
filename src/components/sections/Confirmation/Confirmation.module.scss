@@ -1,0 +1,191 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  padding: $spacing-12 0 $spacing-16;
+  background-color: $color-background;
+
+  @include respond-to('lg') {
+    padding: $spacing-16 0 $spacing-20;
+  }
+}
+
+// Phone: heading, voucher, next steps. Desktop: heading and steps left, voucher right.
+.layout {
+  display: grid;
+  gap: $spacing-8;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-areas:
+      'intro aside'
+      'next  aside';
+    align-items: start;
+    column-gap: $spacing-16;
+    row-gap: $spacing-10;
+  }
+}
+
+// ─── Heading ──────────────────────────────────────────────────────────────────
+
+.intro {
+  grid-area: intro;
+  @include motion {
+    animation: rise-in 600ms $ease-out both;
+  }
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: $spacing-5;
+  border-radius: 50%;
+  background-color: $color-primary;
+  color: #fff;
+
+  @include motion {
+    animation: badge-pop 500ms $ease-out 150ms both;
+  }
+}
+
+.title {
+  margin: 0 0 $spacing-3;
+  font-family: $font-heading;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  letter-spacing: -0.02em;
+  color: $color-text;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: $color-text-muted;
+}
+
+// ─── What was bought: the voucher, the class ─────────────────────────────────
+
+.aside {
+  grid-area: aside;
+
+  @include motion {
+    animation: rise-in 700ms $ease-out 120ms both;
+  }
+
+  @include respond-to('lg') {
+    position: sticky;
+    top: $spacing-20;
+  }
+}
+
+// ─── What happens next ────────────────────────────────────────────────────────
+
+.next {
+  grid-area: next;
+
+  @include motion {
+    animation: rise-in 700ms $ease-out 240ms both;
+  }
+}
+
+.stepsLabel {
+  @include eyebrow;
+  margin: 0 0 $spacing-4;
+}
+
+.steps {
+  display: grid;
+  margin: 0 0 $spacing-8;
+  padding: 0;
+  list-style: none;
+}
+
+// A line runs down from each marker to the next
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: $spacing-4;
+  padding-bottom: $spacing-5;
+
+  &:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: 32px;
+    bottom: 4px;
+    left: 13.5px;
+    width: 1px;
+    background-color: $color-border;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.marker {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid $color-border;
+  border-radius: 50%;
+  background-color: #fff;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-text-muted;
+
+  .done & {
+    border-color: $color-primary;
+    background-color: $color-primary;
+    color: #fff;
+  }
+}
+
+.stepTitle {
+  margin: 3px 0 0;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-snug;
+  color: $color-text;
+}
+
+.stepDetail {
+  margin: $spacing-1 0 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text-muted;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+
+  > * {
+    flex: 1 1 auto;
+
+    @include respond-to('sm') {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes badge-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}

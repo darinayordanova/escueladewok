@@ -1,11 +1,42 @@
 import { Resend } from 'resend';
 
-import type { ConfirmationEmailData } from '@/types';
-import type { Locale } from '@/types';
+import { formatPrice } from '@/lib/format';
+import type { ConfirmationEmailData, Locale } from '@/types';
+
+import {
+  button,
+  codeBox,
+  detailsTable,
+  DIRECTIONS_URL,
+  emailLayout,
+  escapeHtml,
+  eyebrow,
+  heading,
+  note,
+  paragraph,
+  quote,
+  signOff,
+  siteLink,
+  steps,
+  STUDIO_LINE,
+  subheading,
+} from './layout';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
 const OWNER_EMAIL = process.env.OWNER_EMAIL ?? 'info@woklab.es';
+// Customer emails come from a no-reply address, so replies go to the studio
+const REPLY_TO = OWNER_EMAIL;
+
+const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? '';
+const money = (amount: number, currency: string, locale: Locale) => formatPrice(amount, currency.toUpperCase(), locale === 'es' ? 'es-ES' : 'en-GB');
+
+/** "2026-12-04" → "Friday, 4 December 2026" / "viernes, 4 de diciembre de 2026" */
+function longDate(iso: string, locale: Locale) {
+  const date = new Date(`${iso}T12:00:00Z`);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
 
 // ─── Voucher emails ───────────────────────────────────────────────────────────
 
@@ -21,189 +52,214 @@ export interface VoucherEmailData {
   validUntil: string;
   pdfBuffer: Buffer;
   locale: Locale;
+  /** Printed cards are posted; digital ones go to the recipient's email when there is one. */
+  format?: 'digital' | 'physical';
+  /** Scheduled send time for the recipient's email (ISO), and the same date for display. */
+  sendAt?: string;
+  sendOn?: string;
+  /** The buyer's note to the recipient. */
+  recipientMessage?: string;
 }
 
-const VOUCHER_BUYER_EMAIL_TEXT: Record<Locale, {
-  subject: (voucherTypeName: string) => string;
-  tagline: string;
-  greeting: (buyerName: string) => string;
-  intro: (recipientName: string, recipientEmail: string) => string;
+const VOUCHER_BUYER_TEXT: Record<Locale, {
+  subject: (recipient: string) => string;
+  preheader: string;
+  eyebrow: string;
+  heading: (name: string) => string;
+  intro: (recipient: string, recipientEmail: string, format: 'digital' | 'physical', sendOn?: string) => string;
+  details: string;
   voucher: string;
+  forLabel: string;
   code: string;
-  amount: string;
   validUntil: string;
-  recipient: string;
-  questions: string;
+  paid: string;
+  attached: string;
+  signOff: string;
 }> = {
   en: {
-    subject: (voucherTypeName) => `Your gift voucher — ${voucherTypeName}`,
-    tagline: 'Chinese Cooking Classes · Madrid',
-    greeting: (buyerName) => `Hi ${buyerName},`,
-    intro: (recipientName, recipientEmail) =>
-      `Your gift voucher purchase is confirmed! We've sent it to <strong>${recipientName}</strong> (${recipientEmail}). A PDF copy is attached for your records.`,
+    subject: (recipient) => `Your Wok Lab gift voucher for ${recipient}`,
+    preheader: 'Your gift voucher is confirmed. Here are the details.',
+    eyebrow: 'Gift voucher',
+    heading: (name) => (name ? `Thank you, ${name}!` : 'Thank you!'),
+    intro: (recipient, recipientEmail, format, sendOn) =>
+      format === 'physical'
+        ? `Your gift for <strong>${recipient}</strong> is confirmed. We'll print the card and post it to the address you gave us, and email you the tracking number as soon as it's on its way.`
+        : recipientEmail && sendOn
+          ? `Your gift for <strong>${recipient}</strong> is confirmed. We'll email it to ${recipientEmail} on <strong>${sendOn}</strong> at 9:00 (Madrid time).`
+          : recipientEmail
+            ? `Your gift for <strong>${recipient}</strong> is confirmed, and we've just emailed it to ${recipientEmail}.`
+            : `Your gift for <strong>${recipient}</strong> is confirmed. The voucher is attached as a PDF, ready to print or forward.`,
+    details: 'Your voucher',
     voucher: 'Voucher',
+    forLabel: 'For',
     code: 'Code',
-    amount: 'Amount',
     validUntil: 'Valid until',
-    recipient: 'Recipient',
-    questions: 'If you have any questions, reply to this email.',
+    paid: 'Value',
+    attached: 'A copy of the voucher is attached as a PDF.',
+    signOff: 'Thank you for sharing a class with us,<br />The Wok Lab team',
   },
   es: {
-    subject: (voucherTypeName) => `Tu vale regalo — ${voucherTypeName}`,
-    tagline: 'Clases de Cocina China · Madrid',
-    greeting: (buyerName) => `Hola ${buyerName},`,
-    intro: (recipientName, recipientEmail) =>
-      `¡Tu compra del vale regalo está confirmada! Lo hemos enviado a <strong>${recipientName}</strong> (${recipientEmail}). Adjuntamos una copia en PDF para tus archivos.`,
+    subject: (recipient) => `Tu vale regalo de Wok Lab para ${recipient}`,
+    preheader: 'Tu vale regalo está confirmado. Aquí tienes los detalles.',
+    eyebrow: 'Vale regalo',
+    heading: (name) => (name ? `¡Gracias, ${name}!` : '¡Gracias!'),
+    intro: (recipient, recipientEmail, format, sendOn) =>
+      format === 'physical'
+        ? `Tu regalo para <strong>${recipient}</strong> está confirmado. Imprimiremos la tarjeta, la enviaremos a la dirección que nos indicaste y te mandaremos el número de seguimiento en cuanto salga.`
+        : recipientEmail && sendOn
+          ? `Tu regalo para <strong>${recipient}</strong> está confirmado. Se lo enviaremos a ${recipientEmail} el <strong>${sendOn}</strong> a las 9:00 (hora de Madrid).`
+          : recipientEmail
+            ? `Tu regalo para <strong>${recipient}</strong> está confirmado y ya se lo hemos enviado a ${recipientEmail}.`
+            : `Tu regalo para <strong>${recipient}</strong> está confirmado. Tienes el vale adjunto en PDF, listo para imprimir o reenviar.`,
+    details: 'Tu vale',
     voucher: 'Vale',
+    forLabel: 'Para',
     code: 'Código',
-    amount: 'Importe',
     validUntil: 'Válido hasta',
-    recipient: 'Destinatario',
-    questions: 'Si tienes alguna pregunta, responde a este correo.',
+    paid: 'Valor',
+    attached: 'Adjuntamos una copia del vale en PDF.',
+    signOff: 'Gracias por regalar una clase con nosotros,<br />El equipo de Wok Lab',
   },
 };
 
-export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
-  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale } = data;
-  const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
-  const t = VOUCHER_BUYER_EMAIL_TEXT[locale] ?? VOUCHER_BUYER_EMAIL_TEXT.en;
+export function buildVoucherBuyerEmail(data: Omit<VoucherEmailData, 'pdfBuffer'>) {
+  const { voucherTypeName, code, amount, currency, validUntil, locale } = data;
+  const t = VOUCHER_BUYER_TEXT[locale] ?? VOUCHER_BUYER_TEXT.en;
+  const recipient = escapeHtml(data.recipientName);
 
+  const body = [
+    eyebrow(t.eyebrow),
+    heading(t.heading(escapeHtml(firstName(data.buyerName)))),
+    paragraph(t.intro(recipient, escapeHtml(data.recipientEmail), data.format ?? 'digital', data.sendOn)),
+    detailsTable(
+      [
+        [t.voucher, voucherTypeName],
+        [t.forLabel, recipient],
+        [t.code, `<span style="font-family:'Courier New',Courier,monospace;letter-spacing:2px;">${code}</span>`],
+        [t.validUntil, validUntil],
+        [t.paid, money(amount, currency, locale)],
+      ],
+      t.details,
+    ),
+    note(t.attached),
+    signOff(t.signOff),
+  ].join('');
+
+  return { subject: t.subject(data.recipientName), html: emailLayout({ locale, preheader: t.preheader, body }) };
+}
+
+export async function sendVoucherBuyerEmail(data: VoucherEmailData) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
-    to: buyerEmail,
-    subject: t.subject(voucherTypeName),
-    attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
-    html: `
-      <!DOCTYPE html><html lang="${locale}"><head><meta charset="UTF-8" />
-      <style>
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;margin:0;padding:0;background:#f9f5f0}
-        .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
-        .header{background:#860A15;padding:32px;text-align:center}
-        .header h1{color:#fff;margin:0;font-size:22px;letter-spacing:2px}
-        .header p{color:#f5c6ca;margin:6px 0 0;font-size:12px;letter-spacing:1px}
-        .body{padding:32px}
-        .body p{margin:0 0 16px;line-height:1.6}
-        .detail-box{background:#f9f5f0;border-radius:8px;padding:20px 24px;margin:20px 0;border-left:4px solid #860A15}
-        .detail-box table{width:100%;border-collapse:collapse}
-        .detail-box td{padding:6px 0;vertical-align:top;font-size:14px}
-        .detail-box td:first-child{font-weight:600;width:40%;color:#7a5c5c}
-        .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
-      </style></head>
-      <body><div class="wrapper">
-        <div class="header"><h1>WOK LAB</h1><p>${t.tagline}</p></div>
-        <div class="body">
-          <p>${t.greeting(buyerName)}</p>
-          <p>${t.intro(recipientName, recipientEmail)}</p>
-          <div class="detail-box"><table>
-            <tr><td>${t.voucher}</td><td>${voucherTypeName}</td></tr>
-            <tr><td>${t.code}</td><td><strong>${code}</strong></td></tr>
-            <tr><td>${t.amount}</td><td>${amount} ${currencySymbol}</td></tr>
-            <tr><td>${t.validUntil}</td><td>${validUntil}</td></tr>
-            <tr><td>${t.recipient}</td><td>${recipientName}</td></tr>
-          </table></div>
-          <p>${t.questions}</p>
-        </div>
-        <div class="footer"><p>Wok Lab &mdash; ${t.tagline}</p></div>
-      </div></body></html>`,
+    to: data.buyerEmail,
+    replyTo: REPLY_TO,
+    attachments: [{ filename: 'woklab-voucher.pdf', content: data.pdfBuffer }],
+    ...buildVoucherBuyerEmail(data),
   });
 
   if (error) throw new Error(`Failed to send voucher buyer email: ${error.message}`);
 }
 
-const VOUCHER_RECIPIENT_EMAIL_TEXT: Record<Locale, {
-  subject: (buyerName: string) => string;
-  tagline: string;
-  greeting: (recipientName: string) => string;
-  intro: (buyerName: string) => string;
-  yourCode: string;
-  validUntil: string;
-  voucher: string;
-  value: string;
-  redeem: string;
-  seeYou: string;
+const VOUCHER_RECIPIENT_TEXT: Record<Locale, {
+  subject: (sender: string) => string;
+  preheader: string;
+  eyebrow: string;
+  heading: (sender: string) => string;
+  intro: (recipient: string, voucherTypeName: string) => string;
+  codeLabel: string;
+  validUntil: (date: string) => string;
+  howTo: string;
+  steps: string[];
+  cta: string;
+  attached: string;
+  signOff: string;
 }> = {
   en: {
-    subject: (buyerName) => `You've received a gift from ${buyerName}!`,
-    tagline: 'Chinese Cooking Classes · Madrid',
-    greeting: (recipientName) => `Hi ${recipientName},`,
-    intro: (buyerName) => `<strong>${buyerName}</strong> has sent you a cooking experience as a gift!`,
-    yourCode: 'Your voucher code',
-    validUntil: 'Valid until',
-    voucher: 'Voucher',
-    value: 'Value',
-    redeem: 'Enter the code at checkout on <a href="https://woklab.es">woklab.es</a> to redeem your voucher. The PDF attached can be printed or kept digitally.',
-    seeYou: 'See you in the kitchen!',
+    subject: (sender) => `${sender} has given you a cooking class at Wok Lab`,
+    preheader: 'Your gift voucher code is inside.',
+    eyebrow: 'A gift for you',
+    heading: (sender) => `${sender} has given you a gift!`,
+    intro: (recipient, voucherTypeName) =>
+      `Hi ${recipient}, you've received a <strong>${voucherTypeName}</strong> at Wok Lab, our Asian cooking school in the heart of Madrid. From the wok to the table.`,
+    codeLabel: 'Your voucher code',
+    validUntil: (date) => `Valid until ${date}`,
+    howTo: 'How to use it',
+    steps: [
+      'Choose a class and a date on woklab.es.',
+      'Enter your code at checkout.',
+      'Come hungry, and cook with us.',
+    ],
+    cta: 'Choose your class',
+    attached: 'Your voucher is also attached as a PDF, to print or keep on your phone.',
+    signOff: 'See you in the kitchen,<br />The Wok Lab team',
   },
   es: {
-    subject: (buyerName) => `¡Has recibido un regalo de ${buyerName}!`,
-    tagline: 'Clases de Cocina China · Madrid',
-    greeting: (recipientName) => `Hola ${recipientName},`,
-    intro: (buyerName) => `¡<strong>${buyerName}</strong> te ha regalado una experiencia culinaria!`,
-    yourCode: 'Tu código de vale',
-    validUntil: 'Válido hasta',
-    voucher: 'Vale',
-    value: 'Valor',
-    redeem: 'Introduce el código al finalizar tu compra en <a href="https://woklab.es">woklab.es</a> para canjear tu vale. El PDF adjunto se puede imprimir o guardar digitalmente.',
-    seeYou: '¡Nos vemos en la cocina!',
+    subject: (sender) => `${sender} te ha regalado una clase de cocina en Wok Lab`,
+    preheader: 'Dentro tienes el código de tu vale regalo.',
+    eyebrow: 'Un regalo para ti',
+    heading: (sender) => `¡${sender} te ha hecho un regalo!`,
+    intro: (recipient, voucherTypeName) =>
+      `Hola ${recipient}, has recibido un <strong>${voucherTypeName}</strong> en Wok Lab, nuestra escuela de cocina asiática en el centro de Madrid. Del wok a la mesa.`,
+    codeLabel: 'Tu código',
+    validUntil: (date) => `Válido hasta el ${date}`,
+    howTo: 'Cómo usarlo',
+    steps: [
+      'Elige una clase y una fecha en woklab.es.',
+      'Introduce tu código al pagar.',
+      'Ven con hambre y cocina con nosotros.',
+    ],
+    cta: 'Elige tu clase',
+    attached: 'También tienes el vale adjunto en PDF, para imprimirlo o guardarlo en el móvil.',
+    signOff: 'Nos vemos en la cocina,<br />El equipo de Wok Lab',
   },
 };
 
-export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'buyerEmail' | 'sendDate'>) {
-  const { buyerName, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale } = data;
-  const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
-  const t = VOUCHER_RECIPIENT_EMAIL_TEXT[locale] ?? VOUCHER_RECIPIENT_EMAIL_TEXT.en;
+export function buildVoucherRecipientEmail(data: Omit<VoucherEmailData, 'buyerEmail' | 'pdfBuffer'>) {
+  const { voucherTypeName, code, validUntil, locale } = data;
+  const t = VOUCHER_RECIPIENT_TEXT[locale] ?? VOUCHER_RECIPIENT_TEXT.en;
+  const sender = escapeHtml(data.buyerName);
 
+  const body = [
+    eyebrow(t.eyebrow),
+    heading(t.heading(sender)),
+    paragraph(t.intro(escapeHtml(firstName(data.recipientName)), voucherTypeName)),
+    data.recipientMessage ? quote(escapeHtml(data.recipientMessage), sender) : '',
+    codeBox(t.codeLabel, code, t.validUntil(validUntil)),
+    subheading(t.howTo),
+    steps(t.steps),
+    button(t.cta, siteLink(locale, '/courses')),
+    note(t.attached),
+    signOff(t.signOff),
+  ].join('');
+
+  return { subject: t.subject(data.buyerName), html: emailLayout({ locale, preheader: t.preheader, body }) };
+}
+
+export async function sendVoucherRecipientEmail(data: Omit<VoucherEmailData, 'buyerEmail'>) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
-    to: recipientEmail,
-    subject: t.subject(buyerName),
-    attachments: [{ filename: 'woklab-voucher.pdf', content: pdfBuffer }],
-    html: `
-      <!DOCTYPE html><html lang="${locale}"><head><meta charset="UTF-8" />
-      <style>
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;margin:0;padding:0;background:#f9f5f0}
-        .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
-        .header{background:#860A15;padding:32px;text-align:center}
-        .header h1{color:#fff;margin:0;font-size:22px;letter-spacing:2px}
-        .header p{color:#f5c6ca;margin:6px 0 0;font-size:12px;letter-spacing:1px}
-        .body{padding:32px}
-        .body p{margin:0 0 16px;line-height:1.6}
-        .code-box{background:#f5e6e8;border-radius:8px;padding:24px;margin:20px 0;text-align:center;border-left:4px solid #860A15}
-        .code-label{font-size:11px;color:#7a5c5c;letter-spacing:2px;font-weight:600;text-transform:uppercase;margin-bottom:8px}
-        .code{font-size:28px;font-weight:700;color:#860A15;letter-spacing:4px}
-        .valid{font-size:12px;color:#7a5c5c;margin-top:8px}
-        .detail-box{background:#f9f5f0;border-radius:8px;padding:20px 24px;margin:20px 0}
-        .detail-box table{width:100%;border-collapse:collapse}
-        .detail-box td{padding:6px 0;vertical-align:top;font-size:14px}
-        .detail-box td:first-child{font-weight:600;width:40%;color:#7a5c5c}
-        .footer{padding:20px 32px;text-align:center;color:#999;font-size:13px;border-top:1px solid #e0e0e0}
-      </style></head>
-      <body><div class="wrapper">
-        <div class="header"><h1>WOK LAB</h1><p>${t.tagline}</p></div>
-        <div class="body">
-          <p>${t.greeting(recipientName)}</p>
-          <p>${t.intro(buyerName)}</p>
-          <div class="code-box">
-            <p class="code-label">${t.yourCode}</p>
-            <p class="code">${code}</p>
-            <p class="valid">${t.validUntil} ${validUntil}</p>
-          </div>
-          <div class="detail-box"><table>
-            <tr><td>${t.voucher}</td><td>${voucherTypeName}</td></tr>
-            <tr><td>${t.value}</td><td>${amount} ${currencySymbol}</td></tr>
-          </table></div>
-          <p>${t.redeem}</p>
-          <p>${t.seeYou}</p>
-        </div>
-        <div class="footer"><p>Wok Lab &mdash; ${t.tagline} &mdash; info@woklab.es</p></div>
-      </div></body></html>`,
+    to: data.recipientEmail,
+    replyTo: REPLY_TO,
+    attachments: [{ filename: 'woklab-voucher.pdf', content: data.pdfBuffer }],
+    // Held by Resend until the buyer's chosen date
+    ...(data.sendAt ? { scheduledAt: data.sendAt } : {}),
+    ...buildVoucherRecipientEmail(data),
   });
 
   if (error) throw new Error(`Failed to send voucher recipient email: ${error.message}`);
 }
 
-export async function sendVoucherOwnerNotificationEmail(data: VoucherEmailData & { recipientMessage?: string }) {
-  const { buyerName, buyerEmail, recipientName, recipientEmail, voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale, recipientMessage } = data;
+// ─── Studio notifications ─────────────────────────────────────────────────────
+
+export async function sendVoucherOwnerNotificationEmail(
+  data: VoucherEmailData & { recipientMessage?: string; format?: 'digital' | 'physical'; theme?: string; shippingAddress?: string; shippingPhone?: string },
+) {
+  const { voucherTypeName, code, amount, currency, validUntil, pdfBuffer, locale, format, theme, shippingAddress, shippingPhone } = data;
+  const buyerName = escapeHtml(data.buyerName);
+  const buyerEmail = escapeHtml(data.buyerEmail);
+  const recipientName = escapeHtml(data.recipientName);
+  const recipientEmail = data.recipientEmail ? escapeHtml(data.recipientEmail) : '—';
+  const recipientMessage = data.recipientMessage ? escapeHtml(data.recipientMessage) : '';
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
 
   const { error } = await resend.emails.send({
@@ -242,6 +298,11 @@ export async function sendVoucherOwnerNotificationEmail(data: VoucherEmailData &
                   <tr><td>Buyer email</td><td>${buyerEmail}</td></tr>
                   <tr><td>Recipient name</td><td>${recipientName}</td></tr>
                   <tr><td>Recipient email</td><td>${recipientEmail}</td></tr>
+                  ${data.sendOn ? `<tr><td>Emailed to recipient on</td><td>${data.sendOn}</td></tr>` : ''}
+                  <tr><td>Design</td><td>${theme ?? 'classic'}</td></tr>
+                  <tr><td>Format</td><td>${format === 'physical' ? '<strong>Printed card — post it</strong>' : 'Digital (PDF)'}</td></tr>
+                  ${shippingAddress ? `<tr><td>Post to</td><td>${escapeHtml(shippingAddress)}</td></tr>` : ''}
+                  ${shippingPhone ? `<tr><td>Phone</td><td>${escapeHtml(shippingPhone)}</td></tr>` : ''}
                   ${recipientMessage ? `<tr><td>Personal message</td><td>${recipientMessage}</td></tr>` : ''}
                   <tr><td>Language</td><td>${locale === 'es' ? 'Spanish' : 'English'}</td></tr>
                 </table>
@@ -360,76 +421,97 @@ export async function sendOwnerNotificationEmail(data: OwnerBookingNotificationD
   }
 }
 
-export async function sendConfirmationEmail(data: ConfirmationEmailData) {
-  const { to, recipientName, courseName, courseDate, timeRange, amount, currency } = data;
+// ─── Booking confirmation ─────────────────────────────────────────────────────
 
-  const { data: result, error } = await resend.emails.send({
-    from: FROM_EMAIL,
-    to,
-    subject: `Booking confirmed: ${courseName}`,
-    html: buildConfirmationHtml({ recipientName, courseName, courseDate, timeRange, amount, currency }),
-  });
+const BOOKING_TEXT: Record<Locale, {
+  subject: (course: string, date: string, count: number) => string;
+  preheader: string;
+  eyebrow: string;
+  heading: (name: string) => string;
+  intro: string;
+  date: string;
+  time: string;
+  guests: string;
+  where: string;
+  directions: string;
+  paid: string;
+  dietary: string;
+  signOff: string;
+}> = {
+  en: {
+    subject: (course, date, count) => (count > 1 ? `You're booked: ${count} cooking classes at Wok Lab` : `You're booked: ${course}, ${date}`),
+    preheader: 'Everything you need for your class at Wok Lab.',
+    eyebrow: 'Booking confirmed',
+    heading: (name) => (name ? `See you in the kitchen, ${name}!` : 'See you in the kitchen!'),
+    intro: "Thanks for booking with Wok Lab. Here's everything you need for your class.",
+    date: 'Date',
+    time: 'Time',
+    guests: 'Guests',
+    where: 'Where',
+    directions: 'Get directions',
+    paid: 'Total paid',
+    dietary: "Allergies or dietary needs you didn't mention at checkout? Just reply to this email before the class.",
+    signOff: 'See you soon,<br />The Wok Lab team',
+  },
+  es: {
+    subject: (course, date, count) => (count > 1 ? `Reserva confirmada: ${count} clases de cocina en Wok Lab` : `Reserva confirmada: ${course}, ${date}`),
+    preheader: 'Todo lo que necesitas para tu clase en Wok Lab.',
+    eyebrow: 'Reserva confirmada',
+    heading: (name) => (name ? `¡Nos vemos en la cocina, ${name}!` : '¡Nos vemos en la cocina!'),
+    intro: 'Gracias por reservar con Wok Lab. Aquí tienes todo lo que necesitas para tu clase.',
+    date: 'Fecha',
+    time: 'Hora',
+    guests: 'Personas',
+    where: 'Dónde',
+    directions: 'Cómo llegar',
+    paid: 'Total pagado',
+    dietary: '¿Alguna alergia o necesidad alimentaria que no indicaste al pagar? Responde a este email antes de la clase.',
+    signOff: 'Hasta pronto,<br />El equipo de Wok Lab',
+  },
+};
 
-  if (error) {
-    throw new Error(`Failed to send confirmation email: ${error.message}`);
-  }
+export function buildConfirmationEmail(data: Omit<ConfirmationEmailData, 'to'>) {
+  const locale: Locale = data.locale === 'es' ? 'es' : 'en';
+  const t = BOOKING_TEXT[locale];
+  const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
-  return result;
+  const body = [
+    eyebrow(t.eyebrow),
+    heading(t.heading(escapeHtml(firstName(data.recipientName)))),
+    paragraph(t.intro),
+    ...data.items.map((item) =>
+      detailsTable(
+        [
+          [t.date, capitalise(longDate(item.courseDate, locale))],
+          [t.time, item.timeRange],
+          [t.guests, String(item.quantity)],
+        ],
+        escapeHtml(item.courseName),
+      ),
+    ),
+    subheading(t.where),
+    paragraph(`<strong>Wok Lab</strong><br />${STUDIO_LINE}`),
+    button(t.directions, DIRECTIONS_URL),
+    detailsTable([[t.paid, money(data.amount, data.currency, locale)]]),
+    note(t.dietary),
+    signOff(t.signOff),
+  ].join('');
+
+  const first = data.items[0];
+  return {
+    subject: t.subject(first?.courseName ?? '', first ? longDate(first.courseDate, locale) : '', data.items.length),
+    html: emailLayout({ locale, preheader: t.preheader, body }),
+  };
 }
 
-function buildConfirmationHtml({
-  recipientName,
-  courseName,
-  courseDate,
-  timeRange,
-  amount,
-  currency,
-}: Omit<ConfirmationEmailData, 'to'>) {
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Booking Confirmed</title>
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a1a; margin: 0; padding: 0; background: #f9f5f0; }
-          .wrapper { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-          .header { background: #c0392b; padding: 32px; text-align: center; }
-          .header h1 { color: #fff; margin: 0; font-size: 24px; }
-          .body { padding: 32px; }
-          .body p { margin: 0 0 16px; line-height: 1.6; }
-          .details { background: #f9f5f0; border-radius: 8px; padding: 24px; margin: 24px 0; }
-          .details table { width: 100%; border-collapse: collapse; }
-          .details td { padding: 8px 0; vertical-align: top; }
-          .details td:first-child { font-weight: 600; width: 40%; }
-          .footer { padding: 24px 32px; text-align: center; color: #999; font-size: 14px; border-top: 1px solid #e0e0e0; }
-        </style>
-      </head>
-      <body>
-        <div class="wrapper">
-          <div class="header">
-            <h1>Wok Lab</h1>
-          </div>
-          <div class="body">
-            <p>Hi ${recipientName},</p>
-            <p>Your booking has been confirmed! We look forward to cooking with you.</p>
-            <div class="details">
-              <table>
-                <tr><td>Course</td><td>${courseName}</td></tr>
-                <tr><td>Date</td><td>${courseDate}</td></tr>
-                <tr><td>Time</td><td>${timeRange}</td></tr>
-                <tr><td>Amount paid</td><td>${amount} ${currency}</td></tr>
-              </table>
-            </div>
-            <p>If you have any questions, please reply to this email.</p>
-            <p>See you in the kitchen!</p>
-          </div>
-          <div class="footer">
-            <p>Wok Lab &mdash; Chinese Cooking Classes</p>
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
+export async function sendConfirmationEmail(data: ConfirmationEmailData) {
+  const { data: result, error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.to,
+    replyTo: REPLY_TO,
+    ...buildConfirmationEmail(data),
+  });
+
+  if (error) throw new Error(`Failed to send confirmation email: ${error.message}`);
+  return result;
 }

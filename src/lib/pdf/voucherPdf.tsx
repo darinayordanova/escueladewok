@@ -1,7 +1,11 @@
-import { Document, Image, Link, Page, StyleSheet, Text, View, renderToBuffer } from '@react-pdf/renderer';
+import path from 'path';
+
+import { Document, Font, Image, Link, Page, StyleSheet, Text, View, renderToBuffer } from '@react-pdf/renderer';
 import React from 'react';
 import sharp from 'sharp';
 
+import { VOUCHER_TEXT } from '@/lib/voucherText';
+import { VOUCHER_PAGE, VOUCHER_THEME_STYLES, voucherPanelSvg, type VoucherTheme } from '@/lib/voucherThemes';
 import type { Locale } from '@/types';
 
 const RED = '#860A15';
@@ -12,95 +16,79 @@ const WHITE = '#FFFFFF';
 const LINEN = '#F5F0F0';
 const PETAL = '#FBE8EA';
 
+// Brand fonts — static TTFs in public/fonts (next.config bundles them with the routes that build vouchers)
+const fontFile = (name: string) => path.join(process.cwd(), 'public', 'fonts', name);
 
-const FONT_HEADING = 'Helvetica-Bold';
-const FONT_TEXT = 'Helvetica';
-const FONT_ITALIC = 'Helvetica-Oblique';
+Font.register({
+  family: 'Fraunces',
+  fonts: [
+    { src: fontFile('Fraunces_72pt-SemiBold.ttf'), fontWeight: 600 },
+    { src: fontFile('Fraunces_72pt-SemiBoldItalic.ttf'), fontWeight: 600, fontStyle: 'italic' },
+  ],
+});
+Font.register({
+  family: 'Montserrat',
+  fonts: [
+    { src: fontFile('Montserrat-Regular.ttf'), fontWeight: 400 },
+    { src: fontFile('Montserrat-Medium.ttf'), fontWeight: 500 },
+    { src: fontFile('Montserrat-SemiBold.ttf'), fontWeight: 600 },
+  ],
+});
+// Keep words whole — the default hyphenation splits them mid-word
+Font.registerHyphenationCallback((word) => [word]);
+
+const FONT_HEADING = 'Fraunces';
+const FONT_TEXT = 'Montserrat';
+// Fixed-width so the code is easy to read back and type
 const FONT_CODE = 'Courier-Bold';
 
+// Landscape 210 × 100 mm: design panel on the left, details on the right.
+// The vouchers page preview (VoucherPreview.module.scss) copies these sizes 1:1 — change both together.
 const s = StyleSheet.create({
-  page: { backgroundColor: WHITE, fontFamily: FONT_TEXT },
+  page: { flexDirection: 'row', backgroundColor: WHITE, fontFamily: FONT_TEXT, fontWeight: 400, color: TEXT },
 
-  // Header
-  header: { paddingTop: 20, height: 165, paddingHorizontal: 40, alignItems: 'center', position: 'relative' },
-  headerBg: { position: 'absolute', top: 0, left: 0, width: 420, height: 165 },
-  logo: { width: 93, height: 55, marginBottom: 10 },
-  headerSub: { color: LINEN, fontSize: 11, marginTop: 8, letterSpacing: 1, textAlign: 'center' },
+  // Design panel
+  panel: { width: VOUCHER_PAGE.panelWidth, padding: 22 },
+  panelBg: { position: 'absolute', top: 0, left: 0, width: VOUCHER_PAGE.panelWidth, height: VOUCHER_PAGE.height },
+  art: { position: 'absolute' },
+  logo: { width: 72, height: 51 },
 
-  // Body
-  body: { paddingHorizontal: 40, paddingTop: 32, paddingBottom: 16, flex: 1 },
+  // Details
+  details: { flex: 1, paddingTop: 24, paddingHorizontal: 26, paddingBottom: 20 },
+  voucherType: { fontSize: 16, fontFamily: FONT_HEADING, fontWeight: 600, lineHeight: 1.2, letterSpacing: -0.2 },
+  // The value sits quietly after the voucher's name
+  price: { fontSize: 10, fontFamily: FONT_TEXT, fontWeight: 500, letterSpacing: 0, color: STONE },
+  intro: { fontSize: 7.5, lineHeight: 1.5, color: STONE, marginTop: 3 },
+  divider: { height: 1, backgroundColor: ASH, marginVertical: 10 },
 
-  giftBadge: {
-    color: WHITE,
-    fontSize: 20,
-    textAlign: 'center',
-    fontFamily: FONT_HEADING,
-    letterSpacing: 2,
-    marginBottom: 5,
-    marginTop: 5,
-    fontWeight: 'bold',
-  },
+  names: { flexDirection: 'row' },
+  nameColumn: { flex: 1, paddingRight: 8 },
+  label: { fontSize: 7, fontWeight: 600, letterSpacing: 1.4, color: STONE, marginBottom: 3 },
+  name: { fontSize: 14, fontFamily: FONT_HEADING, fontWeight: 600, lineHeight: 1.2, maxLines: 1, textOverflow: 'ellipsis' },
 
-  voucherType: { fontSize: 20, fontFamily: FONT_HEADING, color: TEXT,  },
+  messageBubble: { marginTop: 10, paddingVertical: 7, paddingHorizontal: 9, borderRadius: 5, backgroundColor: LINEN },
+  messageText: { fontSize: 9.5, fontFamily: FONT_HEADING, fontWeight: 600, fontStyle: 'italic', lineHeight: 1.45, maxLines: 3, textOverflow: 'ellipsis' },
 
-  // Code box 
-  codeLabel: { fontSize: 9, color: STONE, letterSpacing: 2, marginBottom: 10, fontFamily: FONT_HEADING, textAlign: 'center' },
-  codeWrap: { textAlign: 'center' },
-  code: { fontSize: 20, fontFamily: FONT_CODE, color: RED, letterSpacing: 5, backgroundColor: PETAL, padding:10, textAlign: 'center', borderRadius: 4, alignSelf: 'center' },
-  validUntil: { fontSize: 10, color: STONE, marginTop: 8, textAlign: 'center' },
+  spacer: { flex: 1 },
+  codeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
+  code: { fontSize: 13, fontFamily: FONT_CODE, color: RED, letterSpacing: 3, backgroundColor: PETAL, paddingVertical: 6, paddingHorizontal: 9, borderRadius: 3, alignSelf: 'flex-start' },
+  validUntil: { fontSize: 8, color: STONE, textAlign: 'right' },
 
-  // Recipient
-  divider: { height: 1, backgroundColor: ASH, marginVertical: 15 },
-  sectionLabel: { fontSize: 9, color: STONE, letterSpacing: 2, marginBottom: 4, fontFamily: FONT_HEADING },
-  recipientName: { fontSize: 16, fontFamily: FONT_HEADING, color: TEXT },
-
-  // Message
-  messageBubble: {
-    borderRadius: 6,
-    padding: 10,
-    marginTop:15,
-    backgroundColor: LINEN,
-  },
-  messageText: { fontSize: 12, color: TEXT, lineHeight: 1.6, fontFamily: FONT_ITALIC, margin: 0 },
-
-  // Amount row
-  amountText: { fontSize: 10, fontFamily: FONT_TEXT, color: STONE, textTransform: 'uppercase',  },
-
-  // Footer
-  footer: { paddingHorizontal: 40, paddingVertical: 10, borderTopWidth: 1, borderTopColor: ASH },
-  footerText: { fontSize: 10, color: STONE, textAlign: 'center', lineHeight: 1.7 },
-  link: { color: RED, textDecoration: 'none' },
+  footer: { marginTop: 8, paddingTop: 6, borderTopWidth: 1, borderTopColor: ASH },
+  footerText: { fontSize: 7, lineHeight: 1.5, color: STONE },
+  link: { color: RED, fontWeight: 500, textDecoration: 'none' },
 });
 
-const HEADER_SVG = `<svg width="420" height="190" viewBox="0 0 420 190" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 0H420V150C420 172.091 402.091 190 380 190H40C17.9086 190 0 172.091 0 150V0Z" fill="#860A15"/>
-<path d="M0 0H420V150C420 172.091 402.091 190 380 190H40C17.9086 190 0 172.091 0 150V0Z" fill="url(#pattern0_84_2)"/>
-<defs>
-<pattern id="pattern0_84_2" patternUnits="userSpaceOnUse" patternTransform="matrix(32 0 0 32 194 79)" preserveAspectRatio="none" viewBox="0 0 100 100" width="1" height="1">
-<g opacity="0.2" clip-path="url(#clip0_84_2)">
-<path d="M0 53C0 25.3859 22.3859 3 50 3C77.6142 3 100 25.3859 100 53" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M12.9736 53.0001C12.9736 32.5506 29.5506 15.9736 50.0001 15.9736C70.4497 15.9736 87.0266 32.5506 87.0266 53.0001" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M25.9473 60.2492V53.0002C25.9473 39.7153 36.7153 28.9473 50.0002 28.9473C63.2851 28.9473 74.0531 39.7153 74.0531 53.0002V60.2524" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M-50 103C-50 75.3859 -27.6141 53 4.92893e-05 53C27.6142 53 50 75.3859 50 103" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M-37.0264 103C-37.0264 82.5506 -20.4494 65.9736 0.000148471 65.9736C20.4497 65.9736 37.0266 82.5506 37.0266 103" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M-24.0527 110.249V103C-24.0527 89.7153 -13.2847 78.9473 0.000247654 78.9473C13.2851 78.9473 24.0531 89.7153 24.0531 103V110.252" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M50 103C50 75.3859 72.3859 53 100 53C127.614 53 150 75.3859 150 103" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M62.9736 103C62.9736 82.5506 79.5506 65.9736 100 65.9736C120.45 65.9736 137.027 82.5506 137.027 103" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M75.9473 110.249V103C75.9473 89.7153 86.7153 78.9473 100 78.9473C113.285 78.9473 124.053 89.7153 124.053 103V110.252" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M-50 3.00005C-50 -24.6141 -27.6141 -47 4.92893e-05 -47C27.6142 -47 50 -24.6141 50 3.00005" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M-37.0264 3.00015C-37.0264 -17.4494 -20.4494 -34.0264 0.000148471 -34.0264C20.4497 -34.0264 37.0266 -17.4494 37.0266 3.00015" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M-24.0527 10.2492V3.00025C-24.0527 -10.2847 -13.2847 -21.0527 0.000247654 -21.0527C13.2851 -21.0527 24.0531 -10.2847 24.0531 3.00025V10.2524" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M50 3.00005C50 -24.6141 72.3859 -47 100 -47C127.614 -47 150 -24.6141 150 3.00005" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M62.9736 3.00015C62.9736 -17.4494 79.5506 -34.0264 100 -34.0264C120.45 -34.0264 137.027 -17.4494 137.027 3.00015" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-<path d="M75.9473 10.2492V3.00025C75.9473 -10.2847 86.7153 -21.0527 100 -21.0527C113.285 -21.0527 124.053 -10.2847 124.053 3.00025V10.2524" stroke="#5C0A10" stroke-width="4.72" stroke-miterlimit="10"/>
-</g>
-</pattern>
-<clipPath id="clip0_84_2"><rect width="100" height="100" fill="white"/></clipPath>
-</defs>
-</svg>`;
+/** The theme's illustration as a plain RGBA PNG — the PDF renderer can't read palette PNGs. */
+async function buildArtPng(theme: VoucherTheme): Promise<string | undefined> {
+  const { art } = VOUCHER_THEME_STYLES[theme];
+  if (!art) return undefined;
+  const png = await sharp(path.join(process.cwd(), 'public', art.src)).ensureAlpha().png({ palette: false }).toBuffer();
+  return `data:image/png;base64,${png.toString('base64')}`;
+}
 
-async function buildHeaderPng(): Promise<string> {
-  const png = await sharp(Buffer.from(HEADER_SVG)).png().toBuffer();
+async function buildPanelPng(theme: VoucherTheme): Promise<string> {
+  const png = await sharp(Buffer.from(voucherPanelSvg(theme)), { density: 216 }).png().toBuffer();
   return `data:image/png;base64,${png.toString('base64')}`;
 }
 
@@ -142,60 +130,27 @@ const LOGO_SVG = `<svg width="368" height="261" viewBox="0 0 368 261" fill="none
 </svg>
 `;
 
-async function buildLogoPng(): Promise<string> {
-  const png = await sharp(Buffer.from(LOGO_SVG), { density: 216 }).png().toBuffer();
+async function buildLogoPng(theme: VoucherTheme): Promise<string> {
+  const colour = VOUCHER_THEME_STYLES[theme].tone === 'dark' ? WHITE : RED;
+  const svg = LOGO_SVG.replaceAll('fill="white"', `fill="${colour}"`);
+  const png = await sharp(Buffer.from(svg), { density: 216 }).png().toBuffer();
   return `data:image/png;base64,${png.toString('base64')}`;
 }
 
 
-const VOUCHER_PDF_TEXT: Record<Locale, {
-  badge: string;
-  headerSub: string;
-  value: string;
-  for: string;
-  code: string;
-  validUntil: string;
-  footerPrefix: string;
-  footerLinkLabel: string;
-  footerSuffix: string;
-  footerQuestions: string;
-}> = {
-  en: {
-    badge: 'GIFT VOUCHER',
-    headerSub: 'An unforgettable hands-on cooking experience in the heart of Madrid. From the wok to the table.',
-    value: 'Value',
-    for: 'FOR',
-    code: 'VOUCHER CODE',
-    validUntil: 'Valid until',
-    footerPrefix: 'Enter this code at checkout on ',
-    footerLinkLabel: 'woklab.es',
-    footerSuffix: ' to redeem your voucher.',
-    footerQuestions: 'Questions? info@woklab.es',
-  },
-  es: {
-    badge: 'VALE REGALO',
-    headerSub: 'Una experiencia culinaria inolvidable y práctica en el corazón de Madrid. Del wok a la mesa.',
-    value: 'Valor',
-    for: 'PARA',
-    code: 'CÓDIGO DEL VALE',
-    validUntil: 'Válido hasta el',
-    footerPrefix: 'Introduce este código al finalizar tu compra en ',
-    footerLinkLabel: 'woklab.es',
-    footerSuffix: ' para canjear tu vale.',
-    footerQuestions: '¿Preguntas? info@woklab.es',
-  },
-};
 
 interface VoucherPdfProps {
   code: string;
   voucherTypeName: string;
   amount: number;
   currency: string;
+  /** Printed as "From". */
   buyerName: string;
   recipientName?: string;
   recipientMessage?: string;
   validUntil: string;
   locale: Locale;
+  theme?: VoucherTheme;
 }
 
 function VoucherDocument({
@@ -208,57 +163,71 @@ function VoucherDocument({
   recipientMessage,
   validUntil,
   locale,
-  headerSrc,
+  theme = 'classic',
+  panelSrc,
+  artSrc,
   logoSrc,
-}: VoucherPdfProps & { headerSrc: string; logoSrc: string }) {
-  const displayName = recipientName || buyerName;
+}: VoucherPdfProps & { panelSrc: string; artSrc?: string; logoSrc: string }) {
+  const { art } = VOUCHER_THEME_STYLES[theme];
   const currencySymbol = currency.toUpperCase() === 'EUR' ? '€' : currency.toUpperCase();
-  const t = VOUCHER_PDF_TEXT[locale] ?? VOUCHER_PDF_TEXT.en;
+  const t = VOUCHER_TEXT[locale] ?? VOUCHER_TEXT.en;
 
   return (
     <Document title="Wok Lab — Gift Voucher" author="Wok Lab">
-      <Page size="A5" style={s.page}>
-        {/* Header */}
-        <View style={s.header}>
-          {/* Background: converted from SVG via sharp */}
-          <Image src={headerSrc} style={s.headerBg} />
+      {/* Fixed 21:10 page; names and messages are capped by maxLines so nothing spills onto a second page */}
+      <Page size={[VOUCHER_PAGE.width, VOUCHER_PAGE.height]} style={s.page}>
+        <View style={s.panel}>
+          <Image src={panelSrc} style={s.panelBg} />
+          {art && artSrc && (
+            <Image
+              src={artSrc}
+              style={[s.art, { left: art.x, top: art.y, width: art.width, height: art.height }]}
+            />
+          )}
           <Image src={logoSrc} style={s.logo} />
-          <Text style={s.giftBadge}>{t.badge}</Text>
-          <Text style={s.headerSub}>{t.headerSub}</Text>
         </View>
 
-        {/* Body */}
-        <View style={s.body}>
-          <Text style={s.voucherType}>{voucherTypeName}</Text>
-          {/* Amount */}
-          <Text style={s.amountText}>{t.value}: {amount} {currencySymbol}</Text>
+        <View style={s.details}>
+          <Text style={s.voucherType}>
+            {voucherTypeName}
+            <Text style={s.price}>{'   '}{amount} {currencySymbol}</Text>
+          </Text>
+          <Text style={s.intro}>{t.headerSub}</Text>
+
           <View style={s.divider} />
-{/* Recipient */}
-          <Text style={s.sectionLabel}>{t.for}</Text>
-          <Text style={s.recipientName}>{displayName}</Text>
-              {/* Personal message */}
+
+          <View style={s.names}>
+            <View style={s.nameColumn}>
+              <Text style={s.label}>{t.for}</Text>
+              <Text style={s.name}>{recipientName || buyerName}</Text>
+            </View>
+            <View style={s.nameColumn}>
+              <Text style={s.label}>{t.from}</Text>
+              <Text style={s.name}>{buyerName}</Text>
+            </View>
+          </View>
+
           {recipientMessage ? (
             <View style={s.messageBubble}>
-              <Text style={s.messageText}>"{recipientMessage}"</Text>
+              <Text style={s.messageText}>“{recipientMessage}”</Text>
             </View>
           ) : null}
-          <View style={s.divider} />
-          {/* Code */}
-            <Text style={s.codeLabel}>{t.code}</Text>
 
-            <View style={s.codeWrap}>
+          <View style={s.spacer} />
+
+          <View style={s.codeRow}>
+            <View>
+              <Text style={s.label}>{t.code}</Text>
               <Text style={s.code}>{code}</Text>
-              </View>
+            </View>
             <Text style={s.validUntil}>{t.validUntil} {validUntil}</Text>
+          </View>
 
-        </View>
-
-        {/* Footer */}
-        <View style={s.footer}>
-          <Text style={s.footerText}>
-            {t.footerPrefix}<Link style={s.link} src="https://woklab.es">{t.footerLinkLabel}</Link>{t.footerSuffix}{'\n'}
-            {t.footerQuestions}
-          </Text>
+          <View style={s.footer}>
+            <Text style={s.footerText}>
+              {t.footerPrefix}<Link style={s.link} src="https://woklab.es">{t.footerLinkLabel}</Link>{t.footerSuffix} {t.footerQuestions}
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>
@@ -266,18 +235,8 @@ function VoucherDocument({
 }
 
 export async function generateVoucherPdf(props: VoucherPdfProps): Promise<Buffer> {
-  const [headerSrc, logoSrc] = await Promise.all([buildHeaderPng(), buildLogoPng()]);
-  const arrayBuffer = await renderToBuffer(<VoucherDocument {...props} headerSrc={headerSrc} logoSrc={logoSrc} />);
+  const theme = props.theme ?? 'classic';
+  const [panelSrc, artSrc, logoSrc] = await Promise.all([buildPanelPng(theme), buildArtPng(theme), buildLogoPng(theme)]);
+  const arrayBuffer = await renderToBuffer(<VoucherDocument {...props} panelSrc={panelSrc} artSrc={artSrc} logoSrc={logoSrc} />);
   return Buffer.from(arrayBuffer);
-}
-
-const VOUCHER_TYPE_NAMES: Record<string, Record<Locale, string>> = {
-  classVoucher:       { en: 'Cooking Class Gift Voucher',       es: 'Vale Regalo — Clase de Cocina' },
-  classVoucherForTwo: { en: 'Cooking Class Gift Voucher for 2', es: 'Vale Regalo — Clase de Cocina para 2' },
-  giftCard25:         { en: 'Gift Card €25',                    es: 'Tarjeta Regalo €25' },
-  giftCard50:         { en: 'Gift Card €50',                    es: 'Tarjeta Regalo €50' },
-};
-
-export function formatVoucherTypeName(voucherKey: string, locale: Locale = 'en'): string {
-  return VOUCHER_TYPE_NAMES[voucherKey]?.[locale] ?? (locale === 'es' ? 'Vale Regalo' : 'Gift Voucher');
 }

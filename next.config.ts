@@ -14,6 +14,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // The voucher PDF reads its fonts and illustrations from disk, so ship them with the routes that build it
+  outputFileTracingIncludes: {
+    '/api/webhooks/stripe': ['./public/fonts/**/*', './public/images/vouchers/**/*'],
+    '/api/dev/voucher-pdf': ['./public/fonts/**/*', './public/images/vouchers/**/*'],
+  },
   sassOptions: {
     includePaths: [path.resolve('src/styles')],
   },

@@ -2,11 +2,8 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import PageHeader from '@/components/sections/PageHeader/PageHeader';
+import VoucherBuilder from '@/components/sections/VoucherBuilder/VoucherBuilder';
 import { buildPageMetadata } from '@/lib/seo';
-
-import styles from './page.module.scss';
-import VoucherBuyButton from './VoucherBuyButton';
-
 
 interface VouchersPageProps {
   params: Promise<{ locale: string }>;
@@ -23,13 +20,6 @@ export async function generateMetadata({ params }: VouchersPageProps): Promise<M
     description: t('pageDescription'),
   });
 }
-
-const VOUCHERS = [
-  { key: 'classVoucher',       price: '89 €'  },
-  { key: 'classVoucherForTwo', price: '178 €' },
-  { key: 'giftCard25',         price: '25 €'  },
-  { key: 'giftCard50',         price: '50 €'  },
-] as const;
 
 export default async function VouchersPage({ params }: VouchersPageProps) {
   const { locale } = await params;
@@ -51,21 +41,7 @@ export default async function VouchersPage({ params }: VouchersPageProps) {
         breadcrumbsLabel={tNav('breadcrumb')}
       />
       <div className="container pt-10 pb-16">
-        <div className={`grid gap-6 ${styles.cardGrid}`}>
-        {VOUCHERS.map(({ key, price }) => (
-          <div key={key} className={`col-12 col-md-6 ${styles.card}`}>
-            <div className={styles.cardBanner}>
-              <span className={styles.cardPrice}>{price}</span>
-            </div>
-            <div className={styles.cardBody}>
-              <h2 className={styles.cardTitle}>{t(key)}</h2>
-              <p className={styles.cardDesc}>{t(`${key}Desc` as Parameters<typeof t>[0])}</p>
-              <p className={styles.validity}>{t('validityNote')}</p>
-              <VoucherBuyButton voucherKey={key} locale={locale} label={t('buyVoucher')} />
-            </div>
-          </div>
-        ))}
-        </div>
+        <VoucherBuilder locale={locale} />
       </div>
     </>
   );
