@@ -1,45 +1,55 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// ─── Shell ────────────────────────────────────────────────────────────────────
+
 .card {
-  border-radius: $radius-lg;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   overflow: hidden;
-  box-shadow: $shadow-sm;
-  transition:
-    transform $transition-base,
-    box-shadow $transition-base;
-
-     .linkArrow {
-    transition: transform $transition-fast;
-  }
+  background-color: $color-background;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-xl;
+  transition: border-color $transition-base, box-shadow $transition-base, transform $transition-base;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: $shadow-lg;
+    border-color: rgba($color-primary, 0.35);
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
 
-    .linkArrow {
-      transform: translateX(4px);}
+  // Focus lands on the stretched title link — ring the whole card instead
+  &:has(.titleLink:focus-visible) {
+    outline: 2px solid $color-primary;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover { transform: none; }
   }
 }
 
-.imageLink {
-  display: block;
-  text-decoration: none;
-}
+// ─── Media ────────────────────────────────────────────────────────────────────
 
-.imageWrapper {
+.media {
   position: relative;
   aspect-ratio: 3 / 2;
   overflow: hidden;
+  background-color: $color-background-alt;
 }
 
 .image {
   object-fit: cover;
-  transition: transform $transition-slow;
+  transition: transform $transition-slow, filter $transition-base;
 
   .card:hover & {
     transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover & { transform: none; }
   }
 }
 
@@ -49,117 +59,162 @@
   background: linear-gradient(135deg, $color-background-alt 0%, $color-border 100%);
 }
 
-.cuisine {
+.pill {
   position: absolute;
-  top: $spacing-3;
-  left: $spacing-3;
+  top: $spacing-4;
+  left: $spacing-4;
 }
 
-.title {
-  transition: color $transition-fast;
+// ─── Body ─────────────────────────────────────────────────────────────────────
 
-  .titleLink:hover & {
-    color: $color-primary;
-  }
-
-  @include line-clamp(2);
-}
-
-.description {
-  @include line-clamp(2);
-}
-
-.dateLabel {
+.body {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: $spacing-1;
-  margin-bottom: $spacing-3;
-  padding-bottom: $spacing-3;
-  border-bottom: 1px solid $color-border-light;
-
-  time {
-    font-size: $font-size-sm;
-    font-weight: $font-weight-semibold;
-    color: $color-text;
-  }
-}
-
-.timeRange {
-  font-size: $font-size-xs;
-  color: $color-primary;
-  font-weight: $font-weight-medium;
+  padding: $spacing-6;
 }
 
 .meta {
   display: flex;
-  align-items: center;
-  gap: $spacing-4;
-  font-size: $font-size-sm;
-  color: $color-text-muted;
-  margin-bottom: $spacing-4;
+  flex-direction: column;
+  gap: $spacing-1;
+  padding-bottom: $spacing-4;
+  border-bottom: 1px solid $color-border-subtle;
 }
 
-.duration::before {
-  content: '⏱ ';
+.title {
+  @include line-clamp(2);
 }
+
+// Stretched link: its ::after covers the card, making the whole card clickable
+.titleLink {
+  color: inherit;
+  outline: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+}
+
+.description {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: 1.75;
+  color: $color-text-muted;
+  @include line-clamp(2);
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
 
 .footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: $spacing-4;
-  border-top: 1px solid $color-border-light;
+  gap: $spacing-4;
+  margin-top: auto;
+  padding-top: $spacing-6;
 }
 
 .price {
-  display: flex;
-  flex-direction: column;
-  line-height: $line-height-tight;
-
-  strong {
-    font-size: $font-size-xl;
-    color: $color-primary;
-  }
+  margin: 0;
+  font-family: $font-heading;
+  font-size: 1.5625rem; // 25px
+  font-weight: $font-weight-semibold;
+  line-height: 1;
+  color: $color-text;
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
 }
 
-.priceFrom {
+.footerNote {
+  margin: 0;
   font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-snug;
   color: $color-text-muted;
+  white-space: nowrap;
 }
 
-.spots {
-  font-size: $font-size-xs;
-  font-weight: $font-weight-medium;
-  color: $color-text-muted;
-}
-
-.spotsSoldOut {
-  color: $color-primary;
-}
-
-.brochureLink {
+// Looks like an outline button; the real link is the stretched title
+.cta {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: $spacing-1;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-medium;
-  color: $color-text-muted;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color $transition-fast;
-
-  &:hover { color: $color-primary; }
-}
-
-.bookLink {
+  gap: $spacing-2;
+  min-height: 42px;
+  padding: 0 $spacing-4;
+  border: 1px solid $color-primary;
+  border-radius: $radius-full;
+  color: $color-primary;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
-  color: $color-primary;
-  text-decoration: none;
-  transition: color $transition-fast;
+  white-space: nowrap;
+  transition: background-color $transition-fast, color $transition-fast;
 
-  &:hover {
-    color: $color-primary-dark;
+  .card:hover & {
+    background-color: $color-primary;
+    color: #fff;
   }
 }
 
+.ctaArrow {
+  transition: transform $transition-fast;
+
+  .card:hover & {
+    transform: translateX(3px);
+  }
+}
+
+// ─── Meta slot building blocks ────────────────────────────────────────────────
+
+.eyebrow {
+  display: block;
+  margin: 0;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-snug;
+  color: $color-primary;
+  // Weekday names are capitalised in some locales and not others
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  font-size: $font-size-xs;
+  line-height: $line-height-snug;
+  color: $color-text-muted;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-1 $spacing-2;
+  font-size: $font-size-xs;
+  line-height: $line-height-snug;
+  color: $color-text-muted;
+
+  li + li::before {
+    content: '·';
+    margin-right: $spacing-2;
+  }
+}
+
+// ─── States ───────────────────────────────────────────────────────────────────
+
+// Sold out / closed: still readable and clickable (the waitlist lives on the course page)
+.muted {
+  .image {
+    filter: saturate(0.35);
+  }
+
+  .price {
+    color: $color-text-muted;
+  }
+}

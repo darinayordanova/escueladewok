@@ -1,71 +1,31 @@
 @use '@/styles/variables' as *;
-@use '@/styles/mixins' as *;
+@use '@/styles/forms' as *;
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-}
-
-.label {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-text;
-}
-
-.required {
-  color: $color-primary;
-}
-
+// Same box as the other controls, but a pill can't hold multiple lines —
+// it uses the card radius instead.
 .control {
-  width: 100%;
-  padding: $spacing-3 $spacing-4;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  background-color: $color-background;
-  font-size: $font-size-sm;
-  font-family: inherit;
-  color: $color-text;
+  @include control-box;
+  display: block;
+  padding: $spacing-3 $control-padding-x;
+  border-radius: $radius-xl;
   line-height: $line-height-base;
   resize: vertical;
-  transition: border-color $transition-fast, box-shadow $transition-fast;
 
   &::placeholder {
     color: $color-text-muted;
-  }
-
-  &:hover:not(:focus):not(:disabled) {
-    border-color: $color-text-muted;
+    opacity: 1;
   }
 
   &:focus {
     outline: none;
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.12);
+    @include control-focus;
   }
 
   &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    background-color: $color-background-alt;
+    @include control-disabled;
   }
 }
 
 .hasError {
-  border-color: #c0392b;
-
-  &:focus {
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
-  }
-}
-
-.errorText {
-  font-size: $font-size-xs;
-  color: #c0392b;
-}
-
-.hintText {
-  font-size: $font-size-xs;
-  color: $color-text-muted;
-  line-height: $line-height-base;
+  @include control-error;
 }

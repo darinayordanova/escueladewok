@@ -14,8 +14,8 @@ export default function CuisinePill({ cuisine, label, className }: CuisinePillPr
 
   return (
     <span
-      className={`py-1 px-3 color-white text-xs m-no font-semibold text-uppercase ${styles.pill}${className ? ` ${className}` : ''}`}
-      style={{ '--pill-bg': color} as React.CSSProperties}
+      className={[styles.pill, className ?? ''].filter(Boolean).join(' ')}
+      style={{ '--pill-bg': color } as React.CSSProperties}
     >
       {label}
     </span>

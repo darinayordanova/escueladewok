@@ -46,6 +46,26 @@ export function localePath(locale: string, path: string) {
   return `/${locale}${path}`;
 }
 
+export interface BreadcrumbEntry {
+  name: string;
+  /** Path without locale prefix, e.g. '/courses'. */
+  path: string;
+}
+
+/** BreadcrumbList JSON-LD for a trail of pages, home first. */
+export function buildBreadcrumbJsonLd(locale: string, trail: BreadcrumbEntry[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((entry, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: entry.name,
+      item: `${SITE_URL}${localePath(locale, entry.path === '/' ? '' : entry.path)}`,
+    })),
+  };
+}
+
 /** The studio's physical address — shared across LocalBusiness, Course and Event JSON-LD. */
 export const STUDIO_ADDRESS = {
   '@type': 'PostalAddress',

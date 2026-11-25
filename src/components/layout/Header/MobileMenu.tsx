@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 
 import { Link, usePathname } from '@/i18n/navigation';
-import LanguageSwitcher from './LanguageSwitcher';
 
 import styles from './Header.module.scss';
+import { isActivePath } from './isActivePath';
+import LanguageSwitcher from './LanguageSwitcher';
+
 
 const NAV_LINKS = [
   { href: '/' as const, key: 'home' },
@@ -80,6 +82,7 @@ export default function MobileMenu() {
                 <Link
                   href={href}
                   className={styles.mobileNavLink}
+                  aria-current={isActivePath(pathname, href) ? 'page' : undefined}
                   onClick={() => setOpen(false)}
                 >
                   {t(key)}

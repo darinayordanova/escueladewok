@@ -58,16 +58,21 @@
   display: flex;
   align-items: center;
   gap: $spacing-6;
+
+  @include respond-to('xl') {
+    gap: $spacing-8;
+  }
 }
 
 .navLink {
-  font-size: $font-size-base;
+  font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $color-text;
   text-decoration: none;
   transition: color $transition-fast;
 
-  &:hover {
+  &:hover,
+  &[aria-current='page'] {
     color: $color-primary;
     text-decoration: none;
   }
@@ -257,6 +262,10 @@
     background-color: $color-background-alt;
     color: $color-primary;
     text-decoration: none;
+  }
+
+  &[aria-current='page'] {
+    color: $color-primary;
   }
 
   @include focus-ring;

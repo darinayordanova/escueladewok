@@ -13,10 +13,18 @@ $color-background-dark: #1A0E0E;
 
 $color-border: #C4AEAE;
 $color-border-light: #F5F0F0;
+$color-border-subtle: rgba($color-primary, 0.15); // card outlines, dividers inside cards
 
 $color-success: #4A9B5F;
 $color-success-light: #EAF4EC;
 $color-success-dark: #1E5C30;
+
+$color-error: #C0392B;
+
+// Availability — shared by capacity bars, status dots and calendar indicators
+$color-availability-high: #52B86A;
+$color-availability-medium: #E8923A;
+$color-availability-low: #D94040;
 
 // ─── Typography ───────────────────────────────────────────────────────────────
 $font-heading: var(--font-heading), Georgia, serif;
@@ -33,6 +41,11 @@ $font-size-h4: 32px;  // 32px
 $font-size-h3: 38px;     // 38px
 $font-size-h2: 48px;   // 48px
 $font-size-h1: 58px;     // 58px
+$font-size-display: clamp(3rem, 4.5vw + 1rem, 5.375rem); // 48px → 86px — page titles
+
+$letter-spacing-display: -0.05em;
+$letter-spacing-heading: -0.025em;
+$letter-spacing-eyebrow: 0.1em;
 
 $font-weight-normal: 400;
 $font-weight-medium: 500;
@@ -80,7 +93,14 @@ $breakpoint-xl: 1280px;
 $radius-sm: 4px;
 $radius-md: 8px;
 $radius-lg: 16px;
+$radius-xl: 18px;
 $radius-full: 9999px;
+
+// ─── Form controls ────────────────────────────────────────────────────────────
+$control-height: 46px;
+$control-border-width: 1px;
+$control-padding-x: 14px;
+$control-focus-ring: 0 0 0 3px rgba($color-primary, 0.12);
 
 // ─── Shadows ──────────────────────────────────────────────────────────────────
 $shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -92,6 +112,7 @@ $shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
 $transition-fast: 150ms ease;
 $transition-base: 250ms ease;
 $transition-slow: 400ms ease;
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1); // entrances: fast start, soft landing
 
 // ─── Z-index ──────────────────────────────────────────────────────────────────
 $z-below: -1;

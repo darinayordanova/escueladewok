@@ -1,0 +1,359 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// ─── Card ─────────────────────────────────────────────────────────────────────
+
+.card {
+  display: flex;
+  flex-direction: column;
+  @include raised-card;
+}
+
+.compact {
+  padding: 22px;
+}
+
+.wide {
+  padding: $spacing-6;
+
+  @include respond-to('md') {
+    padding: $spacing-12 56px;
+  }
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+
+  .compact & {
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid $color-border-subtle;
+  }
+
+  .wide & {
+    padding-bottom: $spacing-6;
+  }
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin: 0;
+  color: $color-primary;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.headerPrice {
+  margin: 0;
+  font-family: $font-heading;
+  font-weight: $font-weight-semibold;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.empty {
+  margin: $spacing-6 0 0;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
+
+// ─── Calendar step ────────────────────────────────────────────────────────────
+
+.calendar {
+  .compact & {
+    padding: 17px 0 14px;
+    border-bottom: 0.8px solid rgba($color-primary, 0.18);
+  }
+}
+
+// Each step eases in when the card switches between calendar and session
+.step {
+  @include motion {
+    animation: step-in 320ms $ease-out;
+  }
+}
+
+@keyframes step-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+// ─── Session step ─────────────────────────────────────────────────────────────
+
+.session {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding-top: $spacing-5;
+
+  .compact & {
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+}
+
+.sessionMain {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-5;
+
+  .compact & {
+    gap: $spacing-4;
+  }
+}
+
+.dateTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 88px;
+  height: 104px;
+  background-color: $color-background-alt;
+  color: $color-text;
+
+  .compact & {
+    width: 64px;
+    height: 72px;
+  }
+}
+
+.tileMonth {
+  @include eyebrow;
+  color: $color-primary;
+}
+
+.tileDay {
+  font-family: $font-heading;
+  font-weight: $font-weight-medium;
+  font-size: 2.75rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+
+  .compact & {
+    font-size: 1.9rem;
+  }
+}
+
+.tileYear {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+}
+
+.sessionText {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  min-width: 0;
+}
+
+.sessionTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-weight: $font-weight-medium;
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  line-height: 1.15;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+
+  .compact & {
+    font-size: $font-size-lg;
+  }
+}
+
+.sessionTime {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $color-text-light;
+}
+
+.sessionStatus {
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  .wide & {
+    margin-top: $spacing-2;
+  }
+}
+
+.changeDate {
+  align-self: flex-start;
+  margin-top: $spacing-2;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color $transition-fast;
+
+  &:hover {
+    text-decoration-color: currentcolor;
+  }
+
+  @include focus-ring;
+}
+
+// ─── Times ────────────────────────────────────────────────────────────────────
+
+.times {
+  margin: $spacing-5 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: $spacing-2;
+  margin-top: $spacing-2;
+}
+
+.timeSlot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: $spacing-2 $spacing-3;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  text-align: left;
+  transition: border-color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    border-color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+.timeSlotActive {
+  border-color: $color-primary;
+  background-color: rgba($color-primary, 0.06);
+}
+
+.timeSlotSpots {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-normal;
+  color: $color-text-muted;
+}
+
+// ─── Guests & total ───────────────────────────────────────────────────────────
+
+.label {
+  margin: 0;
+  padding: 0;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: $color-text;
+}
+
+.guests {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-6 0;
+  border-bottom: 1px solid $color-border-subtle;
+
+  .compact & {
+    padding: $spacing-5 0;
+  }
+}
+
+.perPerson {
+  margin: $spacing-1 0 0;
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-5 0;
+}
+
+.totalLabel {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $color-text-light;
+}
+
+.totalValue {
+  display: inline-block;
+
+  @include motion {
+    animation: total-bump 300ms $ease-out;
+  }
+}
+
+@keyframes total-bump {
+  from { opacity: 0.4; transform: translateY(-4px); }
+}
+
+.totalPrice {
+  margin: 0;
+  font-family: $font-heading;
+  font-weight: $font-weight-semibold;
+  font-size: 2.25rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+
+  .compact & {
+    font-size: 1.8rem;
+  }
+}
+
+.actions {
+  display: grid;
+  gap: $spacing-3;
+
+  .wide & {
+    @include respond-to('sm') {
+      grid-template-columns: 1fr 1fr;
+      gap: $spacing-4;
+    }
+  }
+}
+
+// ─── Sold out / closed ────────────────────────────────────────────────────────
+
+.note {
+  margin: $spacing-5 0 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.waitlist {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+
+  .note {
+    margin-bottom: $spacing-1;
+  }
+}
+
+.success {
+  margin: $spacing-5 0 0;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $radius-md;
+  background-color: $color-success-light;
+  color: $color-success-dark;
+  font-size: $font-size-sm;
+}

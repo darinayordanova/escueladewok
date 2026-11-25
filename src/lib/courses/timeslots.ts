@@ -1,4 +1,4 @@
-import type { BookingCountMap, Course, CourseOccurrence, DateEntry, TimeSlot } from '@/types';
+import type { BookingCountMap, Course, CourseOccurrence, DateEntry, ListedOccurrence, TimeSlot } from '@/types';
 
 // ─── Spots ────────────────────────────────────────────────────────────────────
 
@@ -13,6 +13,32 @@ export function slotSpots(
   startTime: string,
 ): number {
   return Math.max(0, maxParticipants - (bookingCounts[`${date}|${startTime}`] ?? 0));
+}
+
+export type AvailabilityLevel = 'high' | 'medium' | 'low' | 'none';
+
+/**
+ * Bucket remaining capacity into a colour level.
+ * More than half free → high, more than a fifth → medium, otherwise low; nothing left → none.
+ */
+export function availabilityLevel(left: number, total: number): AvailabilityLevel {
+  if (left <= 0 || total <= 0) return 'none';
+  const pct = (left / total) * 100;
+  if (pct > 50) return 'high';
+  if (pct > 20) return 'medium';
+  return 'low';
+}
+
+// ─── Time of day ──────────────────────────────────────────────────────────────
+
+export type DayPart = 'morning' | 'afternoon' | 'evening';
+
+/** Morning before 12:00, afternoon before 17:00, evening after. */
+export function dayPart(startTime: string): DayPart {
+  const hour = Number(startTime.split(':')[0]);
+  if (hour < 12) return 'morning';
+  if (hour < 17) return 'afternoon';
+  return 'evening';
 }
 
 // ─── Booking window ───────────────────────────────────────────────────────────
@@ -129,6 +155,25 @@ export function expandOccurrences(courses: Course[]): CourseOccurrence[] {
   return occurrences.sort(
     (a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime),
   );
+}
+
+/**
+ * Attach spots left and booking-window state to each occurrence.
+ * bookingCounts key format: `${courseSlug}|${date}|${startTime}`
+ */
+export function withAvailability(
+  occurrences: CourseOccurrence[],
+  bookingCounts: BookingCountMap,
+  now: number = Date.now(),
+): ListedOccurrence[] {
+  return occurrences.map((occ) => {
+    const confirmed = bookingCounts[`${occ.course.slug.current}|${occ.date}|${occ.startTime}`] ?? 0;
+    return {
+      ...occ,
+      spotsLeft: Math.max(0, occ.course.maxParticipants - confirmed),
+      bookingOpen: isBookingOpen(occ.date, occ.startTime, confirmed, now),
+    };
+  });
 }
 
 /**

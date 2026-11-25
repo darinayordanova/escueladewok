@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
+import PageHeader from '@/components/sections/PageHeader/PageHeader';
 import { buildPageMetadata } from '@/lib/seo';
 
+import styles from './page.module.scss';
 import VoucherBuyButton from './VoucherBuyButton';
 
-import styles from './page.module.scss';
 
 interface VouchersPageProps {
   params: Promise<{ locale: string }>;
@@ -32,17 +33,25 @@ const VOUCHERS = [
 
 export default async function VouchersPage({ params }: VouchersPageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'vouchers' });
+  const [t, tNav] = await Promise.all([
+    getTranslations({ locale, namespace: 'vouchers' }),
+    getTranslations({ locale, namespace: 'navigation' }),
+  ]);
 
   return (
-    <div className="container pb-16">
-      <div className="container--narrow text-center mb-12">
-        <h1 className="h3">{t('pageTitle')}</h1>
-        <p className="text-lg color-text-light">{t('pageDescription')}</p>
-      </div>
-
-<div className="grid">
-      <div className={`grid gap-6 ${styles.cardGrid}`}>
+    <>
+      <PageHeader
+        locale={locale}
+        title={t('pageTitle')}
+        description={t('pageDescription')}
+        breadcrumbs={[
+          { name: tNav('home'), path: '/' },
+          { name: tNav('vouchers'), path: '/vouchers' },
+        ]}
+        breadcrumbsLabel={tNav('breadcrumb')}
+      />
+      <div className="container pt-10 pb-16">
+        <div className={`grid gap-6 ${styles.cardGrid}`}>
         {VOUCHERS.map(({ key, price }) => (
           <div key={key} className={`col-12 col-md-6 ${styles.card}`}>
             <div className={styles.cardBanner}>
@@ -56,8 +65,8 @@ export default async function VouchersPage({ params }: VouchersPageProps) {
             </div>
           </div>
         ))}
+        </div>
       </div>
-      </div>
-    </div>
+    </>
   );
 }

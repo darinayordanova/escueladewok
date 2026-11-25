@@ -1,33 +1,38 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import BookingCard from '@/components/sections/BookingCard/BookingCard';
-import BookingDrawer from '@/components/sections/BookingDrawer/BookingDrawer';
-import CorporateDrawer from '@/components/sections/CorporateDrawer/CorporateDrawer';
 import CorporateEnquiryForm from '@/components/sections/CorporateEnquiryForm/CorporateEnquiryForm';
-import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
 import CourseAllergens from '@/components/sections/CourseAllergens/CourseAllergens';
+import CourseBanner from '@/components/sections/CourseBanner/CourseBanner';
+import BookingWidget from '@/components/sections/CourseBooking/BookingWidget';
+import { CourseBookingProvider } from '@/components/sections/CourseBooking/CourseBookingContext';
+import MobileBookingBar from '@/components/sections/CourseBooking/MobileBookingBar';
 import CourseFAQ from '@/components/sections/CourseFAQ/CourseFAQ';
+import CourseGallery from '@/components/sections/CourseGallery/CourseGallery';
+import CourseHero from '@/components/sections/CourseHero/CourseHero';
+import CourseIncluded from '@/components/sections/CourseIncluded/CourseIncluded';
+import CourseIntro from '@/components/sections/CourseIntro/CourseIntro';
 import CourseMenu from '@/components/sections/CourseMenu/CourseMenu';
-import CuisinePill from '@/components/ui/CuisinePill/CuisinePill';
-import { getFutureDateEntries, toMadridISOString } from '@/lib/courses/timeslots';
+import CourseReserve from '@/components/sections/CourseReserve/CourseReserve';
+import Button from '@/components/ui/Button/Button';
+import { dayPart, getFutureDateEntries, toMadridISOString } from '@/lib/courses/timeslots';
+import { formatPrice } from '@/lib/format';
+import { portableTextToString } from '@/lib/portableTextToString';
 import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
 import { confirmedBookingsForCourseQuery, courseBySlugQuery } from '@/lib/sanity/queries';
 import { buildPageMetadata, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, STUDIO_ADDRESS } from '@/lib/seo';
-import { portableTextToString } from '@/lib/portableTextToString';
 import type { BookingCountMap, Course, Locale } from '@/types';
-import { PortableText } from '@portabletext/react';
-import instructorImage from '@public/images/instructor.webp';
+
 import styles from './page.module.scss';
-import Button from '@/components/ui/Button/Button';
-import Download from '@/components/ui/icons/Download';
+
+const BOOKING_ID = 'book';
+const HERO_ID = 'course-hero';
 
 interface CourseDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata({ params }: CourseDetailPageProps): Promise<Metadata> {
@@ -52,39 +57,48 @@ export async function generateMetadata({ params }: CourseDetailPageProps): Promi
   });
 }
 
-export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
+export default async function CourseDetailPage({ params, searchParams }: CourseDetailPageProps) {
   const { locale, slug } = await params;
-  const [t, tCourses, tNav] = await Promise.all([
+  const l = locale as Locale;
+  const [t, tNav, tAllergens] = await Promise.all([
     getTranslations({ locale, namespace: 'courseDetail' }),
-    getTranslations({ locale, namespace: 'courses' }),
     getTranslations({ locale, namespace: 'navigation' }),
+    getTranslations({ locale, namespace: 'allergens' }),
   ]);
 
-  const [course, sessionCounts] = await Promise.all([
+  const [course, sessionCounts, query] = await Promise.all([
     sanityClient.fetch<Course>(courseBySlugQuery, { slug }),
     sanityClient.fetch<{ date: string; startTime: string; confirmedCount: number }[]>(
       confirmedBookingsForCourseQuery,
       { courseSlug: slug },
     ),
+    searchParams,
   ]);
 
   if (!course) notFound();
 
-  const l = locale as Locale;
-  const { _id, title, image, price, currency, duration, maxParticipants, instructor, description, about, menu, allergens, cuisine, corporateEvent, brochure } = course;
-  const brochureUrl = brochure?.asset?.url;
+  const {
+    _id, title, image, price, currency, duration, maxParticipants, instructor, description,
+    intro, banner, gallery, menu, allergenList, allergens, cuisine, corporateEvent,
+  } = course;
+  const instructorName = instructor?.[l] ?? 'Yutian Xing';
   const descriptionBlocks = description?.[l];
-  const descriptionPlain = descriptionBlocks ? portableTextToString(descriptionBlocks) : undefined;
-    const instructorName = instructor?.[l] ?? 'Yutian Xing';
+  const priceLabel = formatPrice(price, currency, l);
 
   const dateEntries = getFutureDateEntries(course.timeSlots ?? [], duration);
+  // When the class usually runs, for copy like "One unforgettable evening."
+  const coursePart = dateEntries[0] ? dayPart(dateEntries[0].startTime) : 'evening';
 
-  // Build a map of "YYYY-MM-DD|HH:MM" -> confirmedCount for the client component
+  // "YYYY-MM-DD|HH:MM" → confirmed attendees, for the booking widgets
   const bookingCounts: BookingCountMap = {};
   for (const s of sessionCounts ?? []) {
     bookingCounts[`${s.date}|${s.startTime}`] = s.confirmedCount;
   }
 
+  const allergenNames = (allergenList ?? []).map((key) => tAllergens(key).toLocaleLowerCase(l));
+  const dishCount = menu?.length ?? 0;
+
+  // ─── Structured data ────────────────────────────────────────────────────────
   const ogImage = image ? urlFor(image).width(1200).height(630).url() : DEFAULT_OG_IMAGE;
   const courseUrl = `${SITE_URL}/${locale}/courses/${slug}`;
 
@@ -109,7 +123,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     '@context': 'https://schema.org',
     '@type': 'Course',
     name: title[l],
-    description: descriptionPlain,
+    description: descriptionBlocks ? portableTextToString(descriptionBlocks) : undefined,
     image: ogImage,
     url: courseUrl,
     provider: {
@@ -130,150 +144,130 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
     ...(hasCourseInstance.length > 0 && { hasCourseInstance }),
   };
 
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: tNav('home'), item: `${SITE_URL}/${locale}` },
-      { '@type': 'ListItem', position: 2, name: tNav('courses'), item: `${SITE_URL}/${locale}/courses` },
-      { '@type': 'ListItem', position: 3, name: title[l], item: courseUrl },
-    ],
-  };
+  const ctaLabel = corporateEvent ? t('requestQuote') : t('bookNow');
 
-  return (
-    <article className="pb-20">
+  const page = (
+    <article className={styles.page}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+
+      <CourseHero
+        locale={l}
+        title={title[l]}
+        image={image}
+        cuisine={cuisine}
+        instructor={instructorName}
+        duration={duration}
+        maxParticipants={maxParticipants}
+        breadcrumbs={[
+          { name: tNav('home'), path: '/' },
+          { name: tNav('courses'), path: '/courses' },
+          { name: title[l], path: `/courses/${slug}` },
+        ]}
+        cta={{ label: ctaLabel, href: `#${BOOKING_ID}` }}
+        id={HERO_ID}
       />
-      <div className="container">
-        {/* ── Hero image ── */}
-        <div className="grid mt-10 mt-md-8 mb-8 gap-4">
-          <div className='col-12 col-md-6'>
-              <header className="mb-no mb-md-10">
-              {cuisine && <CuisinePill cuisine={cuisine} label={tCourses(`cuisine.${cuisine}`)} />}
 
-              <h1 className="h3 mt-1 mb-4">{title[l]}</h1>
-
-               
-                <div className="mt-2" >
-                  <p className='font-heading mb-2 color-text-muted font-medium'>{t('instructor')}</p>
-                  <div className='flex gap-2 flex-align-center'>
-                    <Image src={instructorImage} alt={instructorName} width={40} height={40} className={styles.instructorImage} />
-                <p className="text-lg font-semibold m-no">
-                   {instructorName}
-                </p></div>
-                </div>
-              
-
-              {brochureUrl && (
-                <Button
-                  href={brochureUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="outline"
-                  size='sm'
-                  className='mt-8'
-                >
-                  <Download size={16} />
-                  {t('downloadBrochure')}
-                </Button>
-              )}
-            </header>
-          </div>
-          <div className='col-12 col-md-6'>
-
-          {image && (
-            <div className={styles.imageWrapper}>
-              <Image
-                src={urlFor(image).width(1200).height(600).url()}
-                alt={image.alt?.[l] ?? title[l]}
-                fill
-                priority
-                className={styles.image}
-                sizes="(max-width: 1200px) 100vw, 1200px"
+      <div className={styles.shell}>
+        <div className={styles.body}>
+          <div className={styles.main}>
+            <CourseIntro
+              eyebrow={intro?.eyebrow?.[l]}
+              headline={intro?.headline?.[l]}
+              body={descriptionBlocks}
+            />
+            {banner?.image && (
+              <CourseBanner
+                image={banner.image}
+                alt={banner.image.alt?.[l] ?? ''}
+                eyebrow={banner.eyebrow?.[l]}
+                title={banner.title?.[l]}
               />
-            </div>
-            
-          )}
-        </div>
-        </div>
-
-        <div className={styles.layout}>
-          <div >
-{descriptionBlocks && descriptionBlocks.length > 0 && (
-                <div className="text-md mb-4">
-                  <PortableText value={descriptionBlocks} />
-                </div>
-              )}
-             
-            {/* ── Page builder: about sections ── */}
-            {about && about.length > 0 && (
-              <section>
-                <h2 className={`h5 ${styles.sectionTitle}`}>{t('about')}</h2>
-                <CourseAbout sections={about} locale={l} />
-              </section>
             )}
-
-            {/* ── Menu: dishes students will cook ── */}
-            {menu && menu.length > 0 && (
-              <CourseMenu items={menu} locale={l} />
-            )}
-
-            {/* ── Allergens ── */}
-            {allergens && (
-              <CourseAllergens allergens={allergens} locale={l} />
-            )}
-
-            {/* ── FAQ ── */}
-            <CourseFAQ locale={l} />
+            {menu && <CourseMenu items={menu} locale={l} dayPart={coursePart} />}
+            <CourseIncluded locale={l} />
+            {gallery && <CourseGallery images={gallery} locale={l} />}
+            <CourseAllergens allergens={allergenList ?? []} notes={allergens?.[l]} locale={l} />
           </div>
 
-          {/* ── Sidebar: enquiry form (corporate) or booking card (desktop) ── */}
-          <aside className={styles.sidebar}>
-            {corporateEvent ? (
-              <CorporateEnquiryForm courseName={title[l]} />
-            ) : (
-              <Suspense fallback={<div className={styles.bookingCardSkeleton} aria-hidden="true" />}>
-                <BookingCard
-                  courseId={_id}
-                  courseSlug={slug}
-                  courseTitle={title[l]}
-                  duration={duration}
-                  dateEntries={dateEntries}
-                  bookingCounts={bookingCounts}
-                  maxParticipants={maxParticipants}
-                  price={price}
-                  currency={currency}
-                  locale={l}
-                />
-              </Suspense>
-            )}
+          <aside className={styles.sidebar} aria-label={t('quickBooking')}>
+            <div className={styles.sidebarInner}>
+              {corporateEvent ? (
+                <div className={styles.quoteCard}>
+                  <p className={styles.quoteEyebrow}>{t('privateEvent')}</p>
+                  <p className={styles.quoteText}>{t('quoteText')}</p>
+                  <Button href={`#${BOOKING_ID}`} fullWidth>{ctaLabel}</Button>
+                </div>
+              ) : (
+                <BookingWidget variant="compact" />
+              )}
+            </div>
           </aside>
         </div>
+
+        <CourseReserve
+          id={BOOKING_ID}
+          eyebrow={corporateEvent ? t('reserve.corporateEyebrow') : t('reserve.eyebrow')}
+          title={corporateEvent ? t('reserve.corporateTitle') : t('reserve.title')}
+          lead={
+            corporateEvent
+              ? t('reserve.corporateLead')
+              : t(`reserve.lead.${coursePart}`, { count: dishCount })
+          }
+          note={
+            allergenNames.length > 0
+              ? {
+                  title: t('reserve.noteTitle'),
+                  text: t('reserve.contains', {
+                    list: new Intl.ListFormat(l, { type: 'conjunction' }).format(allergenNames),
+                  }),
+                  link: { label: t('reserve.dietaryLink'), href: '/contact' },
+                }
+              : undefined
+          }
+        >
+          {corporateEvent ? (
+            <CorporateEnquiryForm courseName={title[l]} />
+          ) : (
+            <BookingWidget variant="wide" />
+          )}
+        </CourseReserve>
       </div>
 
-      {/* ── Mobile bottom drawer (hidden on lg+) ── */}
-      {corporateEvent ? (
-        <CorporateDrawer courseName={title[l]} />
-      ) : (
-        <BookingDrawer
-          courseId={_id}
-          courseSlug={slug}
-          courseTitle={title[l]}
-          duration={duration}
-          dateEntries={dateEntries}
-          bookingCounts={bookingCounts}
-          maxParticipants={maxParticipants}
-          price={price}
-          currency={currency}
-          locale={l}
-        />
-      )}
+      <CourseFAQ locale={l} />
+
+      <MobileBookingBar
+        summary={corporateEvent ? t('priceOnRequest') : priceLabel}
+        note={corporateEvent ? t('privateEvent') : t('perPersonLabel')}
+        ctaLabel={ctaLabel}
+        targetId={BOOKING_ID}
+        afterId={HERO_ID}
+      />
     </article>
+  );
+
+  if (corporateEvent) return page;
+
+  return (
+    <CourseBookingProvider
+      course={{
+        courseId: _id,
+        courseSlug: slug,
+        courseTitle: title[l],
+        duration,
+        maxParticipants,
+        price,
+        currency,
+      }}
+      locale={l}
+      dateEntries={dateEntries}
+      bookingCounts={bookingCounts}
+      initialDate={typeof query.date === 'string' ? query.date : undefined}
+      initialTime={typeof query.time === 'string' ? query.time : undefined}
+    >
+      {page}
+    </CourseBookingProvider>
   );
 }

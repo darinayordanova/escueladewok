@@ -1,3 +1,7 @@
+import type { AllergenKey } from '@/lib/courses/allergens';
+
+export type { AllergenKey };
+
 // ─── Locale ───────────────────────────────────────────────────────────────────
 export type Locale = 'en' | 'es';
 
@@ -107,6 +111,17 @@ export interface TimeSlot {
   dates: string[];   // "YYYY-MM-DD"[]
 }
 
+export interface CourseIntro {
+  eyebrow?: LocaleString;
+  headline?: LocaleText;
+}
+
+export interface CourseBanner {
+  image?: SanityImage;
+  eyebrow?: LocaleString;
+  title?: LocaleString;
+}
+
 export interface Course {
   _id: string;
   _type: 'course';
@@ -121,8 +136,12 @@ export interface Course {
   cuisine?: CuisineType;
   corporateEvent?: boolean;
   timeSlots?: TimeSlot[];
-  about?: CourseSection[];
+  intro?: CourseIntro;
+  banner?: CourseBanner;
+  gallery?: (SanityImage & { _key: string })[];
+  allergenList?: AllergenKey[];
   menu?: MenuItem[];
+  /** Optional free-text allergen notes, shown under the allergen list */
   allergens?: LocaleBlockContent;
   brochure?: SanityFile;
   instructor?: LocaleString;
@@ -136,6 +155,12 @@ export interface CourseOccurrence {
   date: string;       // "YYYY-MM-DD"
   startTime: string;  // "HH:MM"
   endTime: string;    // "HH:MM" — derived from course.duration
+}
+
+/** An occurrence with its live availability — what listing cards display */
+export interface ListedOccurrence extends CourseOccurrence {
+  spotsLeft: number;
+  bookingOpen: boolean;
 }
 
 /** Flat date entry used on the detail page dropdown */

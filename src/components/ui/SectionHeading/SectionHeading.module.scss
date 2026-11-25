@@ -1,0 +1,40 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.eyebrow {
+  @include eyebrow;
+  margin: 0 0 $spacing-4;
+  color: $color-primary;
+
+  .light & {
+    color: rgba(#fff, 0.72);
+  }
+}
+
+.title {
+  margin: 0;
+  font-family: $font-heading;
+  font-weight: $font-weight-medium;
+  font-size: clamp(1.5rem, 1.6rem + 2vw, 4.5rem); // 40px → 72px
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  color: $color-text;
+
+  .lg & {
+    font-size: clamp(3rem, 1.4rem + 5vw, 6rem); // 48px → 96px
+    line-height: 0.86;
+  }
+
+  .light & {
+    color: #fff;
+  }
+}
+
+.accent {
+  font-style: italic;
+  color: $color-primary;
+
+  .light & {
+    color: #fff;
+  }
+}

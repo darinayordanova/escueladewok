@@ -2,48 +2,80 @@
 @use '@/styles/mixins' as *;
 
 // ─── Filter bar ───────────────────────────────────────────────────────────────
+// Flex-wrap lets the row reflow on its own: search + date + cuisines on one
+// line when they fit, cuisines drop to their own line when they don't.
 
 .filterBar {
+  // Slimmer controls than a form — this row sits above the results
+  --control-height: 40px;
+
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: $spacing-3;
-  align-items: center;
-  margin-bottom: $spacing-8;
+  align-items: flex-end;
+  gap: $spacing-5;
 }
 
-.filterGroup {
-  flex: auto;
+.search {
+  flex: 1 1 100%;
 
   @include respond-to('md') {
+    flex-basis: 220px;
+  }
+}
+
+.date {
+  flex: 1 1 100%;
+
+  @include respond-to('md') {
+    flex: 0 0 200px;
+  }
+}
+
+// Full width on mobile so the chip row can scroll horizontally
+.cuisine {
+  flex: 1 1 100%;
+
+  @include respond-to('lg') {
     flex: 0 1 auto;
   }
 }
 
+// ─── Results ──────────────────────────────────────────────────────────────────
+
+.results {
+  padding-top: $spacing-10;
+  scroll-margin-top: calc(#{$header-height} + #{$spacing-4});
+}
+
+.resultsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  min-height: 24px;
+  margin-bottom: $spacing-4;
+}
+
+.resultsCount {
+  @include eyebrow;
+  margin: 0;
+  font-family: inherit;
+}
 
 .clearBtn {
-  height: 42px;
-  padding: 0 $spacing-4;
   font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
-  font-family: inherit;
-  color: $color-text-light;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  background-color: $color-background;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color $transition-fast, border-color $transition-fast;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color $transition-fast;
 
   &:hover {
-    color: $color-primary;
-    border-color: $color-primary;
+    color: $color-primary-dark;
   }
 
   @include focus-ring;
 }
-
-// ─── No results ───────────────────────────────────────────────────────────────
 
 .empty {
   text-align: center;

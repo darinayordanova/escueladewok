@@ -5,6 +5,23 @@
 // Use these utility classes when you need heading styles on non-heading elements,
 // or to override default heading sizes. E.g. <p class="h1">
 
+// Fraunces brand axes — applies wherever the heading font is used
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display, .font-heading {
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+}
+
+// Page title — the largest type role. Usage: <h1 class="display">
+.display {
+  font-family: $font-heading;
+  font-size: $font-size-display;
+  font-weight: $font-weight-semibold;
+  line-height: 0.96;
+  letter-spacing: $letter-spacing-display;
+  margin: 0;
+}
+
 h1, .h1 {
   font-size: $font-size-h2;
   font-weight: $font-weight-bold;
@@ -167,12 +184,9 @@ $breakpoints: ('sm', 'md', 'lg', 'xl');
   color: $color-text-muted;
 }
 
-.overline {
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $color-text-muted;
+.overline,
+.eyebrow {
+  @include eyebrow;
 }
 
 .truncate {

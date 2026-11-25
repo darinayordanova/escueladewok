@@ -2,7 +2,13 @@
 
 .pill {
   display: inline-block;
-  background-color: var(--pill-bg);
+  padding: 6px $spacing-3;
   border-radius: $radius-full;
-  letter-spacing: 0.06em;
+  background-color: var(--pill-bg);
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-snug;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }

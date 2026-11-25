@@ -1,28 +1,57 @@
 import { PortableText } from '@portabletext/react';
 import { getTranslations } from 'next-intl/server';
 
-import type { LocaleBlockContent, Locale } from '@/types';
+import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
+import { Link } from '@/i18n/navigation';
+import type { AllergenKey, Locale, PortableTextBlock } from '@/types';
 
 import styles from './CourseAllergens.module.scss';
 
 interface CourseAllergensProps {
-  allergens: LocaleBlockContent;
+  allergens: AllergenKey[];
+  notes?: PortableTextBlock[];
   locale: Locale;
 }
 
-export default async function CourseAllergens({ allergens, locale }: CourseAllergensProps) {
-  const t = await getTranslations({ locale, namespace: 'courseDetail' });
-  const content = allergens[locale];
+export default async function CourseAllergens({ allergens, notes, locale }: CourseAllergensProps) {
+  if (allergens.length === 0 && !notes?.length) return null;
 
-  if (!content || content.length === 0) return null;
+  const [t, tNames] = await Promise.all([
+    getTranslations({ locale, namespace: 'courseDetail.allergenSection' }),
+    getTranslations({ locale, namespace: 'allergens' }),
+  ]);
 
   return (
-    <section className="my-8" aria-label={t('allergensTitle')}>
-      <h2 className={`h5 pb-3 ${styles.title}`}>{t('allergensTitle')}</h2>
-      <div className={`bg-alt p-4 color-primary-dark ${styles.body}`}>
-        <PortableText value={content} />
+    <section className={styles.section}>
+      <div className={styles.intro}>
+        <SectionHeading eyebrow={t('eyebrow')} title={t('title')} />
+        {allergens.length > 0 && <p className={styles.lead}>{t('lead')}</p>}
       </div>
-      <p className={styles.disclaimer}>* {t('allergensDisclaimer')}</p>
+
+      <div>
+        {allergens.length > 0 && (
+          <ul className={styles.list}>
+            {allergens.map((key) => (
+              <li key={key} className={styles.allergen}>{tNames(key)}</li>
+            ))}
+          </ul>
+        )}
+        {notes && notes.length > 0 && (
+          <div className={styles.notes}>
+            <PortableText value={notes} />
+          </div>
+        )}
+      </div>
+
+      <aside className={styles.callout}>
+        <p className={styles.calloutTitle}>{t('calloutTitle')}</p>
+        <div>
+          <p className={styles.calloutText}>{t('calloutText')}</p>
+          <Link href="/contact" className={styles.calloutLink}>
+            {t('calloutLink')} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </aside>
     </section>
   );
 }

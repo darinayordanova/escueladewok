@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import ContactForm from '@/components/sections/ContactForm/ContactForm';
+import PageHeader from '@/components/sections/PageHeader/PageHeader';
 import Map from '@/components/ui/Map/Map';
 import { sanityClient } from '@/lib/sanity/client';
 import { contactPageQuery } from '@/lib/sanity/queries';
@@ -30,7 +31,10 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
 
 export default async function ContactPageRoute({ params }: ContactPageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'contact' });
+  const [t, tNav] = await Promise.all([
+    getTranslations({ locale, namespace: 'contact' }),
+    getTranslations({ locale, namespace: 'navigation' }),
+  ]);
   const l = locale as Locale;
 
   const page = await sanityClient.fetch<ContactPage>(contactPageQuery);
@@ -38,14 +42,18 @@ export default async function ContactPageRoute({ params }: ContactPageProps) {
   const hasContactInfo = page?.email || page?.phone || page?.address?.[l];
 
   return (
-    <div>
-      <div className="container pb-16">
-        <header className="container--narrow text-center mb-12">
-          <h1 className="h3">{page?.title?.[l] ?? t('pageTitle')}</h1>
-          {page?.subtitle?.[l] && (
-            <p className="text-lg color-text-light">{page.subtitle[l]}</p>
-          )}
-        </header>
+    <>
+      <PageHeader
+        locale={locale}
+        title={page?.title?.[l] ?? t('pageTitle')}
+        description={page?.subtitle?.[l]}
+        breadcrumbs={[
+          { name: tNav('home'), path: '/' },
+          { name: tNav('contact'), path: '/contact' },
+        ]}
+        breadcrumbsLabel={tNav('breadcrumb')}
+      />
+      <div className="container pt-10 pb-16">
 
         <div className={hasContactInfo ? styles.layout : styles.layoutCentered}>
           {/* ── Contact info ── */}
@@ -86,6 +94,6 @@ export default async function ContactPageRoute({ params }: ContactPageProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

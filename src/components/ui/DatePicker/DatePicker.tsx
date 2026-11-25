@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { Calendar, ChevronDown, ChevronLeft, ChevronRight, Close } from '@/components/ui/icons';
+import Field from '@/components/ui/Field/Field';
+import { Calendar, ChevronDown, Close } from '@/components/ui/icons';
+import MonthCalendar, { CalendarDot } from '@/components/ui/MonthCalendar/MonthCalendar';
 import { todayISO } from '@/lib/courses/timeslots';
 
 import styles from './DatePicker.module.scss';
@@ -10,42 +12,45 @@ import styles from './DatePicker.module.scss';
 interface DatePickerProps {
   value: string;                 // YYYY-MM-DD or ''
   onChange: (v: string) => void;
-  availableDates?: Set<string>;  // dates with events → show dot indicator
+  /** Dates with classes — get a dot, and are the only selectable days when provided. */
+  availableDates?: Set<string>;
+  label?: string;
+  hideLabel?: boolean;
   placeholder: string;
   clearLabel: string;
   locale: string;
+  id?: string;
+  className?: string;
 }
 
 export default function DatePicker({
   value,
   onChange,
   availableDates,
+  label,
+  hideLabel,
   placeholder,
   clearLabel,
   locale,
+  id,
+  className,
 }: DatePickerProps) {
-  const today = useMemo(() => todayISO(), []);
   const [open, setOpen] = useState(false);
+  const [today] = useState(todayISO);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // Initialise calendar to selected date's month, first available, or today
-  const initDate = useMemo(() => {
-    if (value) return value;
-    if (availableDates?.size) return [...availableDates].sort()[0];
-    return today;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const [viewYear, setViewYear] = useState(() => new Date(initDate + 'T00:00:00').getFullYear());
-  const [viewMonth, setViewMonth] = useState(() => new Date(initDate + 'T00:00:00').getMonth());
-
-  // Close on outside click or Escape
+  // Close on outside click or Escape (returning focus to the trigger)
   useEffect(() => {
     if (!open) return;
     function onPointer(e: PointerEvent) {
       if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     }
     document.addEventListener('pointerdown', onPointer);
     document.addEventListener('keydown', onKey);
@@ -55,155 +60,61 @@ export default function DatePicker({
     };
   }, [open]);
 
-  // When a value is set externally, snap the calendar to that month
-  useEffect(() => {
-    if (value) {
-      setViewYear(new Date(value + 'T00:00:00').getFullYear());
-      setViewMonth(new Date(value + 'T00:00:00').getMonth());
-    }
-  }, [value]);
-
-  // ── Calendar grid ──────────────────────────────────────────────────────────
-  const cells = useMemo(() => {
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const firstDow = new Date(viewYear, viewMonth, 1).getDay();
-    const offset = firstDow === 0 ? 6 : firstDow - 1;
-    const result: Array<string | null> = Array(offset).fill(null);
-    for (let d = 1; d <= daysInMonth; d++) {
-      result.push(
-        `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`,
-      );
-    }
-    return result;
-  }, [viewYear, viewMonth]);
-
-  const dayNames = useMemo(() => {
-    const fmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
-    return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2025, 0, 6 + i)));
-  }, [locale]);
-
-  const monthLabel = useMemo(
-    () =>
-      new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(
-        new Date(viewYear, viewMonth, 1),
-      ),
-    [locale, viewYear, viewMonth],
-  );
+  const firstAvailable = availableDates?.size ? [...availableDates].sort()[0] : undefined;
 
   const triggerLabel = value
-    ? new Intl.DateTimeFormat(locale, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      }).format(new Date(value + 'T00:00:00'))
+    ? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(
+        new Date(value + 'T00:00:00'),
+      )
     : null;
 
-  function prevMonth() {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear((y) => y - 1); }
-    else setViewMonth((m) => m - 1);
-  }
-  function nextMonth() {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear((y) => y + 1); }
-    else setViewMonth((m) => m + 1);
-  }
-
-  function handleSelect(dateStr: string) {
-    onChange(dateStr);
+  function handleSelect(date: string) {
+    onChange(date);
     setOpen(false);
-  }
-
-  function handleClear(e: React.MouseEvent) {
-    e.stopPropagation();
-    onChange('');
+    triggerRef.current?.focus();
   }
 
   return (
-    <div ref={containerRef} className={styles.wrapper}>
-      {/* ── Trigger ───────────────────────────────────────────────────────── */}
-      <button
-        type="button"
-        className={[styles.trigger, open ? styles.triggerOpen : '', value ? styles.triggerActive : ''].filter(Boolean).join(' ')}
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-haspopup="dialog"
-      >
-        <Calendar className={styles.calIcon} size={16} />
-
-        <span className={value ? styles.triggerValue : styles.triggerPlaceholder}>
-          {triggerLabel ?? placeholder}
-        </span>
-
-        {value ? (
-          <span
-            className={styles.clearX}
-            role="button"
-            tabIndex={0}
-            aria-label={clearLabel}
-            onClick={handleClear}
-            onKeyDown={(e) => e.key === 'Enter' && handleClear(e as never)}
-          >
-            <Close size={14} />
-          </span>
-        ) : (
-          <ChevronDown className={styles.chevron} size={20} />
-        )}
-      </button>
-
-      {/* ── Popover ───────────────────────────────────────────────────────── */}
-      {open && (
-        <div className={styles.popover} role="dialog" aria-label={placeholder}>
-          {/* Month header */}
-          <div className={styles.calHeader}>
-            <button type="button" onClick={prevMonth} className={styles.navBtn} aria-label="Previous month">
-              <ChevronLeft size={16} />
+    <Field label={label} hideLabel={hideLabel} id={id} className={className}>
+      {(control) => (
+        <div ref={containerRef} className={styles.wrapper}>
+          <div className={[styles.control, open ? styles.controlOpen : ''].filter(Boolean).join(' ')}>
+            <button
+              ref={triggerRef}
+              type="button"
+              className={styles.trigger}
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-haspopup="dialog"
+              id={control.id}
+              aria-describedby={control['aria-describedby']}
+            >
+              <Calendar size={18} className={styles.icon} />
+              <span className={value ? styles.value : styles.placeholder}>{triggerLabel ?? placeholder}</span>
+              {!value && <ChevronDown size={18} className={styles.chevron} />}
             </button>
-            <span className={styles.monthTitle}>{monthLabel}</span>
-            <button type="button" onClick={nextMonth} className={styles.navBtn} aria-label="Next month">
-              <ChevronRight size={16} />
-            </button>
+
+            {value && (
+              <button type="button" className={styles.clear} onClick={() => onChange('')} aria-label={clearLabel}>
+                <Close size={14} />
+              </button>
+            )}
           </div>
 
-          {/* Day names */}
-          <div className={styles.dayNames}>
-            {dayNames.map((n) => (
-              <span key={n} className={styles.dayName}>{n}</span>
-            ))}
-          </div>
-
-          {/* Day grid */}
-          <div className={styles.grid}>
-            {cells.map((dateStr, i) => {
-              if (!dateStr) return <div key={`p-${i}`} />;
-
-              const day = parseInt(dateStr.split('-')[2], 10);
-              const isSelected = dateStr === value;
-              const isToday = dateStr === today;
-              const isPast = dateStr < today;
-              const hasEvents = availableDates?.has(dateStr);
-
-              return (
-                <button
-                  key={dateStr}
-                  type="button"
-                  className={[
-                    styles.day,
-                    isSelected ? styles.daySelected : '',
-                    isToday && !isSelected ? styles.dayToday : '',
-                    isPast && !isSelected ? styles.dayPast : '',
-                    hasEvents && !isSelected ? styles.dayHasEvents : '',
-                  ].filter(Boolean).join(' ')}
-                  onClick={() => handleSelect(dateStr)}
-                  aria-label={dateStr}
-                  aria-pressed={isSelected}
-                >
-                  {day}
-                  {hasEvents && !isSelected && <span className={styles.dot} />}
-                </button>
-              );
-            })}
-          </div>
+          {open && (
+            <div className={styles.popover} role="dialog" aria-label={label ?? placeholder}>
+              <MonthCalendar
+                value={value}
+                onSelect={handleSelect}
+                locale={locale}
+                initialDate={firstAvailable}
+                isDateDisabled={(date) => date < today || (!!availableDates && !availableDates.has(date))}
+                renderIndicator={(date) => (availableDates?.has(date) ? <CalendarDot /> : null)}
+              />
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </Field>
   );
 }

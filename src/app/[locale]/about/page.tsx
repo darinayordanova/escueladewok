@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import CourseAbout from '@/components/sections/CourseAbout/CourseAbout';
+import PageHeader from '@/components/sections/PageHeader/PageHeader';
 import TeamGrid from '@/components/sections/TeamGrid/TeamGrid';
 import { sanityClient } from '@/lib/sanity/client';
 import { aboutPageQuery } from '@/lib/sanity/queries';
@@ -28,18 +29,24 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
 
 export default async function AboutPageRoute({ params }: AboutPageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'about' });
+  const tNav = await getTranslations({ locale, namespace: 'navigation' });
   const l = locale as Locale;
 
   const page = await sanityClient.fetch<AboutPage>(aboutPageQuery);
 
   return (
-      <div className="container mb-16">
-        {/* ── Page header ── */}
-        <header className="container--narrow text-center mb-12">
-          {page?.title?.[l] && <h1 className="h3">{page.title[l]}</h1>}
-          {page?.subtitle?.[l] && <p className="text-lg color-text-light">{page.subtitle[l]}</p>}
-        </header>
+    <>
+      <PageHeader
+        locale={locale}
+        title={page?.title?.[l] ?? tNav('about')}
+        description={page?.subtitle?.[l]}
+        breadcrumbs={[
+          { name: tNav('home'), path: '/' },
+          { name: tNav('about'), path: '/about' },
+        ]}
+        breadcrumbsLabel={tNav('breadcrumb')}
+      />
+      <div className="container pt-10 mb-16">
 
         {/* ── Page builder content ── */}
         {page?.content && page.content.length > 0 && (
@@ -56,5 +63,6 @@ export default async function AboutPageRoute({ params }: AboutPageProps) {
           </section>
         )}
       </div>
+    </>
   );
 }

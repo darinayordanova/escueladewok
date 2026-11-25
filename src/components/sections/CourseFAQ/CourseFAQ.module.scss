@@ -1,11 +1,19 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
+.section {
+  @include page-section(110px);
+  // Full-bleed background; content lines up with the rest of the page
+  padding-inline: max(var(--section-px), calc((100% - var(--page-max-width, 100%)) / 2 + var(--section-px)));
+  display: grid;
+  gap: $spacing-10;
+  background-color: $color-background-alt;
 
-
-.title {
- 
-  border-bottom: 2px solid $color-border;
-
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+    gap: $spacing-24;
+    padding-bottom: 130px;
+  }
 }
 
 // ─── Accordion list ───────────────────────────────────────────────────────────
@@ -13,15 +21,14 @@
 .list {
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
 }
 
 .item {
-  border-bottom: 1px solid $color-border;
+  border-top: 1px solid $color-border-subtle;
 
-  
+  &:last-child {
+    border-bottom: 1px solid $color-border-subtle;
+  }
 }
 
 // ─── Question (trigger) ───────────────────────────────────────────────────────
@@ -32,50 +39,72 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-4;
-  padding: $spacing-5 0;
-  background: none;
-  border: none;
-  cursor: pointer;
+  padding: 25px 0;
   text-align: left;
   font-family: $font-heading;
   font-size: $font-size-base;
-  font-weight: $font-weight-semibold;
+  font-weight: $font-weight-medium;
+  line-height: 1.35;
   color: $color-text;
-  line-height: $line-height-snug;
+  transition: color $transition-fast;
 
-  &:focus-visible {
-    outline: 2px solid $color-primary;
-    outline-offset: 2px;
-    border-radius: $radius-sm;
-  }
-
-  .itemOpen & {
+  &:hover {
     color: $color-primary;
   }
+
+  @include focus-ring;
+
+  @include respond-to('md') {
+    font-size: $font-size-lg;
+  }
 }
 
-.chevron {
+.icon {
   flex-shrink: 0;
-  color: $color-text-muted;
-  transition: transform 250ms ease;
+  color: $color-text;
+
+  @include motion {
+    animation: icon-turn 300ms $ease-out;
+  }
 }
 
-.chevronOpen {
-  transform: rotate(180deg);
+@keyframes icon-turn {
+  from { transform: rotate(-90deg); opacity: 0; }
 }
 
 // ─── Answer ───────────────────────────────────────────────────────────────────
 
+// Closed answers collapse to zero height; `visibility` (switched once the collapse
+// finishes) takes them out of the tab order and the accessibility tree.
 .answer {
-  // Using `hidden` attribute for accessibility — no CSS animation needed
-  // for screen readers; browsers hide it natively.
+  display: grid;
+  grid-template-rows: 0fr;
+  margin: 0;
+  visibility: hidden;
+  transition: grid-template-rows 350ms $ease-out, visibility 0s linear 350ms;
+
+  .itemOpen & {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows 350ms $ease-out, visibility 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.answerClip {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .answerInner {
-  padding-bottom: $spacing-5;
+  max-width: 570px;
+  padding-bottom: 25px;
   font-size: $font-size-sm;
   color: $color-text-light;
-  line-height: $line-height-base;
+  line-height: 1.7;
 
   p {
     margin: 0 0 $spacing-3;

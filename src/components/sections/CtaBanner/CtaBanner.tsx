@@ -1,31 +1,50 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
-
 import Button from '@/components/ui/Button/Button';
 
 import styles from './CtaBanner.module.scss';
 
-export default function CtaBanner() {
-  const t = useTranslations('cta');
+interface CtaBannerProps {
+  eyebrow?: string;
+  /** Each line renders on its own row. */
+  headingLines: string[];
+  sub?: string;
+  cta: { label: string; href: string };
+  /**
+   * `stacked` — patterned background, button under the copy (homepage).
+   * `split` — flat brand red, copy left and button right on desktop.
+   */
+  layout?: 'stacked' | 'split';
+  /** Classes for the outer section, e.g. the colour showing behind the rounded corners. */
+  className?: string;
+}
+
+export default function CtaBanner({
+  eyebrow,
+  headingLines,
+  sub,
+  cta,
+  layout = 'stacked',
+  className,
+}: CtaBannerProps) {
+  const isSplit = layout === 'split';
 
   return (
-    <section className='bg-alt'>
-      <div className={`color-white bg-gradient-pattern ${styles.section}`}>
-      <div className={`container relative py-16 text-center text-md-left flex flex-justify-center`}>
-        <div className={`col-12 col-md-8 ${styles.content}`}>
-          <h2 className='h4 h3-md mt-no leading-snug'>
-            {t('headingLine1')}<br />
-            {t('headingLine2')}<br />
-            {t('headingLine3')}
-          </h2>
-          <p className='text-lg'>{t('sub')}</p>
-          <Button href="/courses" color="white" className='mt-6'>{t('cta')}</Button>
-         </div>
-         <div className={`absolute top-0 left-0 w-full h-full bg-pattern bg-primary opacity-20 ${styles.bgPattern}`} />
+    <section className={className}>
+      <div className={`color-white ${isSplit ? styles.split : `bg-gradient-pattern ${styles.stacked}`} ${styles.panel}`}>
+        <div className={`container ${styles.inner}`}>
+          <div className={styles.copy}>
+            {eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}
+            <h2 className={styles.heading}>
+              {headingLines.map((line, i) => (
+                <span key={i} className={styles.line}>{line}</span>
+              ))}
+            </h2>
+            {sub && <p className={styles.sub}>{sub}</p>}
+          </div>
+          <Button href={cta.href} color="white" className={styles.button}>
+            {cta.label}
+          </Button>
         </div>
       </div>
-
     </section>
   );
 }

@@ -1,0 +1,96 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.group {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+// Floats the legend into normal flow so it lines up with Field labels
+.legend {
+  @include eyebrow;
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: $spacing-2;
+
+  + * {
+    clear: both;
+  }
+}
+
+// One scrollable row on small screens, wraps once there is room
+.chips {
+  display: flex;
+  gap: $spacing-2;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  // Let focus rings breathe inside the scroll container
+  padding: 3px;
+  margin: -3px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include respond-to('lg') {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: var(--control-height, #{$control-height});
+  padding: 0 $spacing-4;
+  border: $control-border-width solid $color-border;
+  border-radius: $radius-full;
+  background-color: $color-background;
+  color: $color-text-muted;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+  cursor: pointer;
+  scroll-snap-align: start;
+  user-select: none;
+  transition: background-color $transition-fast, border-color $transition-fast, color $transition-fast;
+
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &:has(.input:checked) {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: #fff;
+  }
+
+  &:has(.input:focus-visible) {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.input {
+  @include visually-hidden;
+}
+
+// ─── Small ────────────────────────────────────────────────────────────────────
+
+.sm {
+  .chips {
+    gap: 6px;
+  }
+
+  .chip {
+    padding: 0 $spacing-3;
+    font-size: 13px;
+  }
+}

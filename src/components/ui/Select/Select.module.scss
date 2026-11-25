@@ -1,90 +1,49 @@
 @use '@/styles/variables' as *;
-@use '@/styles/mixins' as *;
+@use '@/styles/forms' as *;
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-2;
-}
-
-.label {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-text;
-}
-
-.required {
-  color: $color-primary;
-}
-
-// Wrapper provides the positioning context for the SVG chevron
-.selectWrapper {
-  position: relative;
-}
-
+// The native <select> stretches over the whole box (including the chevron)
+// so the entire pill is clickable; icons sit on top with pointer-events off.
 .control {
-  width: 100%;
-  height: 42px;
-  padding: 0 $spacing-10 0 $spacing-4;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  background-color: $color-background;
-  font-size: $font-size-sm;
-  font-family: inherit;
-  color: $color-text;
+  @include control-box;
+  position: relative;
+
+  &:focus-within {
+    @include control-focus;
+  }
+}
+
+.select {
+  @include control-bare;
   appearance: none;
   cursor: pointer;
-  transition: border-color $transition-fast, box-shadow $transition-fast;
-
-  &:hover:not(:focus):not(:disabled) {
-    border-color: $color-text-muted;
-  }
-
-  &:focus {
-    outline: none;
-    border-color: $color-primary;
-    box-shadow: 0 0 0 3px rgba($color-primary, 0.12);
-  }
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    background-color: $color-background-alt;
-  }
+  // Room for the chevron
+  padding-right: $spacing-6;
 }
 
-.hasError {
-  border-color: #c0392b;
-
-  &:focus {
-    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
-  }
+.icon {
+  @include control-icon;
+  display: inline-flex;
 }
 
-// SVG chevron — purely decorative, pointer-events off so it doesn't block clicks
 .chevron {
+  @include control-icon;
   position: absolute;
-  right: $spacing-4;
+  right: $control-padding-x;
   top: 50%;
   transform: translateY(-50%);
-
   color: $color-text-muted;
-  pointer-events: none;
-  transition: all $transition-fast;
+  transition: transform $transition-fast, color $transition-fast;
 
-  .selectWrapper:has(.control:focus) & {
+  .control:focus-within & {
     color: $color-primary;
     transform: translateY(-50%) rotate(180deg);
   }
 }
 
-.errorText {
-  font-size: $font-size-xs;
-  color: #c0392b;
+.hasError {
+  @include control-error;
 }
 
-.hintText {
-  font-size: $font-size-xs;
-  color: $color-text-muted;
-  line-height: $line-height-base;
+.isDisabled {
+  @include control-disabled;
 }

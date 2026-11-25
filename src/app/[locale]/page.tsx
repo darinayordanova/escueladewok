@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
+import CourseCard from '@/components/sections/CourseCard/CourseCard';
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
 import CtaBanner from '@/components/sections/CtaBanner/CtaBanner';
 import Hero from '@/components/sections/Hero/Hero';
@@ -40,6 +41,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
+  const tCta = await getTranslations({ locale, namespace: 'cta' });
 
   const [homepage, featuredCourses, allCourses] = await Promise.all([
     sanityClient.fetch<Homepage>(homepageQuery),
@@ -79,7 +81,12 @@ export default async function HomePage({ params }: HomePageProps) {
         locale={locale as Locale}
       />
 
-      <CtaBanner />
+      <CtaBanner
+        className="bg-alt"
+        headingLines={[tCta('headingLine1'), tCta('headingLine2'), tCta('headingLine3')]}
+        sub={tCta('sub')}
+        cta={{ label: tCta('cta'), href: '/courses' }}
+      />
 
     </>
   );
@@ -104,7 +111,11 @@ function FeaturedSection({
       <h2 className='h4 text-center mt-no mb-10'>
         {homepage?.featuredCoursesTitle?.[locale] ?? t('featuredCourses')}
       </h2>
-      <CourseGrid courses={courses} locale={locale} />
+      <CourseGrid
+        items={courses}
+        getKey={(course) => course._id}
+        renderItem={(course) => <CourseCard course={course} locale={locale} />}
+      />
       <div className={`mt-10 text-center`}>
         <Link href="/courses" hasArrow className={`color-primary font-semibold ${styles.viewAllLink}`}>
           {t('viewAllCourses')} 

@@ -1,0 +1,30 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+  min-width: 0;
+}
+
+.label {
+  @include eyebrow;
+}
+
+.required {
+  color: $color-primary;
+}
+
+.errorText {
+  font-size: $font-size-xs;
+  color: $color-error;
+  margin: 0;
+}
+
+.hintText {
+  font-size: $font-size-xs;
+  color: $color-text-muted;
+  line-height: $line-height-base;
+  margin: 0;
+}

@@ -1,25 +1,75 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-
-.content{
-  width: 100%;
-
-  @include respond-to('md') {
-    max-width: 80%;
-  }
-}
-
-.section{
+.panel {
   overflow: hidden;
   border-radius: 50px 50px 0 0;
 }
 
-.image{
-  position: absolute;
-  top: 50%;
-  right:  0;
-  width: auto;
-  height: 90%;
-  transform: translate(50%, -50%);
+.split {
+  background-color: $color-primary;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  padding-block: $spacing-16;
+
+  .split & {
+    @include respond-to('lg') {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  }
+
+  .stacked & {
+    text-align: center;
+    align-items: center;
+
+    @include respond-to('md') {
+      text-align: left;
+      align-items: flex-start;
+    }
+  }
+}
+
+.copy {
+  max-width: 906px;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin-bottom: $spacing-2;
+  color: rgba(#fff, 0.65);
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 4.375rem); // 36px → 70px
+  font-weight: $font-weight-semibold;
+  line-height: 1.2;
+  letter-spacing: $letter-spacing-heading;
+
+  .stacked & {
+    font-size: clamp(1.75rem, 1.25rem + 2vw, $font-size-h3);
+    font-weight: $font-weight-bold;
+    line-height: $line-height-snug;
+    letter-spacing: normal;
+  }
+}
+
+.line {
+  display: block;
+}
+
+.sub {
+  margin: $spacing-4 0 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+}
+
+.button {
+  flex-shrink: 0;
 }

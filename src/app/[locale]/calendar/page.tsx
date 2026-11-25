@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import CalendarView from '@/components/sections/CalendarView/CalendarView';
+import PageHeader from '@/components/sections/PageHeader/PageHeader';
 import { expandOccurrences, toMadridISOString } from '@/lib/courses/timeslots';
 import { sanityClient } from '@/lib/sanity/client';
 import { urlFor } from '@/lib/sanity/image';
@@ -29,7 +30,10 @@ export async function generateMetadata({ params }: CalendarPageProps): Promise<M
 export default async function CalendarPage({ params }: CalendarPageProps) {
   const { locale } = await params;
   const l = locale as Locale;
-  const t = await getTranslations({ locale, namespace: 'calendar' });
+  const [t, tNav] = await Promise.all([
+    getTranslations({ locale, namespace: 'calendar' }),
+    getTranslations({ locale, namespace: 'navigation' }),
+  ]);
 
   const [courses, rawCounts] = await Promise.all([
     sanityClient.fetch<Course[]>(allCoursesQuery),
@@ -71,16 +75,24 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
   });
 
   return (
-    <div className="container pb-16">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventsJsonLd) }}
       />
-      <header className="container--narrow text-center mb-12">
-        <h1 className="h3">{t('pageTitle')}</h1>
-        <p className="text-lg color-text-light">{t('pageDescription')}</p>
-      </header>
-      <CalendarView occurrences={occurrences} locale={l} />
-    </div>
+      <PageHeader
+        locale={locale}
+        title={t('pageTitle')}
+        description={t('pageDescription')}
+        breadcrumbs={[
+          { name: tNav('home'), path: '/' },
+          { name: tNav('calendar'), path: '/calendar' },
+        ]}
+        breadcrumbsLabel={tNav('breadcrumb')}
+      />
+      <div className="container pt-10 pb-16">
+        <CalendarView occurrences={occurrences} locale={l} />
+      </div>
+    </>
   );
 }

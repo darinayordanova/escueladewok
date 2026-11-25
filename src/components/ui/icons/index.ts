@@ -1,3 +1,4 @@
+export { default as ArrowLeft } from './ArrowLeft';
 export { default as ArrowRight } from './ArrowRight';
 export { default as Calendar } from './Calendar';
 export { default as Check } from './Check';
@@ -8,7 +9,13 @@ export { default as Close } from './Close';
 export { default as Mail } from './Mail';
 export { default as MapPin } from './MapPin';
 export { default as Phone } from './Phone';
+export { default as Search } from './Search';
 export { default as Download } from './Download';
 export { default as ShoppingCart } from './ShoppingCart';
 export { default as Instagram } from './Instagram';
 export { default as Facebook } from './Facebook';
+export { default as Clock } from './Clock';
+export { default as Users } from './Users';
+export { default as Globe } from './Globe';
+export { default as Plus } from './Plus';
+export { default as Minus } from './Minus';

@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
 import { PortableText } from '@portabletext/react';
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
+import PageHeader from '@/components/sections/PageHeader/PageHeader';
 import { sanityClient } from '@/lib/sanity/client';
 import { privacyPageQuery } from '@/lib/sanity/queries';
 import { buildPageMetadata } from '@/lib/seo';
@@ -32,24 +33,28 @@ export async function generateMetadata({ params }: PrivacyPageProps): Promise<Me
 
 export default async function PrivacyPage({ params }: PrivacyPageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'legal' });
+  const [t, tNav] = await Promise.all([
+    getTranslations({ locale, namespace: 'legal' }),
+    getTranslations({ locale, namespace: 'navigation' }),
+  ]);
   const l = locale as Locale;
 
   const page = await sanityClient.fetch<LegalPage>(privacyPageQuery);
+  const title = page?.title?.[l] ?? t('privacy');
 
   return (
-    <div className={styles.page}>
-      <div className="container">
-        <header className={styles.header}>
-          <h1 className={styles.title}>
-            {page?.title?.[l] ?? t('privacy')}
-          </h1>
-          {page?.lastUpdated && (
-            <p className={styles.lastUpdated}>
-              {t('lastUpdated', { date: page.lastUpdated })}
-            </p>
-          )}
-        </header>
+    <>
+      <PageHeader
+        locale={locale}
+        title={title}
+        description={page?.lastUpdated ? t('lastUpdated', { date: new Intl.DateTimeFormat(l, { dateStyle: 'long' }).format(new Date(page.lastUpdated)) }) : undefined}
+        breadcrumbs={[
+          { name: tNav('home'), path: '/' },
+          { name: title, path: '/privacy' },
+        ]}
+        breadcrumbsLabel={tNav('breadcrumb')}
+      />
+      <div className={`container ${styles.page}`}>
 
         {page?.content?.[l] && page.content[l].length > 0 && (
           <div className={styles.prose}>
@@ -57,6 +62,6 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

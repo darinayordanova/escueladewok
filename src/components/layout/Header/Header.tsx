@@ -1,20 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 
 import { ShoppingCart } from '@/components/ui/icons';
 import { useCart } from '@/context/CartContext';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 
 import styles from './Header.module.scss';
+import { isActivePath } from './isActivePath';
 import LanguageSwitcher from './LanguageSwitcher';
 import MobileMenu from './MobileMenu';
 
+const DESKTOP_NAV = [
+  { href: '/', key: 'home' },
+  { href: '/courses', key: 'courses' },
+  { href: '/calendar', key: 'calendar' },
+  { href: '/corporate', key: 'corporate' },
+  { href: '/vouchers', key: 'vouchers' },
+  { href: '/contact', key: 'contact' },
+] as const;
+
 export default function Header() {
   const t = useTranslations('navigation');
+  const pathname = usePathname();
   const { totalItems, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
 
@@ -38,14 +49,19 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav — hidden on mobile */}
-        <nav className={styles.nav} aria-label="Main navigation">
+        <nav className={styles.nav} aria-label={t('mainNavigation')}>
           <ul className={styles.navList}>
-            <li><Link href="/" className={styles.navLink}>{t('home')}</Link></li>
-            <li><Link href="/courses" className={styles.navLink}>{t('courses')}</Link></li>
-            <li><Link href="/calendar" className={styles.navLink}>{t('calendar')}</Link></li>
-            <li><Link href="/corporate" className={styles.navLink}>{t('corporate')}</Link></li>
-            <li><Link href="/vouchers" className={styles.navLink}>{t('vouchers')}</Link></li>
-            <li><Link href="/contact" className={styles.navLink}>{t('contact')}</Link></li>
+            {DESKTOP_NAV.map(({ href, key }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={styles.navLink}
+                  aria-current={isActivePath(pathname, href) ? 'page' : undefined}
+                >
+                  {t(key)}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 

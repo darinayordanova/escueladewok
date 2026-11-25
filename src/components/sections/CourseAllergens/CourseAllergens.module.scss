@@ -1,27 +1,103 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
-.title {
-  border-bottom: 2px solid $color-border;
-}
+.section {
+  @include page-section;
+  display: grid;
+  gap: $spacing-8;
 
-.body {
-  border-radius: $radius-md;
-  border: 2px solid $color-primary-light;
-  p { margin: 0 0 $spacing-2; }
-  p:last-child { margin-bottom: 0; }
-
-  strong { font-weight: $font-weight-semibold; }
-
-  ul, ol {
-    padding-left: $spacing-5;
-    list-style: 
-      disc outside;
-    margin: 0 0 $spacing-2;
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 0.52fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 35px 75px;
+    padding-bottom: 104px;
   }
 }
 
-.disclaimer {
-  font-size: $font-size-xs;
-  color: $color-text-muted;
+.lead {
+  max-width: 300px;
   margin: $spacing-3 0 0;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+  color: $color-text-muted;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+
+  @include respond-to('sm') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.allergen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid $color-border;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  line-height: 1.5;
+  text-align: center;
+  color: $color-primary;
+}
+
+.notes {
+  margin-top: $spacing-4;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+  color: $color-text-light;
+
+  p {
+    margin: 0 0 0.5em;
+  }
+}
+
+// ─── Dietary callout ──────────────────────────────────────────────────────────
+
+.callout {
+  display: grid;
+  gap: $spacing-3 30px;
+  padding: $spacing-6 26px;
+  background-color: $color-background-alt;
+  border-left: 4px solid $color-primary;
+
+  @include respond-to('lg') {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr);
+    margin-top: 5px;
+  }
+}
+
+.calloutTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-lg;
+  line-height: 1.3;
+}
+
+.calloutText {
+  max-width: 560px;
+  margin: 0 0 $spacing-3;
+  font-size: $font-size-sm;
+  line-height: 1.7;
+  color: $color-text-light;
+}
+
+.calloutLink {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  text-underline-offset: 3px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-ring;
 }

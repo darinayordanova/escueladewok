@@ -1,115 +1,111 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+.section {
+  @include page-section;
+  background-color: $color-background-alt;
+}
 
-
-// ─── Paper ────────────────────────────────────────────────────────────────────
+// ─── Menu card ────────────────────────────────────────────────────────────────
 
 .paper {
   position: relative;
-  width: 100%;
+  max-width: 760px;
+  margin: $spacing-12 auto 0;
+  padding: $spacing-12 $spacing-6;
   overflow: hidden;
-
-  // Outer border
-  border: 1px solid rgba($color-primary, 0.2);
+  background-color: rgba(#fff, 0.72);
+  border: 1px solid rgba($color-primary, 0.28);
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.06),
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(#fff, 0.8);
+    0 18px 45px rgba(78, 37, 41, 0.1);
 
-  // Inner decorative border
+  @include respond-to('md') {
+    padding: 72px;
+  }
+
+  // Inner printed rule
   &::before {
     content: '';
     position: absolute;
-    inset: $spacing-3;
-    border: 1px solid rgba($color-primary, 0.12);
+    inset: 12px;
+    border: 1px solid rgba($color-primary, 0.18);
     pointer-events: none;
-    z-index: 1;
   }
 
-  @include respond-to('md') {
-    width: 80%;
+  // Faint ornament watermark
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('/images/pattern2.svg') center / min(430px, 80%) no-repeat;
+    opacity: 0.04;
+    pointer-events: none;
   }
 }
 
-// ─── Watermark ────────────────────────────────────────────────────────────────
-
-.watermark {
-  position: absolute;
-  inset: 0;
-  background-image: url('/images/pattern2.svg');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 320px 320px;
-  opacity: 0.04;
-  pointer-events: none;
-}
-
-// ─── Header ───────────────────────────────────────────────────────────────────
-
-
-
-.ornamentImg {
-  opacity: 0.9;
-}
-
-// ─── Divider ──────────────────────────────────────────────────────────────────
-
-.divider {
-  position: relative;
-  z-index: 2;
-  display: flex;
+// Ornament flanked by fading rules
+.ornament {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: $spacing-3;
+  gap: 15px;
   margin-bottom: $spacing-6;
 
   &::before,
   &::after {
     content: '';
-    flex: 1;
     height: 1px;
-    background: linear-gradient(
-      to var(--dir, right),
-      transparent,
-      rgba($color-primary, 0.3)
-    );
+    background-image: linear-gradient(to right, rgba($color-primary, 0), rgba($color-primary, 0.45));
   }
 
-  &::before { --dir: right; }
-  &::after  { --dir: left; }
+  &::after {
+    background-image: linear-gradient(to left, rgba($color-primary, 0), rgba($color-primary, 0.45));
+  }
+
+  img {
+    opacity: 0.9;
+  }
 }
 
-// ─── List ─────────────────────────────────────────────────────────────────────
+// ─── Dishes ───────────────────────────────────────────────────────────────────
 
 .list {
-  list-style: none;
+  position: relative;
+  z-index: 1;
 }
 
 .item {
-  & + & {
-    border-top: 1px dashed rgba($color-primary, 0.15);
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 15px;
+  padding: 26px 0;
+  border-top: 1px dashed rgba($color-primary, 0.18);
+
+  &:last-child {
+    border-bottom: 1px dashed rgba($color-primary, 0.18);
   }
 }
 
-// ─── Number ───────────────────────────────────────────────────────────────────
-
 .number {
-  font-family: $font-heading;
+  padding-top: 7px;
   font-size: $font-size-xs;
-  font-weight: $font-weight-bold;
-  color: rgba($color-primary, 0.4);
-  width: 20px;
-  height: 29px;
+  font-weight: $font-weight-medium;
+  color: $color-primary;
 }
 
-// ─── Body ─────────────────────────────────────────────────────────────────────}
-
-
-
-.text {
-  flex: 1;
-  min-width: 0;
+.name {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.875rem); // 24px → 30px
+  font-weight: $font-weight-medium;
+  line-height: 1;
 }
 
-
-
+.description {
+  max-width: 510px;
+  margin: $spacing-2 0 0;
+  font-size: $font-size-sm;
+  font-style: italic;
+  line-height: 1.65;
+  color: $color-text-muted;
+}

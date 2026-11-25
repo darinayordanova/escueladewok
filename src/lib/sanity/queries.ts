@@ -123,17 +123,10 @@ export const courseBySlugQuery = groq`
     corporateEvent,
     instructor,
     ${timeSlotsProjection},
-    "about": about[] {
-      ...,
-      _type == "imageSection" => {
-        ...,
-        image { ..., asset-> }
-      },
-      _type == "imageGallery" => {
-        ...,
-        images[] { ..., asset-> }
-      }
-    },
+    intro,
+    banner,
+    gallery,
+    allergenList,
     "menu": menu[] {
       _key,
       name,

@@ -1,10 +1,11 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-.page {
-  min-height: 60vh;
+.listing {
+  padding-top: $spacing-10;
+  padding-bottom: $spacing-16;
+
+  @include respond-to('lg') {
+    padding-bottom: 120px;
+  }
 }
-
-
-
-

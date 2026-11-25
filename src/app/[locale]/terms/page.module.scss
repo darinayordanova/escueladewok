@@ -2,29 +2,9 @@
 @use '@/styles/mixins' as *;
 
 .page {
-  padding: $spacing-16 0 $spacing-20;
-}
-
-.header {
-  margin-bottom: $spacing-12;
-  padding-bottom: $spacing-8;
-  border-bottom: 3px solid $color-primary;
-}
-
-.title {
-  font-size: $font-size-h3;
-  font-weight: $font-weight-bold;
-  line-height: $line-height-tight;
-  margin-bottom: $spacing-3;
-
-  @include respond-to('lg') {
-    font-size: $font-size-h2;
-  }
-}
-
-.lastUpdated {
-  font-size: $font-size-sm;
-  color: $color-text-muted;
+  max-width: 760px;
+  padding-top: $spacing-10;
+  padding-bottom: $spacing-20;
 }
 
 // Portable Text prose

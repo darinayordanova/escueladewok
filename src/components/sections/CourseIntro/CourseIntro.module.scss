@@ -1,0 +1,45 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  @include page-section;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin: 0 0 $spacing-6;
+  color: $color-primary;
+}
+
+.headline {
+  max-width: 800px;
+  margin: 0;
+  font-family: $font-heading;
+  font-weight: $font-weight-medium;
+  font-size: clamp(2rem, 1.2rem + 2.6vw, 3.625rem); // 32px → 58px
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  white-space: pre-line;
+}
+
+.body {
+  max-width: 850px;
+  margin-top: $spacing-10;
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+  color: $color-text-light;
+
+  @include respond-to('md') {
+    columns: 2;
+    column-gap: 64px;
+  }
+
+  p {
+    margin: 0 0 1em;
+    break-inside: avoid;
+  }
+
+  :first-child {
+    margin-top: 0;
+  }
+}

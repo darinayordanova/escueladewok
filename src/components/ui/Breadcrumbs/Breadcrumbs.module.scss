@@ -1,0 +1,66 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Never wider than its container, so a long trail truncates instead of overflowing
+.nav {
+  min-width: 0;
+  max-width: 100%;
+}
+
+// Always a single line: earlier crumbs keep their width, the current page
+// (usually the long one) shrinks and ends in an ellipsis.
+.list {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+  gap: $spacing-2;
+  font-size: $font-size-xs;
+  line-height: $line-height-snug;
+  color: $color-text-muted;
+}
+
+.center { justify-content: center; }
+.start  { justify-content: flex-start; }
+
+.responsive {
+  justify-content: center;
+
+  @include respond-to('lg') {
+    justify-content: flex-start;
+  }
+}
+
+.item {
+  flex-shrink: 0;
+
+  &:last-child {
+    display: flex;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+}
+
+.item + .item::before {
+  content: '/';
+  margin-right: $spacing-2;
+}
+
+.link {
+  color: inherit;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+.current {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}

@@ -10,7 +10,9 @@
     "corporate": "Corporate Events",
     "vouchers": "Gift Vouchers",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "mainNavigation": "Main navigation",
+    "breadcrumb": "Breadcrumb"
   },
   "howItWorks": {
     "label": "How it works",
@@ -47,7 +49,7 @@
   },
   "courses": {
     "pageTitle": "Our Courses",
-    "pageDescription": "Explore our range of cooking classes for all skill levels.",
+    "pageDescription": "Hands-on Asian cooking classes for every level. Come hungry, leave inspired.",
     "cuisine": {
       "chinese": "Chinese",
       "korean": "Korean",
@@ -59,7 +61,10 @@
     "spotsAvailable": "{spots} spots left",
     "bookNow": "Book Now",
     "from": "From",
-    "noCourses": "No upcoming courses at the moment. Check back soon!"
+    "noCourses": "No upcoming courses at the moment. Check back soon!",
+    "groupSize": "Up to {count} people",
+    "viewCourse": "View course",
+    "joinWaitlist": "Join waitlist"
   },
   "corporateEnquiry": {
     "heading": "Request information",
@@ -84,7 +89,10 @@
   "corporate": {
     "pageTitle": "Corporate Events",
     "pageDescription": "Unique team-building cooking experiences tailored for companies and groups.",
-    "noCourses": "No corporate events available at the moment. Get in touch to arrange a bespoke experience."
+    "noCourses": "No corporate events available at the moment. Get in touch to arrange a bespoke experience.",
+    "privateEvent": "Private group event",
+    "priceOnRequest": "Price on request",
+    "requestQuote": "Request a quote"
   },
   "courseDetail": {
     "about": "About this course",
@@ -127,7 +135,86 @@
       "phone": "Phone number",
       "phonePlaceholder": "+34 600 000 000",
       "cancel": "Cancel"
-    }
+    },
+    "ledBy": "Led by",
+    "bookNow": "Book now",
+    "requestQuote": "Request a quote",
+    "privateEvent": "Private group event",
+    "priceOnRequest": "Price on request",
+    "quoteText": "Tailored for your team. Tell us your group size and preferred dates and we’ll send you a quote.",
+    "quickBooking": "Quick booking",
+    "facts": {
+      "duration": "{count, plural, one {# hour} other {# hours}}",
+      "guests": "Up to {count} guests",
+      "languages": "English & Spanish"
+    },
+    "chooseSession": "Choose your session",
+    "yourSession": "Your session",
+    "changeDate": "Change date",
+    "guests": "Guests",
+    "numberOfGuests": "Number of guests",
+    "perPerson": "{price} per person",
+    "total": "Total",
+    "addGuest": "Add a guest",
+    "removeGuest": "Remove a guest",
+    "dayPart": {
+      "morning": "{weekday} morning",
+      "afternoon": "{weekday} afternoon",
+      "evening": "{weekday} evening"
+    },
+    "menu": {
+      "eyebrow": "On the menu",
+      "title": "{count, select, 1 {One dish.} 2 {Two dishes.} 3 {Three dishes.} 4 {Four dishes.} 5 {Five dishes.} 6 {Six dishes.} other {{count} dishes.}}",
+      "accent": {
+        "morning": "One unforgettable morning.",
+        "afternoon": "One unforgettable afternoon.",
+        "evening": "One unforgettable evening."
+      }
+    },
+    "included": {
+      "eyebrow": "Everything is ready for you",
+      "title": "Just bring your appetite.",
+      "items": [
+        "All fresh ingredients & professional equipment",
+        "Welcome drink & unlimited refreshments",
+        "A full sit-down dinner with wine or beer",
+        "Apron & containers for your leftovers"
+      ]
+    },
+    "gallery": {
+      "eyebrow": "Inside the experience",
+      "title": "Cook. Share.",
+      "accent": "Discover."
+    },
+    "allergenSection": {
+      "eyebrow": "Dietary information",
+      "title": "Allergens",
+      "lead": "This course contains or may use the following allergens:",
+      "calloutTitle": "Have an allergy or dietary requirement?",
+      "calloutText": "We can cater to most allergies with advance notice. This course may contain traces of other allergens, so please tell us when booking and we’ll prepare your station accordingly.",
+      "calloutLink": "Contact us before your class"
+    },
+    "reserve": {
+      "eyebrow": "Reserve your wok",
+      "title": "Your place at the table.",
+      "lead": {
+        "morning": "One morning, {count, select, 0 {hands-on cooking} 1 {one dish} 2 {two dishes} 3 {three dishes} 4 {four dishes} 5 {five dishes} 6 {six dishes} other {{count} dishes}}, and a new skill you’ll use for life.",
+        "afternoon": "One afternoon, {count, select, 0 {hands-on cooking} 1 {one dish} 2 {two dishes} 3 {three dishes} 4 {four dishes} 5 {five dishes} 6 {six dishes} other {{count} dishes}}, and a new skill you’ll use for life.",
+        "evening": "One evening, {count, select, 0 {hands-on cooking} 1 {one dish} 2 {two dishes} 3 {three dishes} 4 {four dishes} 5 {five dishes} 6 {six dishes} other {{count} dishes}}, and a new skill you’ll use for life."
+      },
+      "corporateEyebrow": "Plan your event",
+      "corporateTitle": "Your team at the table.",
+      "corporateLead": "Tell us about your group and we’ll tailor the menu, timing and format to your team.",
+      "noteTitle": "Good to know",
+      "contains": "Contains: {list}.",
+      "dietaryLink": "Tell us about dietary needs"
+    },
+    "faq": {
+      "eyebrow": "Before you arrive",
+      "title": "Questions,",
+      "accent": "answered."
+    },
+    "perPersonLabel": "per person"
   },
   "voucherSuccess": {
     "title": "Gift voucher purchased!",
@@ -196,15 +283,22 @@
       "japanese": "Japanese",
       "thai": "Thai",
       "vietnamese": "Vietnamese"
-    }
+    },
+    "legendAvailable": "Available",
+    "legendSelected": "Selected"
   },
   "filters": {
-    "searchPlaceholder": "Search courses…",
+    "searchPlaceholder": "Search by course or cuisine",
     "cuisineLabel": "Filter by cuisine",
     "allCuisines": "All cuisines",
     "dateLabel": "Filter by date",
     "clearFilters": "Clear filters",
-    "noResults": "No courses match your filters."
+    "noResults": "No courses match your filters.",
+    "searchLabel": "Search courses",
+    "datePlaceholder": "Any date",
+    "clearDate": "Clear date",
+    "resultsCount": "{count, plural, =0 {No classes} one {# class} other {# classes}}",
+    "eventsCount": "{count, plural, =0 {No events} one {# event} other {# events}}"
   },
   "common": {
     "loading": "Loading...",
@@ -259,5 +353,28 @@
     "lastUpdated": "Last updated: {date}",
     "termsDescription": "Terms and conditions governing the use of Wok Lab's services and bookings.",
     "privacyDescription": "How Wok Lab collects, uses, and protects your personal data."
+  },
+  "coursesCta": {
+    "eyebrow": "Not sure where to start?",
+    "headingLine1": "Choose the flavour.",
+    "headingLine2": "We’ll guide the rest.",
+    "sub": "Every class includes ingredients, equipment, drinks and the full meal you prepare.",
+    "cta": "Talk to our team"
+  },
+  "allergens": {
+    "celery": "Celery",
+    "gluten": "Gluten",
+    "crustaceans": "Crustaceans",
+    "eggs": "Egg",
+    "fish": "Fish",
+    "lupin": "Lupin",
+    "milk": "Milk",
+    "molluscs": "Molluscs",
+    "mustard": "Mustard",
+    "nuts": "Nuts",
+    "peanuts": "Peanuts",
+    "sesame": "Sesame",
+    "soy": "Soy",
+    "sulphites": "Sulphites"
   }
 }

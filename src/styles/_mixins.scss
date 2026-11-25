@@ -52,6 +52,16 @@
   white-space: nowrap;
 }
 
+// Small uppercase label — field labels, section kickers, footer column headings
+@mixin eyebrow {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-snug;
+  letter-spacing: $letter-spacing-eyebrow;
+  text-transform: uppercase;
+  color: $color-text-muted;
+}
+
 @mixin line-clamp($lines) {
   display: -webkit-box;
   -webkit-line-clamp: $lines;
@@ -116,5 +126,30 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: $shadow-lg;
+  }
+}
+
+// Vertical rhythm + horizontal gutter for full-width page sections.
+// The gutter comes from --section-px, set once on the page wrapper.
+@mixin page-section($block-lg: 96px) {
+  padding: $spacing-16 var(--section-px, #{$container-padding-mobile});
+
+  @include respond-to('lg') {
+    padding-block: $block-lg;
+  }
+}
+
+// White card with a brand-red top rule — booking and enquiry panels
+@mixin raised-card {
+  background-color: $color-background;
+  border-top: 4px solid $color-primary;
+  border-radius: 10px;
+  box-shadow: 0 14px 25px rgba($color-text, 0.18);
+}
+
+// Animations only for people who haven't asked for reduced motion
+@mixin motion {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
   }
 }

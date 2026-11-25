@@ -1,51 +1,49 @@
-import { forwardRef, type SelectHTMLAttributes } from 'react';
+import { forwardRef, type ReactNode, type SelectHTMLAttributes } from 'react';
 
+import Field from '@/components/ui/Field/Field';
 import { ChevronDown } from '@/components/ui/icons';
 
 import styles from './Select.module.scss';
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
+  hideLabel?: boolean;
   error?: string;
   hint?: string;
+  startIcon?: ReactNode;
+  fieldClassName?: string;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, hint, id, required, className, children, ...props }, ref) => (
-    <div className={styles.field}>
-      {label && (
-        <label htmlFor={id} className={styles.label}>
-          {label}
-          {required && (
-            <span className={styles.required} aria-hidden="true"> *</span>
-          )}
-        </label>
-      )}
-      <div className={styles.selectWrapper}>
-        <select
-          ref={ref}
-          id={id}
-          required={required}
+  ({ label, hideLabel, error, hint, startIcon, id, required, className, fieldClassName, disabled, children, ...props }, ref) => (
+    <Field
+      label={label}
+      hideLabel={hideLabel}
+      hint={hint}
+      error={error}
+      required={required}
+      id={id}
+      className={fieldClassName}
+    >
+      {(control) => (
+        <div
           className={[
             styles.control,
             error ? styles.hasError : '',
+            disabled ? styles.isDisabled : '',
             className ?? '',
           ]
             .filter(Boolean)
             .join(' ')}
-          {...props}
         >
-          {children}
-        </select>
-        <ChevronDown className={styles.chevron}  />
-      </div>
-      {error && (
-        <p className={styles.errorText} role="alert">
-          {error}
-        </p>
+          {startIcon && <span className={styles.icon} aria-hidden="true">{startIcon}</span>}
+          <select ref={ref} className={styles.select} disabled={disabled} {...control} {...props}>
+            {children}
+          </select>
+          <ChevronDown size={18} className={styles.chevron} />
+        </div>
       )}
-      {hint && !error && <p className={styles.hintText}>{hint}</p>}
-    </div>
+    </Field>
   ),
 );
 

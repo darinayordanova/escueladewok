@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import type { ReactNode } from 'react';
 import { Fraunces, Montserrat } from 'next/font/google';
+import type { ReactNode } from 'react';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -11,6 +11,8 @@ import { SITE_NAME, SITE_URL } from '@/lib/seo';
 const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--font-heading',
+  style: ['normal', 'italic'],
+  axes: ['SOFT', 'WONK'],
   display: 'swap',
 });
 

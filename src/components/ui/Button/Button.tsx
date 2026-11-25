@@ -1,7 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 
 import { Link } from '@/i18n/navigation';
-import type { ComponentPropsWithoutRef } from 'react';
 
 import styles from './Button.module.scss';
 
@@ -56,6 +56,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 
   if (props.href !== undefined) {
     const { href, ...linkProps } = props as AsLink;
+    // In-page anchors skip the locale-aware Link, which would prefix the locale
+    if (href.startsWith('#')) {
+      return (
+        <a href={href} className={classes} {...(linkProps as ComponentPropsWithoutRef<'a'>)}>
+          {children}
+        </a>
+      );
+    }
     return (
       <Link href={href} className={classes} {...linkProps}>
         {children}

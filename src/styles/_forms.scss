@@ -1,0 +1,86 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// ─── Form control mixins ──────────────────────────────────────────────────────
+// Single source of truth for the look of every field box (Input, Select,
+// Textarea, DatePicker trigger). Mixins only — this file emits no CSS.
+
+// The bordered pill. Apply to the element that draws the box; when the box
+// wraps a native control (icon + input), the native control uses `control-bare`.
+@mixin control-box {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  width: 100%;
+  // A container can set --control-height to size every control inside it at once
+  min-height: var(--control-height, #{$control-height});
+  padding: 0 $control-padding-x;
+  border: $control-border-width solid $color-border;
+  border-radius: $radius-full;
+  background-color: $color-background;
+  color: $color-text;
+  // 16px on mobile stops iOS from zooming into focused fields
+  font-size: $font-size-base;
+  font-family: inherit;
+  font-weight: $font-weight-medium;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  @include respond-to('md') {
+    font-size: $font-size-sm;
+  }
+
+  &:hover {
+    border-color: $color-text-muted;
+  }
+}
+
+// Focus treatment — pass the selector state that should trigger it.
+@mixin control-focus {
+  border-color: $color-primary;
+  box-shadow: $control-focus-ring;
+}
+
+@mixin control-error {
+  border-color: $color-error;
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgba($color-error, 0.12);
+  }
+}
+
+@mixin control-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: $color-background-alt;
+}
+
+// A native input/select/textarea that sits inside a `control-box`.
+@mixin control-bare {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  // Fill the box without adding to it: its height minus the two borders
+  min-height: calc(var(--control-height, #{$control-height}) - #{2 * $control-border-width});
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+
+  &::placeholder {
+    color: $color-text-muted;
+    opacity: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// Leading / trailing icon inside a control
+@mixin control-icon {
+  flex-shrink: 0;
+  color: $color-primary;
+  pointer-events: none;
+}

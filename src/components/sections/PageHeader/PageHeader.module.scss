@@ -1,0 +1,26 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: $spacing-8;
+}
+
+.title {
+  margin-top: $spacing-6;
+
+  @include respond-to('md') {
+    margin-top: $spacing-8;
+  }
+}
+
+.description {
+  max-width: 650px;
+  margin: $spacing-5 0 0;
+  font-size: $font-size-base;
+  line-height: 1.7;
+  color: $color-text-light;
+}

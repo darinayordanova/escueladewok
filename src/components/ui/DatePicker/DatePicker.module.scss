@@ -1,227 +1,102 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
-
-// ─── Wrapper ──────────────────────────────────────────────────────────────────
+@use '@/styles/forms' as *;
 
 .wrapper {
   position: relative;
-  display: inline-block;
   width: 100%;
 }
 
-// ─── Trigger button ───────────────────────────────────────────────────────────
+// ─── Field box ────────────────────────────────────────────────────────────────
+
+// The box holds two sibling buttons (open + clear), so it's a div with
+// focus-within rather than a single button.
+.control {
+  @include control-box;
+  padding: 0;
+
+  &:focus-within,
+  &.controlOpen {
+    @include control-focus;
+  }
+}
 
 .trigger {
   display: flex;
+  flex: 1;
   align-items: center;
   gap: $spacing-2;
-  width: 100%;
-  height: 42px;
-  padding: 0 $spacing-3;
-  background: $color-background;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  font-family: inherit;
-  font-size: $font-size-sm;
-  cursor: pointer;
-  transition: border-color $transition-fast, box-shadow $transition-fast;
+  min-width: 0;
+  // Fill the box without adding to it: its height minus the two borders
+  min-height: calc(var(--control-height, #{$control-height}) - #{2 * $control-border-width});
+  padding: 0 $control-padding-x;
+  color: inherit;
+  font: inherit;
   text-align: left;
-
-  &:hover {
-    border-color: $color-text-muted;
-  }
-
-  @include focus-ring;
+  border-radius: inherit;
+  outline: none;
 }
 
-.triggerOpen {
-  border-color: $color-primary;
-  box-shadow: 0 0 0 3px rgba($color-primary, 0.12);
+.icon {
+  @include control-icon;
 }
 
-.triggerActive {
-  border-color: $color-primary;
-}
-
-.calIcon {
-  width: 15px;
-  height: 15px;
-  color: $color-text-muted;
-  flex-shrink: 0;
-}
-
-.triggerPlaceholder {
+.placeholder,
+.value {
   flex: 1;
-  color: $color-text-muted;
   @include text-truncate;
 }
 
-.triggerValue {
-  flex: 1;
-  color: $color-text;
-  font-weight: $font-weight-medium;
-  @include text-truncate;
+.placeholder {
+  color: $color-text-muted;
 }
 
 .chevron {
+  @include control-icon;
   color: $color-text-muted;
-  flex-shrink: 0;
 }
 
-.clearX {
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
+.clear {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: $font-size-base;
-  line-height: 1;
-  color: $color-text-muted;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-right: $spacing-2;
   border-radius: 50%;
+  color: $color-text-muted;
   transition: background-color $transition-fast, color $transition-fast;
-  cursor: pointer;
 
   &:hover {
     background-color: $color-background-alt;
     color: $color-text;
   }
+
+  @include focus-ring;
 }
 
 // ─── Popover ──────────────────────────────────────────────────────────────────
 
 .popover {
   position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
+  top: calc(100% + $spacing-2);
+  left: 0;
   z-index: $z-dropdown;
-  width: 280px;
+  width: min(340px, calc(100vw - #{$spacing-8}));
+  padding: $spacing-4;
   background: $color-background;
-  border: 1px solid $color-border;
+  border: 1px solid $color-border-subtle;
   border-radius: $radius-lg;
   box-shadow: $shadow-lg;
-  padding: $spacing-4;
   animation: fadeIn 120ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-// ─── Calendar header ──────────────────────────────────────────────────────────
-
-.calHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $spacing-3;
-}
-
-.monthTitle {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-text;
-  text-transform: capitalize;
-}
-
-.navBtn {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: $font-size-xl;
-  line-height: 1;
-  color: $color-text-muted;
-  border-radius: $radius-sm;
-  transition: color $transition-fast, background-color $transition-fast;
-
-  &:hover {
-    color: $color-primary;
-    background-color: $color-background-alt;
-  }
-
-  @include focus-ring;
-}
-
-// ─── Day names row ────────────────────────────────────────────────────────────
-
-.dayNames {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: $spacing-1;
-}
-
-.dayName {
-  text-align: center;
-  font-size: 10px;
-  font-weight: $font-weight-semibold;
-  color: $color-text-muted;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding-bottom: $spacing-2;
-}
-
-// ─── Day grid ─────────────────────────────────────────────────────────────────
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
-
-.day {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  aspect-ratio: 1;
-  border-radius: $radius-sm;
-  font-size: $font-size-xs;
-  color: $color-text;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: background-color $transition-fast, color $transition-fast;
-
-  &:hover:not(.daySelected) {
-    background-color: $color-background-alt;
-  }
-
-  @include focus-ring;
-}
-
-.dayPast {
-  color: rgba($color-text, 0.3);
-}
-
-.dayToday {
-  font-weight: $font-weight-bold;
-  color: $color-primary;
-  border-color: rgba($color-primary, 0.3);
-}
-
-.dayHasEvents {
-  font-weight: $font-weight-medium;
-}
-
-.daySelected {
-  background-color: $color-primary;
-  color: #fff;
-  font-weight: $font-weight-semibold;
-
-  &:hover { background-color: $color-primary-dark; }
-}
-
-// ─── Event dot ────────────────────────────────────────────────────────────────
-
-.dot {
-  display: block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: $color-primary;
-  flex-shrink: 0;
 }

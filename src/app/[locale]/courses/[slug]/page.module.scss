@@ -1,64 +1,78 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// Shared by every section on the page so their content edges line up
+.page {
+  --page-max-width: calc(#{$max-width} + 2 * #{$container-padding});
+  --section-px: #{$container-padding-mobile};
 
-
-.imageWrapper {
-  position: relative;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 2/1;
-  inset: 0;
-  border-radius: 0 50px 0 50px;
-  overflow: hidden;
-}
-
-.image {
-  object-fit: cover;
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-12;
+  @include respond-to('md') {
+    --section-px: #{$container-padding};
+  }
 
   @include respond-to('lg') {
-    grid-template-columns: 1fr 340px;
+    --section-px: #{$spacing-16};
+  }
+
+  // Room for the fixed mobile booking bar
+  padding-bottom: 96px;
+
+  @include respond-to('lg') {
+    padding-bottom: 0;
   }
 }
 
-.instructorImage{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+.shell {
+  max-width: var(--page-max-width);
+  margin-inline: auto;
 }
 
-.section {
-  margin-bottom: $spacing-10;
+// ─── Content + sidebar ────────────────────────────────────────────────────────
+
+.body {
+  @include respond-to('lg') {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 365px;
+  }
 }
 
-.sectionTitle {
-  padding-bottom: $spacing-3;
-  border-bottom: 2px solid $color-border;
+.main {
+  min-width: 0;
 }
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
 .sidebar {
-  // Hidden on mobile — BookingDrawer handles that viewport
   display: none;
 
   @include respond-to('lg') {
     display: block;
-    position: sticky;
-    top: calc(64px + $spacing-6);
-    height: fit-content;
+    padding: $spacing-6;
+    border-left: 1px solid rgba($color-primary, 0.12);
   }
 }
 
-.bookingCardSkeleton {
-  height: 300px;
-  background-color: $color-background-alt;
-  border-radius: $radius-lg;
-  border: 1px solid $color-border;
+.sidebarInner {
+  position: sticky;
+  top: calc(#{$header-height} + #{$spacing-6});
+}
+
+// ─── Corporate ────────────────────────────────────────────────────────────────
+
+.quoteCard {
+  display: grid;
+  gap: $spacing-4;
+  padding: 22px;
+  @include raised-card;
+}
+
+.quoteEyebrow {
+  @include eyebrow;
+  margin: 0;
+  color: $color-primary;
+}
+
+.quoteText {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+  color: $color-text-light;
 }

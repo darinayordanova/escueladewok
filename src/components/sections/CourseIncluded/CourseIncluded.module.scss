@@ -1,0 +1,46 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  @include page-section(90px);
+  display: grid;
+  gap: $spacing-10;
+  background-color: $color-primary;
+  color: #fff;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+    align-items: center;
+    gap: $spacing-16;
+  }
+}
+
+// Narrow column so the heading breaks across three lines like the design
+.heading {
+  max-width: 320px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 17px 0;
+  border-top: 1px solid rgba(#fff, 0.26);
+  font-size: $font-size-sm;
+  line-height: $line-height-snug;
+
+  &:last-child {
+    border-bottom: 1px solid rgba(#fff, 0.26);
+  }
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #fff;
+  color: $color-primary;
+}

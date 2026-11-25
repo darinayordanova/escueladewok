@@ -1,0 +1,42 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 $spacing-1;
+  border: $control-border-width solid $color-border;
+  border-radius: $radius-full;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  color: $color-text;
+  transition: background-color $transition-fast, color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: $color-background-alt;
+    color: $color-primary;
+  }
+
+  &:disabled {
+    color: $color-border;
+    cursor: not-allowed;
+  }
+
+  @include focus-ring;
+}
+
+.value {
+  min-width: 36px;
+  text-align: center;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  font-variant-numeric: tabular-nums;
+}

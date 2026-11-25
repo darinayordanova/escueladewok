@@ -1,0 +1,72 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.section {
+  @include page-section;
+
+  @include respond-to('lg') {
+    padding-bottom: 110px;
+  }
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+  margin-top: $spacing-10;
+}
+
+.figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background-color: $color-background-alt;
+}
+
+.image {
+  object-fit: cover;
+
+  @include motion {
+    transition: transform 700ms $ease-out;
+
+    .figure:hover & {
+      transform: scale(1.04);
+    }
+  }
+}
+
+// One photo: a single wide frame
+.count1 .figure {
+  aspect-ratio: 16 / 9;
+}
+
+// Two photos: side by side from md up
+.count2 {
+  @include respond-to('md') {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+// Three photos: first one spans both rows on desktop, two small below on mobile
+.count3 {
+  grid-template-columns: 1fr 1fr;
+
+  .figure:first-child {
+    grid-column: 1 / -1;
+  }
+
+  @include respond-to('md') {
+    grid-template-columns: minmax(0, 1.86fr) minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+
+    .figure {
+      aspect-ratio: auto;
+      min-height: 235px;
+    }
+
+    .figure:first-child {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+    }
+  }
+}

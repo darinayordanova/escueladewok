@@ -1,8 +1,11 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Children, isValidElement, useState, type ReactNode } from 'react';
 
-import { ChevronDown } from '@/components/ui/icons';
+
+import { Minus, Plus } from '@/components/ui/icons';
+import SectionHeading from '@/components/ui/SectionHeading/SectionHeading';
 import type { Locale } from '@/types';
 
 import styles from './CourseFAQ.module.scss';
@@ -141,17 +144,14 @@ const FAQ: Record<Locale, FAQItem[]> = {
   ],
 };
 
-const TITLE: Record<Locale, string> = {
-  en: 'Frequently Asked Questions',
-  es: 'Preguntas Frecuentes',
-};
-
 interface CourseFAQProps {
   locale: Locale;
 }
 
 export default function CourseFAQ({ locale }: CourseFAQProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const t = useTranslations('courseDetail.faq');
+  // First answer starts open, as an example of what's inside
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
   const items = FAQ[locale];
 
   function toggle(i: number) {
@@ -172,12 +172,12 @@ export default function CourseFAQ({ locale }: CourseFAQProps) {
   };
 
   return (
-    <section className="mt-6">
+    <section className={styles.section}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <h2 className={`h5 pb-3 mb-no ${styles.title}`}>{TITLE[locale]}</h2>
+      <SectionHeading eyebrow={t('eyebrow')} title={t('title')} accent={t('accent')} accentOnNewLine />
       <dl className={styles.list}>
         {items.map((item, i) => {
           const isOpen = openIndex === i;
@@ -193,7 +193,7 @@ export default function CourseFAQ({ locale }: CourseFAQProps) {
                   id={`faq-question-${i}`}
                 >
                   <span>{item.q}</span>
-                  <ChevronDown size={18} className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`} />
+                  {isOpen ? <Minus size={20} className={styles.icon} /> : <Plus size={20} className={styles.icon} />}
                 </button>
               </dt>
               <dd
@@ -201,9 +201,10 @@ export default function CourseFAQ({ locale }: CourseFAQProps) {
                 role="region"
                 aria-labelledby={`faq-question-${i}`}
                 className={styles.answer}
-                hidden={!isOpen}
               >
-                <div className={styles.answerInner}>{item.a}</div>
+                <div className={styles.answerClip}>
+                  <div className={styles.answerInner}>{item.a}</div>
+                </div>
               </dd>
             </div>
           );

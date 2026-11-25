@@ -1,0 +1,32 @@
+@use '@/styles/variables' as *;
+
+.status {
+  --dot-color: #{$color-text-muted};
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: $font-size-xs;
+  line-height: $line-height-snug;
+  color: $color-text-muted;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--dot-color);
+}
+
+.high   { --dot-color: #{$color-availability-high}; }
+.medium { --dot-color: #{$color-availability-medium}; }
+
+// Low and sold-out are the states people need to notice — the text is emphasised
+// too (in brand red: the availability red is too light for 12px text contrast)
+.low,
+.none {
+  --dot-color: #{$color-availability-low};
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
