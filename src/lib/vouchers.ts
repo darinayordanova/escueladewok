@@ -1,17 +1,18 @@
 // Gift voucher options — shared by the vouchers page, the checkout route and the Stripe webhook.
 
+// TEMP — live test at Stripe's €0.50 minimum. Restore: 25, 50, 89, 178 and PHYSICAL_FEE = 5.
 export const VOUCHER_OPTIONS = [
-  { key: 'giftCard25', amount: 25 },
-  { key: 'giftCard50', amount: 50 },
-  { key: 'classVoucher', amount: 89 },
-  { key: 'classVoucherForTwo', amount: 178 },
+  { key: 'giftCard25', amount: 0.5 },
+  { key: 'giftCard50', amount: 0.5 },
+  { key: 'classVoucher', amount: 0.5 },
+  { key: 'classVoucherForTwo', amount: 0.5 },
 ] as const;
 
 export type VoucherKey = (typeof VOUCHER_OPTIONS)[number]['key'];
 export type VoucherFormat = 'digital' | 'physical';
 
 /** Printing and posting a physical card, in euros. Not part of the voucher's value. */
-export const PHYSICAL_FEE = 5;
+export const PHYSICAL_FEE = 0.5;
 
 export const VOUCHER_CURRENCY = 'eur';
 

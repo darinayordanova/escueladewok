@@ -110,7 +110,7 @@ export async function POST(request: Request) {
         {
           price_data: {
             currency: VOUCHER_CURRENCY,
-            unit_amount: amount * 100,
+            unit_amount: Math.round(amount * 100),
             product_data: { name: PRODUCT_NAMES[body.voucherKey] },
           },
           quantity: 1,
@@ -119,7 +119,7 @@ export async function POST(request: Request) {
           ? [{
               price_data: {
                 currency: VOUCHER_CURRENCY,
-                unit_amount: PHYSICAL_FEE * 100,
+                unit_amount: Math.round(PHYSICAL_FEE * 100),
                 product_data: { name: 'Printed card & postage' },
               },
               quantity: 1,
