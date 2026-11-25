@@ -30,6 +30,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [{ source: '/:locale(en|es)/navidad', destination: '/:locale/christmas', permanent: false }];
+  },
   async headers() {
     return [
       // Security headers on every response

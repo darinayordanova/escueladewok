@@ -1,0 +1,45 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Pale sage, the Christmas voucher's own ground (lib/voucherThemes)
+.section {
+  padding-block: $spacing-16;
+  background-color: #EEF2EC;
+
+  @include respond-to('lg') {
+    padding-block: $spacing-20;
+  }
+}
+
+.inner {
+  display: grid;
+  gap: $spacing-10;
+  align-items: center;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: $spacing-16;
+  }
+}
+
+.voucher {
+  max-width: 540px;
+}
+
+.title {
+  margin: 0 0 $spacing-4;
+  font-family: $font-heading;
+  font-size: clamp(32px, 4vw, $font-size-h2);
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  letter-spacing: $letter-spacing-heading;
+  color: $color-text;
+}
+
+.sub {
+  max-width: 460px;
+  margin: 0 0 $spacing-8;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}

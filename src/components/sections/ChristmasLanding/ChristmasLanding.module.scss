@@ -1,0 +1,820 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+$festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%, #6E0811 100%);
+
+.cover {
+  object-fit: cover;
+}
+
+// ─── Shared section rhythm ────────────────────────────────────────────────────
+
+.section {
+  padding-block: $spacing-16;
+
+  @include respond-to('lg') {
+    padding-block: $spacing-24;
+  }
+}
+
+.alt {
+  background-color: $color-background-alt;
+}
+
+.heading {
+  max-width: 680px;
+  margin-bottom: $spacing-10;
+
+  @include respond-to('lg') {
+    margin-bottom: $spacing-12;
+  }
+}
+
+.eyebrow,
+.heroEyebrow {
+  @include eyebrow;
+  margin: 0 0 $spacing-3;
+  color: $color-primary-light;
+}
+
+.heroEyebrow {
+  color: rgba(#fff, 0.75);
+}
+
+.title {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(34px, 4.6vw, 56px);
+  font-weight: $font-weight-bold;
+  line-height: 1.05;
+  letter-spacing: $letter-spacing-heading;
+  color: $color-text;
+  text-wrap: balance;
+}
+
+.lede {
+  margin: $spacing-4 0 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.note {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text-muted;
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: $spacing-16;
+  background: $festive-red;
+  color: #fff;
+
+  @include respond-to('lg') {
+    display: flex;
+    align-items: center;
+    min-height: calc(100svh - #{$header-height});
+    padding-block: $spacing-16;
+  }
+}
+
+.heroGrid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: $spacing-12;
+  width: 100%;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: $spacing-10;
+  }
+}
+
+.heroCopy {
+  @include motion {
+    animation: rise-in 700ms $ease-out both;
+  }
+}
+
+.heroTitle {
+  margin: 0 0 $spacing-6;
+  font-family: $font-heading;
+  font-size: clamp(44px, 6.4vw, 84px);
+  font-weight: $font-weight-bold;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+// Highlighted word in italics, like the accent in SectionHeading
+.mark {
+  font-style: italic;
+}
+
+.heroSub {
+  max-width: 34em;
+  margin: 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: rgba(#fff, 0.9);
+
+  @include respond-to('md') {
+    font-size: $font-size-xl;
+  }
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  margin-block: $spacing-8 $spacing-6;
+}
+
+// White outline button on red
+.lineButton {
+  border-color: rgba(#fff, 0.5);
+  background-color: transparent;
+  color: #fff;
+
+  &:not(:disabled):hover {
+    border-color: #fff;
+    background-color: rgba(#fff, 0.12);
+  }
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 7px 14px;
+    border-radius: $radius-full;
+    background-color: rgba(#fff, 0.12);
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+// ─── Tree on a cream disc (hero and close) ────────────────────────────────────
+
+.tree {
+  position: relative;
+  width: min(78vw, 340px);
+  aspect-ratio: 600 / 773;
+  margin-inline: auto;
+
+  @include respond-to('lg') {
+    width: min(100%, 400px);
+  }
+}
+
+.treeSmall {
+  width: min(50vw, 190px);
+
+  @include respond-to('lg') {
+    width: 190px;
+  }
+}
+
+.disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 112%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #FFF6E4, #F8DDB0 68%, #EBB878);
+  transform: translate(-50%, -50%);
+}
+
+.treeImage {
+  position: relative;
+  width: 100%;
+  height: auto;
+
+  @include motion {
+    animation: tree-in 1s cubic-bezier(0.2, 1.2, 0.4, 1) both, float 6s 1s ease-in-out infinite;
+  }
+}
+
+.star {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+
+  @include motion {
+    animation: twinkle var(--t) var(--d) ease-in-out infinite;
+  }
+}
+
+// ─── Formats ──────────────────────────────────────────────────────────────────
+
+.formats {
+  display: grid;
+  gap: $spacing-6;
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $spacing-8;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 28px;
+  background-color: $color-background;
+  box-shadow: 0 24px 50px -30px rgba($color-primary-dark, 0.45);
+}
+
+.panelStage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 400px;
+  overflow: hidden;
+}
+
+.stageDigital {
+  background: radial-gradient(circle at 50% 60%, #C61A2D, $color-primary 60%, $color-primary-dark);
+}
+
+.stagePrinted {
+  background: radial-gradient(circle at 50% 60%, #FFFFFF, $color-background-alt 60%, #E2D3D3);
+}
+
+.phone {
+  position: relative;
+  width: 220px;
+  height: 400px;
+  margin-top: 90px;
+  overflow: hidden;
+  border: 7px solid $color-text;
+  border-radius: 34px;
+  background-color: #fff;
+  box-shadow: 0 34px 60px -20px rgba(0, 0, 0, 0.6);
+  transform: rotate(-3deg);
+}
+
+.notch {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  z-index: 5;
+  width: 62px;
+  height: 16px;
+  margin-left: -31px;
+  border-radius: 10px;
+  background-color: $color-text;
+}
+
+.miniLogo {
+  flex: none;
+  width: 34px;
+  height: 22px;
+  border-radius: 5px;
+  background: $color-primary url('/images/email/logo-white.png') center / 80% auto no-repeat;
+}
+
+.notification {
+  position: absolute;
+  top: 30px;
+  right: 8px;
+  left: 8px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 14px;
+  background-color: rgba(#fff, 0.97);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+
+  b {
+    display: block;
+    font-size: $font-size-xs;
+    line-height: 1.25;
+    color: $color-text;
+  }
+
+  small {
+    font-size: $font-size-xs;
+    color: $color-text-muted;
+  }
+}
+
+.mail {
+  position: absolute;
+  inset: 34px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 12px;
+  background-color: #fff;
+}
+
+.mailFrom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-text-muted;
+}
+
+.mailTitle {
+  font-family: $font-heading;
+  font-size: $font-size-lg;
+  color: $color-text;
+}
+
+.skeleton {
+  height: 7px;
+  width: 90%;
+  border-radius: 4px;
+  background-color: #EADFDF;
+}
+
+.skeletonShort {
+  width: 64%;
+}
+
+.mailButton {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  border-radius: 10px;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+}
+
+// Played once the panel scrolls into view: the notification drops in, then the email slides up
+@include motion {
+  .panel[data-inview='true'] .notification {
+    animation: notify 2.6s both;
+  }
+
+  .panel[data-inview='false'] .mail {
+    transform: translateY(105%);
+  }
+
+  .panel[data-inview='true'] .mail {
+    animation: mail-in 900ms 1.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+}
+
+// Printed card coming out of a red envelope
+.envelope {
+  position: relative;
+  width: 300px;
+  height: 230px;
+  margin-top: 90px;
+}
+
+.envelopeBack,
+.envelopeFront {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 300px;
+  height: 190px;
+  border-radius: 10px;
+}
+
+.envelopeBack {
+  background-color: #6B0710;
+  box-shadow: 0 30px 40px -20px rgba(0, 0, 0, 0.5);
+}
+
+.envelopeFront {
+  z-index: 3;
+  overflow: hidden;
+}
+
+.envelopeCard {
+  position: absolute;
+  top: -40px;
+  left: 22px;
+  z-index: 2;
+  width: 256px;
+  transform: rotate(-3deg);
+}
+
+@include motion {
+  .panel[data-inview='false'] .envelopeCard {
+    transform: translateY(110px) rotate(0);
+  }
+
+  .panel[data-inview='true'] .envelopeCard {
+    animation: card-out 1.2s 300ms cubic-bezier(0.2, 1.1, 0.4, 1) both;
+  }
+}
+
+.panelCopy {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.tag {
+  align-self: flex-start;
+  padding: 5px 14px;
+  border-radius: $radius-full;
+  background-color: $color-primary;
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.panelTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(26px, 2.6vw, 32px);
+  font-weight: $font-weight-bold;
+  line-height: 1.1;
+  color: $color-text;
+}
+
+.panelText {
+  margin: 0;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.ticks {
+  display: grid;
+  gap: $spacing-2;
+  margin: $spacing-1 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+
+  svg {
+    flex: none;
+    color: #4A9B5F;
+  }
+}
+
+.noteLate {
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+// ─── What a class includes ────────────────────────────────────────────────────
+
+.includes {
+  display: grid;
+  gap: $spacing-10;
+  align-items: center;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: $spacing-16;
+  }
+}
+
+.includesPhoto {
+  position: relative;
+  aspect-ratio: 10 / 11;
+  overflow: hidden;
+  border-radius: 28px;
+  background-color: $color-background-alt;
+
+  img {
+    @include motion {
+      transition: transform 600ms $ease-out;
+    }
+  }
+
+  &:hover img {
+    transform: scale(1.03);
+  }
+}
+
+.includesList {
+  display: grid;
+  gap: $spacing-4;
+  margin: $spacing-8 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-3;
+    font-size: $font-size-lg;
+    line-height: $line-height-snug;
+    color: $color-text;
+  }
+}
+
+.includesTick {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background-color: $color-primary;
+  color: #fff;
+}
+
+// ─── Builder ──────────────────────────────────────────────────────────────────
+
+// Sections linked from buttons stop below the sticky header
+.anchor {
+  scroll-margin-top: $header-height-sm;
+
+  @include respond-to('md') {
+    scroll-margin-top: $header-height;
+  }
+}
+
+// ─── How it works ─────────────────────────────────────────────────────────────
+// On view: the dashed line draws from step 1 to 4, and each number fills red and pops
+// as the line reaches it, with its text rising in behind.
+
+$step-pace: 350ms;
+
+.steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $spacing-10 $spacing-6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      right: 12.5%;
+      left: 12.5%;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, $color-primary 0 10px, transparent 10px 18px);
+      transform-origin: left;
+    }
+
+    @include motion {
+      &[data-inview='false']::before {
+        transform: scaleX(0);
+      }
+
+      &[data-inview='true']::before {
+        transition: transform calc(#{$step-pace} * 3) linear;
+      }
+    }
+  }
+}
+
+.step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: $spacing-2;
+  text-align: center;
+}
+
+.stepNumber {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 2px solid $color-primary;
+  border-radius: 50%;
+  background-color: $color-primary;
+  box-shadow: 0 0 0 8px $color-background-alt;
+  color: #fff;
+  font-family: $font-heading;
+  font-size: 26px;
+  font-weight: $font-weight-bold;
+}
+
+.stepTitle {
+  margin: $spacing-2 0 0;
+  font-family: $font-heading;
+  font-size: $font-size-h6;
+  font-weight: $font-weight-bold;
+  color: $color-text;
+}
+
+.stepText {
+  max-width: 15em;
+  margin: 0;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+@include motion {
+  .steps[data-inview='false'] {
+    .stepNumber {
+      background-color: $color-background-alt;
+      color: $color-primary;
+      transform: scale(0.6);
+    }
+
+    .stepTitle,
+    .stepText {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .steps[data-inview='true'] {
+    .stepNumber {
+      transition:
+        background-color 300ms ease calc(var(--i) * #{$step-pace}),
+        color 300ms ease calc(var(--i) * #{$step-pace}),
+        transform 500ms cubic-bezier(0.3, 1.6, 0.5, 1) calc(var(--i) * #{$step-pace});
+    }
+
+    .stepTitle,
+    .stepText {
+      transition:
+        opacity 500ms ease calc(var(--i) * #{$step-pace} + 150ms),
+        transform 500ms $ease-out calc(var(--i) * #{$step-pace} + 150ms);
+    }
+  }
+}
+
+// ─── Teams ────────────────────────────────────────────────────────────────────
+
+.team {
+  padding-block: clamp(46px, 6vw, 70px);
+  background-color: $color-primary-dark;
+  color: #fff;
+}
+
+.teamInner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-6;
+}
+
+.teamTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: $font-weight-bold;
+  line-height: 1.1;
+}
+
+.teamText {
+  max-width: 34em;
+  margin: $spacing-2 0 0;
+  color: rgba(#fff, 0.85);
+}
+
+// ─── Questions ────────────────────────────────────────────────────────────────
+
+// CourseFAQ reads its edges from these (set by the course page there); match .container here
+.faqFrame {
+  --page-max-width: #{$max-width};
+  --section-px: #{$container-padding-mobile};
+
+  @include respond-to('md') {
+    --section-px: #{$container-padding};
+  }
+}
+
+// ─── Close ────────────────────────────────────────────────────────────────────
+
+.close {
+  padding-block: clamp(70px, 9vw, 110px);
+  background: radial-gradient(70% 90% at 50% 100%, #A31020, $color-primary 60%, $color-primary-dark);
+  color: #fff;
+  text-align: center;
+}
+
+.closeInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.closeTitle {
+  margin: $spacing-8 0 0;
+  font-family: $font-heading;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: $font-weight-bold;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.closeText {
+  max-width: 34em;
+  margin: $spacing-3 0 $spacing-8;
+  font-size: $font-size-lg;
+  color: rgba(#fff, 0.88);
+}
+
+.closeActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: $spacing-3;
+}
+
+// ─── Motion ───────────────────────────────────────────────────────────────────
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes tree-in {
+  from {
+    transform: translateY(34px) scale(0.9);
+  }
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes notify {
+  0% {
+    opacity: 1;
+    transform: translateY(-130%);
+  }
+
+  14%,
+  62% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  78% {
+    opacity: 1;
+    transform: translateY(-130%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-130%);
+  }
+}
+
+@keyframes mail-in {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes card-out {
+  from {
+    transform: translateY(110px) rotate(0);
+  }
+}

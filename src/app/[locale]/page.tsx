@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
+import ChristmasPromo from '@/components/sections/ChristmasPromo/ChristmasPromo';
 import CourseCard from '@/components/sections/CourseCard/CourseCard';
 import CourseGrid from '@/components/sections/CourseGrid/CourseGrid';
 import CtaBanner from '@/components/sections/CtaBanner/CtaBanner';
@@ -52,6 +53,7 @@ export default async function HomePage({ params }: HomePageProps) {
   return (
     <>
       {homepage && <Hero data={homepage} locale={locale as Locale} />}
+      <ChristmasPromo locale={locale} />
  <section className="bg-alt py-10 py-md-16">
         <div className="container">
           <FeaturedSection

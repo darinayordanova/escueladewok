@@ -22,8 +22,9 @@ function extractText(node: ReactNode): string {
   return '';
 }
 
-interface FAQItem {
+export interface FAQItem {
   q: string;
+  /** Plain text (wrapped in a paragraph) or markup. Pass text from server components. */
   a: React.ReactNode;
 }
 
@@ -146,13 +147,19 @@ const FAQ: Record<Locale, FAQItem[]> = {
 
 interface CourseFAQProps {
   locale: Locale;
+  /** Other questions, e.g. about gift vouchers. Defaults to the class questions. */
+  items?: FAQItem[];
+  /** Heading for those questions. Defaults to the course page's. */
+  heading?: { eyebrow: string; title: string; accent?: string };
 }
 
-export default function CourseFAQ({ locale }: CourseFAQProps) {
+/** FAQ accordion with FAQPage structured data — the course page's questions unless given others. */
+export default function CourseFAQ({ locale, items: customItems, heading: customHeading }: CourseFAQProps) {
   const t = useTranslations('courseDetail.faq');
   // First answer starts open, as an example of what's inside
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const items = FAQ[locale];
+  const items = customItems ?? FAQ[locale];
+  const heading = customHeading ?? { eyebrow: t('eyebrow'), title: t('title'), accent: t('accent') };
 
   function toggle(i: number) {
     setOpenIndex((prev) => (prev === i ? null : i));
@@ -177,7 +184,7 @@ export default function CourseFAQ({ locale }: CourseFAQProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <SectionHeading eyebrow={t('eyebrow')} title={t('title')} accent={t('accent')} accentOnNewLine />
+      <SectionHeading eyebrow={heading.eyebrow} title={heading.title} accent={heading.accent} accentOnNewLine />
       <dl className={styles.list}>
         {items.map((item, i) => {
           const isOpen = openIndex === i;
@@ -203,7 +210,7 @@ export default function CourseFAQ({ locale }: CourseFAQProps) {
                 className={styles.answer}
               >
                 <div className={styles.answerClip}>
-                  <div className={styles.answerInner}>{item.a}</div>
+                  <div className={styles.answerInner}>{typeof item.a === 'string' ? <p>{item.a}</p> : item.a}</div>
                 </div>
               </dd>
             </div>

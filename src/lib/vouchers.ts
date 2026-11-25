@@ -88,3 +88,31 @@ export function formatVoucherDate(date: Date, locale: string): string {
 export function voucherTotal(key: VoucherKey, format: VoucherFormat): number {
   return (voucherAmount(key) ?? 0) + (format === 'physical' ? PHYSICAL_FEE : 0);
 }
+
+// ─── Christmas ────────────────────────────────────────────────────────────────
+
+/** The Christmas season's dates, worked out from today in Madrid. */
+export function christmasDates(now = new Date()) {
+  const today = madridToday(now);
+  const year = today.slice(0, 4);
+  const christmas = `${year}-12-25`;
+  const postBy = `${year}-12-15`;
+  return {
+    christmas,
+    postBy,
+    /** Printed cards ordered today still arrive before Christmas. */
+    postInTime: today <= postBy,
+    /** 25 December is inside the scheduling window, so it can be picked as the send date. */
+    canScheduleChristmas: today <= christmas && christmas <= voucherSendMaxDate(now),
+    /** When the homepage shows the Christmas block: 1 November to 25 December. */
+    isSeason: today >= `${year}-11-01` && today <= christmas,
+  };
+}
+
+const VOUCHER_KEYS: readonly string[] = VOUCHER_OPTIONS.map((option) => option.key);
+export const isVoucherKey = (value: unknown): value is VoucherKey => typeof value === 'string' && VOUCHER_KEYS.includes(value);
+
+/** A send date from a link (?send=YYYY-MM-DD), kept only if it can still be scheduled. */
+export function sendDateFromLink(value: string | undefined, now = new Date()): string | undefined {
+  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) && value > madridToday(now) && value <= voucherSendMaxDate(now) ? value : undefined;
+}

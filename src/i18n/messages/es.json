@@ -435,5 +435,152 @@
     "sesame": "Sésamo",
     "soy": "Soja",
     "sulphites": "Sulfitos"
+  },
+  "christmas": {
+    "meta": {
+      "title": "Vales regalo de Navidad para clases de cocina en Madrid",
+      "description": "Regala una clase de cocina asiática en Madrid esta Navidad. Vales desde 25 €, por email la mañana de Navidad o en tarjeta impresa por correo."
+    },
+    "choose": "Elegir un vale",
+    "hero": {
+      "eyebrow": "Navidad en Wok Lab",
+      "title": "Regala una <mark>experiencia</mark>, no una cosa.",
+      "sub": "Una clase de cocina asiática de tres horas en nuestra escuela del centro de Madrid y después la cena en la mesa. Vales regalo desde {price}.",
+      "how": "Cómo funciona",
+      "pillPrice": "Desde {price}",
+      "pillFormats": "Por email o tarjeta impresa",
+      "pillValid": "Válido 12 meses",
+      "treeAlt": "Un árbol de Navidad decorado con farolillos rojos"
+    },
+    "scene": {
+      "prompt": "Desliza para abrir",
+      "eyebrow": "Vales regalo",
+      "title": "Cuatro formas de regalar una clase",
+      "sub": "Elige uno para personalizarlo.",
+      "hint": "Sigue bajando",
+      "cardLabel": "{name}, {price}: personalizar este vale"
+    },
+    "cards": {
+      "giftCard25": {
+        "name": "Un detalle",
+        "detail": "Para cualquier clase"
+      },
+      "giftCard50": {
+        "name": "Un buen comienzo",
+        "detail": "Para cualquier clase"
+      },
+      "classVoucher": {
+        "name": "Una clase",
+        "detail": "1 persona · 3 horas"
+      },
+      "classVoucherForTwo": {
+        "name": "Clase para dos",
+        "detail": "2 personas · 3 horas"
+      }
+    },
+    "formats": {
+      "eyebrow": "Dos formatos",
+      "title": "Por email o impreso. Tú eliges.",
+      "digital": {
+        "tag": "Digital",
+        "title": "En su bandeja la mañana de Navidad.",
+        "text": "Elige el 25 de diciembre como fecha de envío y llega a las 9:00 (hora de Madrid). O envíalo al momento, o cualquier día de los próximos 30.",
+        "textLater": "A partir del 25 de noviembre puedes elegir el 25 de diciembre como fecha de envío, y llega a las 9:00 (hora de Madrid). O envíalo al momento.",
+        "pdf": "Un PDF para imprimir o reenviar",
+        "message": "Con tu mensaje",
+        "lastMinute": "Sirve hasta en Nochebuena",
+        "notification": "Te han regalado una clase de cocina",
+        "notificationFrom": "Wok Lab · ahora",
+        "mailTitle": "Un regalo para ti",
+        "mailButton": "Reservar mi clase"
+      },
+      "printed": {
+        "tag": "Tarjeta impresa",
+        "title": "Una tarjeta para desenvolver.",
+        "text": "Imprimimos el vale y lo enviamos en un sobre a cualquier dirección de España. Impresión y envío: {fee}.",
+        "keep": "Algo que se toca y se guarda",
+        "bow": "Lista para envolver o dejar bajo el árbol",
+        "design": "El mismo diseño de Navidad",
+        "postBy": "Pídela hasta el {date} para que llegue antes de Navidad.",
+        "late": "Las tarjetas impresas que se pidan ahora llegan después de Navidad. Elige email para la mañana de Navidad."
+      }
+    },
+    "includes": {
+      "eyebrow": "La clase",
+      "title": "Qué incluye una clase",
+      "welcome": "Una bebida de bienvenida al llegar",
+      "ingredients": "Todos los ingredientes, utensilios y un delantal",
+      "cooking": "Dos horas y media en el wok, con un chef principal y un ayudante",
+      "dinner": "La cena en la mesa, con una copa de vino o cerveza",
+      "leftovers": "Envases para llevarse lo que sobre",
+      "note": "Hasta 6 personas por clase. A partir de 16 años pueden venir solos; los menores, con un adulto.",
+      "photoAlt": "Verduras salteándose en un wok al fuego"
+    },
+    "builder": {
+      "eyebrow": "Tu vale",
+      "title": "Hazlo tuyo",
+      "sub": "Elige el importe, escribe su nombre y tu mensaje, y decide cómo llega. La vista previa es exactamente lo que recibe."
+    },
+    "how": {
+      "eyebrow": "Cómo funciona",
+      "title": "Tan fácil como suena",
+      "choose": {
+        "title": "Elige",
+        "text": "El importe y el formato."
+      },
+      "personalise": {
+        "title": "Personaliza",
+        "text": "Su nombre y tu mensaje."
+      },
+      "send": {
+        "title": "Envía",
+        "text": "Por email, o por correo en un sobre."
+      },
+      "cook": {
+        "title": "Cocinan",
+        "text": "Reservan una fecha en los próximos 12 meses y se ponen el delantal."
+      }
+    },
+    "team": {
+      "title": "¿Regalos para tu equipo?",
+      "text": "Vales para empleados y clientes, o una clase privada para todo el equipo.",
+      "cta": "Hablar con nosotros"
+    },
+    "faq": {
+      "title": "Preguntas,",
+      "redeem": {
+        "q": "¿Cómo se usa el vale?",
+        "a": "Eligen una clase y una fecha en woklab.es e introducen el código del vale al pagar."
+      },
+      "valid": {
+        "q": "¿Cuánto tiempo es válido?",
+        "a": "12 meses desde el día de la compra."
+      },
+      "difference": {
+        "q": "¿Y si la clase cuesta más que el vale?",
+        "a": "Pagan la diferencia al reservar. Una clase cuesta 89 € por persona."
+      },
+      "preview": {
+        "q": "¿Puedo ver el vale antes de pagar?",
+        "a": "Sí. La vista previa de arriba cambia mientras escribes los nombres y tu mensaje."
+      },
+      "otherDay": {
+        "q": "¿Puede llegar otro día?",
+        "a": "Sí. Elige cualquier día de los próximos 30 y llega a las 9:00 (hora de Madrid). O marca que se lo darás tú y te enviamos el PDF a ti."
+      },
+      "eyebrow": "Vales regalo",
+      "accent": "resueltas."
+    },
+    "close": {
+      "title": "Felices fiestas",
+      "text": "De parte de todos en Wok Lab.",
+      "buy": "Comprar un vale regalo",
+      "courses": "Ver cursos"
+    },
+    "promo": {
+      "title": "Vales regalo para Navidad",
+      "sub": "Una clase de cocina asiática de tres horas en Madrid, desde {price}. Por email la mañana de Navidad o en tarjeta impresa por correo.",
+      "cta": "Ver los vales de Navidad"
+    }
   }
 }

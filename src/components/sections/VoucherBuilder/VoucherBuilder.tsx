@@ -30,17 +30,23 @@ import VoucherPreview from './VoucherPreview';
 const FORMATS: VoucherFormat[] = ['digital', 'physical'];
 
 /** Gift voucher form beside a live preview of the voucher it makes. */
-export default function VoucherBuilder({ locale }: { locale: string }) {
+interface VoucherBuilderProps {
+  locale: string;
+  /** Choices carried in from a link, e.g. the Christmas page. */
+  initial?: { voucherKey?: VoucherKey; theme?: VoucherTheme; sendDate?: string };
+}
+
+export default function VoucherBuilder({ locale, initial }: VoucherBuilderProps) {
   const t = useTranslations('vouchers');
-  const [voucherKey, setVoucherKey] = useState<VoucherKey>('classVoucher');
+  const [voucherKey, setVoucherKey] = useState<VoucherKey>(initial?.voucherKey ?? 'classVoucher');
   const [format, setFormat] = useState<VoucherFormat>('digital');
-  const [theme, setTheme] = useState<VoucherTheme>('classic');
+  const [theme, setTheme] = useState<VoucherTheme>(initial?.theme ?? 'classic');
   const [to, setTo] = useState('');
   const [from, setFrom] = useState('');
   const [message, setMessage] = useState('');
   // Digital only: where and when the voucher is emailed ('' = straight away)
   const [recipientEmail, setRecipientEmail] = useState('');
-  const [sendDate, setSendDate] = useState('');
+  const [sendDate, setSendDate] = useState(initial?.sendDate ?? '');
   const [sendMyself, setSendMyself] = useState(false);
   const [maxSendDate] = useState(() => voucherSendMaxDate());
   const [errors, setErrors] = useState<{ to?: string; from?: string; recipientEmail?: string; submit?: string }>({});

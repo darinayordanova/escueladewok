@@ -17,20 +17,22 @@ interface VoucherPreviewProps {
   from: string;
   message: string;
   locale: string;
+  /** Just the voucher, without the linen stage behind it. */
+  bare?: boolean;
 }
 
 /**
  * Live copy of the voucher PDF (lib/pdf/voucherPdf) at screen size — same layout, words and design.
  * The printed card sits on its envelope; the page turns towards the mouse.
  */
-export default function VoucherPreview({ voucherKey, amount, format, theme, to, from, message, locale }: VoucherPreviewProps) {
+export default function VoucherPreview({ voucherKey, amount, format, theme, to, from, message, locale, bare }: VoucherPreviewProps) {
   const t = useTranslations('vouchers');
   const text = voucherText(locale);
   const { tone, ...themeVars } = voucherThemeStyle(theme);
   const { art } = VOUCHER_THEME_STYLES[theme];
 
   return (
-    <div className={[styles.stage, format === 'physical' ? styles.physical : ''].filter(Boolean).join(' ')} aria-hidden="true">
+    <div className={[styles.stage, format === 'physical' ? styles.physical : '', bare ? styles.bare : ''].filter(Boolean).join(' ')} aria-hidden="true">
       <div className={styles.envelope} />
 
       <Tilt className={styles.tilt}>

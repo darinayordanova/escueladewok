@@ -29,6 +29,13 @@ $panel-width: 180;
   @include respond-to('md') {
     padding: $spacing-12 $spacing-8 $spacing-16;
   }
+
+  &.bare {
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    overflow: visible;
+  }
 }
 
 // ─── Envelope (printed card only): DL, a touch larger than the voucher ────────
