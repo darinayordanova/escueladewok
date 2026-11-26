@@ -1,0 +1,71 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Bottom-right card (the newsletter prompt owns bottom-left); full width on phones.
+.banner {
+  position: fixed;
+  left: $spacing-3;
+  right: $spacing-3;
+  bottom: calc(#{$spacing-3} + env(safe-area-inset-bottom, 0px));
+  z-index: $z-overlay;
+  padding: $spacing-5;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-xl;
+  background-color: $color-background;
+  box-shadow: 0 14px 40px rgba($color-text, 0.16);
+
+  @include respond-to('md') {
+    left: auto;
+    right: $spacing-6;
+    bottom: $spacing-6;
+    width: 440px;
+  }
+
+  @include motion {
+    animation: banner-in 420ms $ease-out both;
+  }
+}
+
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.text {
+  margin: 0 0 $spacing-2;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text;
+}
+
+.links {
+  margin: 0 0 $spacing-4;
+  font-size: $font-size-xs;
+  color: $color-text-light;
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+// Accept and Reject share the first row, equally weighted (both primary);
+// Manage preferences, the secondary, takes the full row below
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-3;
+}
+
+.manage {
+  grid-column: 1 / -1;
+}

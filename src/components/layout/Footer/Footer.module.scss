@@ -79,6 +79,17 @@
   @include focus-ring($color: rgba(255, 255, 255, 0.6));
 }
 
+// The "Cookies" entry is a button (it opens the cookie banner) dressed as a link
+.linkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: $font-size-sm;
+  text-align: left;
+  cursor: pointer;
+}
+
 // ─── Contact block ────────────────────────────────────────────────────────────
 
 .contactBlock {

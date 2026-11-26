@@ -6,6 +6,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import NewsletterForm from '@/components/sections/NewsletterForm/NewsletterForm';
 import { ChevronDown, Close } from '@/components/ui/icons';
 import { usePathname } from '@/i18n/navigation';
+import { readConsent } from '@/lib/analytics/consent';
 
 import styles from './NewsletterPrompt.module.scss';
 import { isPromptDone, markPromptDone, PROMPT_DONE_EVENT } from './promptStorage';
@@ -96,7 +97,8 @@ export default function NewsletterPrompt() {
         elapsed += TICK_MS;
         writeTimeOnSite(elapsed);
       }
-      if (elapsed >= DELAY_MS && !hiddenHere) {
+      // Never on top of the cookie banner: wait until the cookie choice is made
+      if (elapsed >= DELAY_MS && !hiddenHere && readConsent() !== null) {
         window.clearInterval(id);
         setOpen(true);
       }

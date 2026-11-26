@@ -411,7 +411,8 @@
     "privacy": "Privacy Policy",
     "lastUpdated": "Last updated: {date}",
     "termsDescription": "Terms and conditions governing the use of Wok Lab's services and bookings.",
-    "privacyDescription": "How Wok Lab collects, uses, and protects your personal data."
+    "privacyDescription": "How Wok Lab collects, uses, and protects your personal data.",
+    "cookies": "Cookies"
   },
   "coursesCta": {
     "eyebrow": "Not sure where to start?",
@@ -799,5 +800,34 @@
     "promptOffer": "off your first class",
     "promptCta": "Get my 10% off",
     "promptDismiss": "Don't show again"
+  },
+  "cookies": {
+    "bannerLabel": "Cookie notice",
+    "text": "Our website uses essential cookies to ensure its proper operation and tracking cookies to understand how you interact with it. Tracking will be enabled only upon your explicit consent.",
+    "links": "<terms>Terms and conditions</terms> · <privacy>Privacy policy</privacy>",
+    "accept": "Accept",
+    "reject": "Reject",
+    "manage": "Manage preferences",
+    "prefsTitle": "Cookie usage",
+    "prefsIntro": "We use cookies to make this website work and to improve your experience. You can choose which categories to allow below and change your choice at any time. For more details, read our <privacy>Privacy Policy</privacy>.",
+    "alwaysEnabled": "Always enabled",
+    "necessary": {
+      "title": "Strictly necessary cookies",
+      "text": "These cookies are essential for the website to work properly, for example to keep you signed in or to remember your cookie preferences. They cannot be disabled."
+    },
+    "analytics": {
+      "title": "Analytics cookies",
+      "text": "These cookies collect anonymous information about how visitors use the website, such as the pages visited and the time spent on them, so we can improve it."
+    },
+    "ads": {
+      "title": "Advertisement cookies",
+      "text": "These cookies are used to show you ads that are relevant to your interests and to measure how well our advertising campaigns perform."
+    },
+    "moreTitle": "More information",
+    "moreText": "If you have any questions about our cookie policy or your choices, please <contact>contact us</contact>.",
+    "rejectAll": "Reject all",
+    "acceptAll": "Accept all",
+    "save": "Save preferences",
+    "close": "Close"
   }
 }

@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 
+import CookieSettingsLink from '@/components/layout/CookieBanner/CookieSettingsLink';
 import NewsletterForm from '@/components/sections/NewsletterForm/NewsletterForm';
 import { Facebook, Instagram, Mail, MapPin, Phone } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
@@ -120,6 +121,9 @@ export default async function Footer() {
                 <Link href="/privacy" className={styles.link}>
                   {tLegal('privacy')}
                 </Link>
+              </li>
+              <li>
+                <CookieSettingsLink label={tLegal('cookies')} className={`${styles.link} ${styles.linkButton}`} />
               </li>
             </ul>
           </nav>

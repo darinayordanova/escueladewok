@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button/Button';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
 import Input from '@/components/ui/Input/Input';
 import { Link } from '@/i18n/navigation';
+import { trackPixel } from '@/lib/analytics/metaPixel';
 
 import styles from './NewsletterForm.module.scss';
 
@@ -68,6 +69,7 @@ export default function NewsletterForm({ source, tone = 'light', onSent, focusOn
       });
       if (!res.ok) throw new Error('Request failed');
       setStatus('sent');
+      trackPixel('Lead', { content_name: `newsletter-${source}` });
       markPromptDone(source); // subscribed anywhere: the first-visit prompt never shows again
       onSent?.();
     } catch {

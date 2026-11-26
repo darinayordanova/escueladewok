@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { useCart } from '@/context/CartContext';
+import { trackPixel } from '@/lib/analytics/metaPixel';
 import { isBookingOpen, slotSpots, todayISO } from '@/lib/courses/timeslots';
 import type { BookingCountMap, DateEntry, Locale } from '@/types';
 
@@ -183,8 +184,26 @@ export function CourseBookingProvider({
     };
   }
 
+  // Ads: someone looked at this class
+  useEffect(() => {
+    trackPixel('ViewContent', {
+      content_ids: [course.courseSlug],
+      content_name: course.courseTitle,
+      content_type: 'product',
+      value: course.price,
+      currency: course.currency,
+    });
+  }, [course.courseSlug, course.courseTitle, course.price, course.currency]);
+
   function addToCart() {
     if (status !== 'open') return;
+    trackPixel('AddToCart', {
+      content_ids: [course.courseSlug],
+      content_name: course.courseTitle,
+      content_type: 'product',
+      value: course.price * guests,
+      currency: course.currency,
+    });
     addItem(buildCartItem(), guests);
     openCart();
   }
@@ -192,6 +211,13 @@ export function CourseBookingProvider({
   async function checkout() {
     if (status !== 'open') return;
     setIsCheckingOut(true);
+    trackPixel('InitiateCheckout', {
+      content_ids: [course.courseSlug],
+      content_type: 'product',
+      value: course.price * guests,
+      currency: course.currency,
+      num_items: guests,
+    });
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',

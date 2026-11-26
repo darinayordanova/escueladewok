@@ -9,6 +9,7 @@ import { Close } from '@/components/ui/icons';
 import Stepper from '@/components/ui/Stepper/Stepper';
 import { cartKey, useCart } from '@/context/CartContext';
 import { Link } from '@/i18n/navigation';
+import { trackPixel } from '@/lib/analytics/metaPixel';
 import type { CartItem } from '@/types';
 
 import styles from './CartDrawer.module.scss';
@@ -36,6 +37,13 @@ export default function CartDrawer() {
   async function handleCheckout() {
     if (items.length === 0) return;
     setCheckoutStatus('loading');
+    trackPixel('InitiateCheckout', {
+      content_ids: items.map((item) => item.courseSlug),
+      content_type: 'product',
+      value: totalPrice,
+      currency: items[0].currency,
+      num_items: items.reduce((n, item) => n + item.quantity, 0),
+    });
     setCheckoutError(null);
     try {
       const locale = document.documentElement.lang || 'en';

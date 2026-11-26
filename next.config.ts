@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
     return [
       { source: '/:locale(en|es)/navidad', destination: '/:locale/christmas', permanent: false },
       { source: '/:locale(en|es)/san-valentin', destination: '/:locale/valentines', permanent: false },
+      // Instagram bio link for the Christmas gift cards
+      {
+        source: '/regalo',
+        destination: '/es/christmas?utm_source=instagram&utm_medium=bio&utm_campaign=xmas-giftcards',
+        statusCode: 302,
+      },
     ];
   },
   async headers() {

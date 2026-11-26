@@ -4,8 +4,10 @@ import { hasLocale } from 'next-intl';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations } from 'next-intl/server';
 
+import CookieBanner from '@/components/layout/CookieBanner/CookieBanner';
 import Footer from '@/components/layout/Footer/Footer';
 import Header from '@/components/layout/Header/Header';
+import MetaPixel from '@/components/layout/MetaPixel/MetaPixel';
 import NewsletterPrompt from '@/components/layout/NewsletterPrompt/NewsletterPrompt';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import CartDrawer from '@/components/ui/CartDrawer/CartDrawer';
@@ -107,6 +109,8 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <main>{children}</main>
         <Footer />
         <NewsletterPrompt />
+        <CookieBanner />
+        <MetaPixel />
         <CartDrawer />
       </CartProvider>
     </NextIntlClientProvider>

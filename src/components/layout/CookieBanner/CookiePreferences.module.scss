@@ -1,0 +1,242 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.dialog {
+  width: min(720px, calc(100vw - #{$spacing-6}));
+  max-height: calc(100dvh - #{$spacing-6});
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: $radius-xl;
+  background-color: $color-background;
+  color: $color-text;
+  box-shadow: 0 24px 64px rgba($color-text, 0.24);
+
+  &::backdrop {
+    background-color: rgba($color-text, 0.45);
+  }
+
+  @include motion {
+    animation: dialog-in 280ms $ease-out both;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+// Header and footer stay put; the categories scroll between them on short screens
+.box {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - #{$spacing-6});
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  padding: $spacing-5 $spacing-6;
+  border-bottom: 1px solid $color-border-light;
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-h6;
+}
+
+.close {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: $radius-full;
+  background: none;
+  color: $color-text;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: $color-background-alt;
+  }
+
+  @include focus-ring;
+}
+
+.body {
+  display: grid;
+  gap: $spacing-5;
+  padding: $spacing-5 $spacing-6;
+  overflow-y: auto;
+}
+
+.intro {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.category {
+  padding-top: $spacing-5;
+  border-top: 1px solid $color-border-light;
+}
+
+.more {
+  padding-top: $spacing-5;
+  border-top: 1px solid $color-border-light;
+}
+
+.categoryHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+  margin-bottom: $spacing-2;
+}
+
+.categoryTitle {
+  margin: 0;
+  font-family: $font-paragraph;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+}
+
+.categoryText {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.control {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.always {
+  flex-shrink: 0;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  letter-spacing: $letter-spacing-eyebrow;
+  text-transform: uppercase;
+  color: $color-primary;
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+// ─── Toggle switch: a native checkbox (role="switch") under a drawn track ─────
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.switchInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.track {
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 26px;
+  padding: 3px;
+  border-radius: $radius-full;
+  background-color: $color-border;
+  transition: background-color $transition-fast;
+
+  .switchInput:checked + & {
+    background-color: $color-primary;
+  }
+
+  .switchInput:focus-visible + & {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: $radius-full;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba($color-text, 0.25);
+
+  @include motion {
+    transition: transform 200ms $ease-out;
+  }
+
+  .switchInput:checked + .track & {
+    transform: translateX(18px);
+  }
+}
+
+// Always on: the same switch, dimmed and not clickable
+.switchLocked {
+  cursor: not-allowed;
+  opacity: 0.55;
+
+  .switchInput {
+    cursor: not-allowed;
+  }
+}
+
+// Accept all and Reject all on the left, equally weighted (both primary);
+// Save preferences, the secondary, on the right. Phones: the pair on one row, Save below.
+.footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-3;
+  padding: $spacing-4 $spacing-6 $spacing-5;
+  border-top: 1px solid $color-border-light;
+
+  @include respond-to('sm') {
+    display: flex;
+  }
+
+  // Phones: a little less padding so "Rechazar todas" fits half the width
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    padding-inline: $spacing-4;
+
+    > * {
+      width: 100%;
+      min-width: 0;
+      padding-inline: $spacing-3;
+    }
+  }
+}
+
+.save {
+  grid-column: 1 / -1;
+
+  @include respond-to('sm') {
+    margin-left: auto;
+  }
+}

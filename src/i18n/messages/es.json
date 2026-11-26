@@ -411,7 +411,8 @@
     "privacy": "Política de Privacidad",
     "lastUpdated": "Última actualización: {date}",
     "termsDescription": "Términos y condiciones que regulan el uso de los servicios y reservas de Wok Lab.",
-    "privacyDescription": "Cómo Wok Lab recopila, utiliza y protege tus datos personales."
+    "privacyDescription": "Cómo Wok Lab recopila, utiliza y protege tus datos personales.",
+    "cookies": "Cookies"
   },
   "coursesCta": {
     "eyebrow": "¿No sabes por dónde empezar?",
@@ -799,5 +800,34 @@
     "promptOffer": "de descuento en tu primera clase",
     "promptCta": "Quiero mi 10%",
     "promptDismiss": "No mostrar más"
+  },
+  "cookies": {
+    "bannerLabel": "Aviso de cookies",
+    "text": "Nuestra web utiliza cookies esenciales para garantizar su correcto funcionamiento y cookies de seguimiento para entender cómo interactúas con ella. El seguimiento solo se activará con tu consentimiento expreso.",
+    "links": "<terms>Términos y condiciones</terms> · <privacy>Política de privacidad</privacy>",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "manage": "Gestionar preferencias",
+    "prefsTitle": "Uso de cookies",
+    "prefsIntro": "Usamos cookies para que esta web funcione y para mejorar tu experiencia. Puedes elegir qué categorías permitir a continuación y cambiar tu elección en cualquier momento. Para más detalles, consulta nuestra <privacy>Política de privacidad</privacy>.",
+    "alwaysEnabled": "Siempre activas",
+    "necessary": {
+      "title": "Cookies estrictamente necesarias",
+      "text": "Estas cookies son esenciales para que la web funcione correctamente, por ejemplo para mantener tu sesión iniciada o recordar tus preferencias de cookies. No se pueden desactivar."
+    },
+    "analytics": {
+      "title": "Cookies de análisis",
+      "text": "Estas cookies recogen información anónima sobre cómo usan la web los visitantes, como las páginas visitadas y el tiempo que pasan en ellas, para que podamos mejorarla."
+    },
+    "ads": {
+      "title": "Cookies publicitarias",
+      "text": "Estas cookies se usan para mostrarte anuncios relevantes para tus intereses y para medir el rendimiento de nuestras campañas publicitarias."
+    },
+    "moreTitle": "Más información",
+    "moreText": "Si tienes alguna pregunta sobre nuestra política de cookies o tus opciones, <contact>contáctanos</contact>.",
+    "rejectAll": "Rechazar todas",
+    "acceptAll": "Aceptar todas",
+    "save": "Guardar preferencias",
+    "close": "Cerrar"
   }
 }

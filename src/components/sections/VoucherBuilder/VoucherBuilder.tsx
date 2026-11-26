@@ -10,6 +10,7 @@ import DatePicker from '@/components/ui/DatePicker/DatePicker';
 import { ChevronRight } from '@/components/ui/icons';
 import Input from '@/components/ui/Input/Input';
 import Textarea from '@/components/ui/Textarea/Textarea';
+import { trackPixel } from '@/lib/analytics/metaPixel';
 import { formatPrice } from '@/lib/format';
 import {
   PHYSICAL_FEE,
@@ -78,6 +79,7 @@ export default function VoucherBuilder({ locale, initial }: VoucherBuilderProps)
     if (nextErrors.from) return fromRef.current?.focus();
 
     setSubmitting(true);
+    trackPixel('InitiateCheckout', { content_ids: [voucherKey], content_type: 'product', value: total, currency: 'EUR', num_items: 1 });
     try {
       const res = await fetch('/api/checkout/voucher', {
         method: 'POST',
