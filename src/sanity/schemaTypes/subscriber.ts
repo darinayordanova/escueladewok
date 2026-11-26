@@ -41,6 +41,13 @@ export const subscriber = defineType({
     // ─── Sending ─────────────────────────────────────────────────────────────
     defineField({ name: 'resendContactId', title: 'Resend contact ID', type: 'string' }),
     defineField({
+      name: 'welcomeCode',
+      title: 'Welcome code (10% off first booking)',
+      type: 'string',
+      description: 'Single-use Stripe promotion code. Only issued to people with no earlier booking or voucher purchase.',
+    }),
+    defineField({ name: 'welcomeCodeExpiresAt', title: 'Welcome code expires at', type: 'datetime' }),
+    defineField({
       name: 'lastNotifiedAt',
       title: 'Last automatic email at',
       type: 'datetime',

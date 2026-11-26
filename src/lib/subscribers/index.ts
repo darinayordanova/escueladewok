@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { getTranslations } from 'next-intl/server';
 import { Resend } from 'resend';
 
-import { sendSubscribeConfirmationEmail } from '@/lib/email/subscribe';
+import { sendSubscribeConfirmationEmail, sendWelcomeCodeEmail } from '@/lib/email/subscribe';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { SITE_URL } from '@/lib/seo';
 import type { Locale } from '@/types';
@@ -11,6 +11,7 @@ import type { Locale } from '@/types';
 import { isValidEmail, normalizeEmail } from './email';
 import { createConfirmToken, verifyConfirmToken } from './token';
 import { ALL_TOPICS, TOPICS } from './topics';
+import { createWelcomeCode, isExistingCustomer } from './welcomeCode';
 
 export { isValidEmail, normalizeEmail } from './email';
 
@@ -36,6 +37,8 @@ interface SubscriberDoc {
   status: 'pending' | 'confirmed';
   locale: Locale;
   confirmationSentAt?: string;
+  welcomeCode?: string;
+  welcomeCodeExpiresAt?: string;
 }
 
 export type SubscribeResult = 'sent' | 'throttled' | 'invalid';
@@ -88,12 +91,21 @@ export async function getPendingSubscriber(token: string) {
 
 /**
  * Step 2 of double opt-in: the person clicked "Confirm".
- * Creates (or re-activates) the Resend contact and opts them in to every Topic.
+ * Creates (or re-activates) the Resend contact, opts them in to every Topic and,
+ * for someone who has never bought from us, issues the 10% welcome code.
  */
-export async function confirmSubscription(token: string): Promise<{ email: string } | null> {
-  const subscriber = await getPendingSubscriber(token);
+export interface ConfirmResult {
+  email: string;
+  /** The welcome code, when this person has one (new now or issued on an earlier confirm). */
+  welcomeCode?: { code: string; expiresAt: string };
+}
+
+export async function confirmSubscription(token: string): Promise<ConfirmResult | null> {
+  const email = verifyConfirmToken(token);
+  if (!email) return null;
+  const _id = subscriberId(email);
+  const subscriber = await sanityWriteClient.getDocument<SubscriberDoc>(_id);
   if (!subscriber) return null;
-  const { email } = subscriber;
 
   const topics = ALL_TOPICS.map((key) => ({ id: TOPICS[key], subscription: 'opt_in' as const }));
 
@@ -115,9 +127,31 @@ export async function confirmSubscription(token: string): Promise<{ email: strin
   }
 
   await sanityWriteClient
-    .patch(subscriberId(email))
+    .patch(_id)
     .set({ status: 'confirmed', confirmedAt: new Date().toISOString(), resendContactId: contactId })
     .commit();
 
-  return { email };
+  return { email, welcomeCode: await welcomeCodeFor(_id, subscriber) };
+}
+
+/**
+ * One code per address, ever: re-subscribing shows the same one. Never for an existing
+ * customer. A failure here must not undo the subscription, so it is logged, not thrown.
+ */
+async function welcomeCodeFor(_id: string, subscriber: SubscriberDoc): Promise<ConfirmResult['welcomeCode']> {
+  if (subscriber.welcomeCode && subscriber.welcomeCodeExpiresAt) {
+    return { code: subscriber.welcomeCode, expiresAt: subscriber.welcomeCodeExpiresAt };
+  }
+  try {
+    if (await isExistingCustomer(subscriber.email)) return undefined;
+    const issued = await createWelcomeCode(_id);
+    await sanityWriteClient.patch(_id).set({ welcomeCode: issued.code, welcomeCodeExpiresAt: issued.expiresAt }).commit();
+    await sendWelcomeCodeEmail({ to: subscriber.email, locale: subscriber.locale, ...issued }).catch((err) =>
+      console.error('[subscribe] welcome email failed:', err instanceof Error ? err.message : err),
+    );
+    return issued;
+  } catch (err) {
+    console.error('[subscribe] welcome code failed:', err instanceof Error ? err.message : err);
+    return undefined;
+  }
 }

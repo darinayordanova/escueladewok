@@ -1,35 +1,88 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-// A corner card, not a modal: no backdrop, the page stays usable around it.
+// A red pill in the corner that unfolds into a coupon. Not a modal: no backdrop,
+// the page stays usable around it.
+
+$pill-width: 208px;
+$compact-width: 100px; // flower + arrow only
+$open-width: 360px;
+$notch: 12px; // radius of the half-circles cut where the coupon's face meets its stub
+$pill-radius: 28px; // half the pill's 56px height: a real number, so it eases to $radius-xl
+// Opening runs in two steps: the pill widens and squares its corners, then the coupon
+// unfolds; closing runs the same steps backwards
+$step: 280ms;
+$booking-bar-height: 62px; // MobileBookingBar: 6px padding + 50px button + 6px padding
+$flower: url('/images/pattern2.svg'); // the menu's ornament, for the large faint watermark
+$flower-bold: url('/images/flower-bold.svg'); // same flower, heavier lines, legible at badge size
+
 .prompt {
   position: fixed;
   left: $spacing-3;
-  right: $spacing-3;
   bottom: $spacing-3;
   z-index: $z-sticky;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-4;
+  width: $pill-width;
+  max-width: calc(100vw - #{$spacing-6});
   max-height: calc(100dvh - #{$spacing-6});
-  overflow-y: auto;
-  padding: $spacing-5;
-  border: 1px solid $color-border-subtle;
-  border-radius: $radius-lg;
-  background-color: $color-background;
-  box-shadow: $shadow-xl;
+  overflow: hidden auto;
+  border-radius: $pill-radius;
+  background-color: $color-primary;
+  color: #fff;
+  // A drop-shadow, not a box-shadow: it follows the notches the mask cuts
+  filter: drop-shadow(0 14px 28px rgba($color-primary-dark, 0.28));
 
   @include respond-to('md') {
     left: $spacing-6;
-    right: auto;
     bottom: $spacing-6;
-    width: 380px;
   }
 
-  // Arrives once: fades up 12px. Under reduced motion it is simply there.
+  // A course page's booking bar floats at the bottom on phones and tablets: stand on top of it
+  :global(body:has([data-booking-bar='shown'])) & {
+    @media (max-width: #{$breakpoint-lg - 1px}) {
+      bottom: calc(#{$spacing-3} + #{$booking-bar-height} + #{$spacing-3} + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
   @include motion {
     animation: prompt-in 520ms $ease-out both;
-    transition: opacity 120ms ease, transform 120ms ease;
+    // Closing: the coupon folds first, then the card narrows back into the pill
+    transition:
+      width $step $ease-out $step,
+      border-radius $step $ease-out $step,
+      bottom 320ms $ease-out,
+      opacity 120ms ease,
+      transform 120ms ease;
+  }
+}
+
+.open {
+  width: $open-width;
+  border-radius: $radius-xl;
+  // The stub is white: the card's own red only shows behind the pill and the face
+  background-color: transparent;
+
+  // Opening: widen and square the corners straight away (the coupon waits, see .body)
+  @include motion {
+    transition:
+      width $step $ease-out,
+      border-radius $step $ease-out,
+      bottom 320ms $ease-out,
+      opacity 120ms ease,
+      transform 120ms ease;
+  }
+}
+
+// Folded to the flower and the arrow after a while untouched
+.compact {
+  width: 88px;
+
+  // Nothing to fold first: narrow straight away
+  @include motion {
+    transition:
+      width $step $ease-out,
+      bottom 320ms $ease-out,
+      opacity 120ms ease,
+      transform 120ms ease;
   }
 }
 
@@ -47,71 +100,243 @@
   }
 }
 
+// ─── The pill ─────────────────────────────────────────────────────────────────
+
 .head {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: $spacing-3;
-  align-items: start;
-}
-
-.icon {
-  display: inline-grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: $radius-full;
-  background-color: rgba($color-primary, 0.08);
-  color: $color-primary;
-}
-
-.text {
   display: flex;
-  flex-direction: column;
-  gap: $spacing-1;
-  padding-top: 2px;
+  align-items: center;
+  background-color: $color-primary;
+  padding-right: $spacing-2;
+
+  .open & {
+    padding-right: $spacing-2;
+  }
 }
 
-.title {
+.toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: $spacing-2;
+  min-width: 0;
+  min-height: 56px;
+  padding: $spacing-2 $spacing-2 $spacing-2 $spacing-2;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
+    border-radius: $radius-full;
+  }
+}
+
+// White disc holding the menu's flower
+.badge {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  background-color: #fff;
+}
+
+.flower {
+  width: 28px;
+  height: 28px;
+  background-color: $color-primary;
+  mask: $flower-bold center / contain no-repeat;
+
+  @include motion {
+    transition: transform 600ms $ease-out;
+  }
+
+  .toggle:hover & {
+    transform: rotate(45deg);
+  }
+}
+
+.pill {
+  flex: 1;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+
+  @include motion {
+    transition: opacity 200ms ease;
+  }
+
+  // Out of the row (the button's aria-label carries the words) so the arrow sits by the flower
+  .compact & {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.chevron {
+  flex-shrink: 0;
+  // Points right while folded ("open me"), turns down once the coupon is open
+  transform: rotate(-90deg);
+
+  @include motion {
+    transition: transform 220ms $ease-out;
+  }
+
+  .open & {
+    transform: none;
+  }
+}
+
+.dismiss {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: $radius-full;
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.26);
+  }
+
+  @include focus-ring($color: #fff);
+
+  // A 44px target on touch screens without growing the pill
+  @media (pointer: coarse) {
+    width: 44px;
+    height: 44px;
+    margin: -$spacing-1;
+  }
+}
+
+// ─── The coupon ───────────────────────────────────────────────────────────────
+
+// Folds open by its row height (0fr → 1fr); hidden from keyboard and readers while shut
+.body {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+
+  @include motion {
+    // Closing: fold straight away
+    transition:
+      grid-template-rows $step $ease-out,
+      visibility 0s $step;
+  }
+
+  .open & {
+    grid-template-rows: 1fr;
+    visibility: visible;
+
+    // Opening: unfold once the card has reached its width
+    @include motion {
+      transition:
+        grid-template-rows 360ms $ease-out $step,
+        visibility 0s $step;
+    }
+  }
+}
+
+.clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+// The red face. Its bottom corners are cut into half-circles by a mask: two halves,
+// each a gradient with one hole, so no mask compositing is needed.
+.face {
+  position: relative;
+  overflow: hidden;
+  padding: $spacing-1 $spacing-6 $spacing-6;
+  background-color: $color-primary;
+  mask:
+    radial-gradient(circle at 0 100%, transparent $notch, #000 calc(#{$notch} + 0.5px)) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 100%, transparent $notch, #000 calc(#{$notch} + 0.5px)) right / 51% 100% no-repeat;
+
+  // The menu's flower, large and faint, behind the offer
+  &::after {
+    content: '';
+    position: absolute;
+    right: -56px;
+    bottom: -64px;
+    width: 220px;
+    height: 220px;
+    background-color: #fff;
+    opacity: 0.1;
+    mask: $flower center / contain no-repeat;
+    pointer-events: none;
+  }
+}
+
+.kicker {
+  margin: 0 0 $spacing-1;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.big {
   margin: 0;
-  font-size: $font-size-lg;
+  font-family: $font-heading;
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.pct {
+  margin-left: 2px;
+  font-size: 44px;
+  letter-spacing: 0;
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.offer {
+  position: relative;
+  z-index: 1;
+  max-width: 220px;
+  margin: $spacing-1 0 0;
+  font-family: $font-heading;
+  font-size: $font-size-h6;
   line-height: $line-height-snug;
-  color: $color-text;
+  color: #fff;
 }
 
-.sub {
-  margin: 0;
+// The white stub: notched at its top corners to match, with a perforation between
+.stub {
+  position: relative;
+  padding: $spacing-6 $spacing-6 $spacing-5;
+  background-color: $color-background;
+  color: $color-text;
+  mask:
+    radial-gradient(circle at 0 0, transparent $notch, #000 calc(#{$notch} + 0.5px)) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 0, transparent $notch, #000 calc(#{$notch} + 0.5px)) right / 51% 100% no-repeat;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(#{$notch} + #{$spacing-2});
+    right: calc(#{$notch} + #{$spacing-2});
+    border-top: 2px dashed $color-border;
+  }
+}
+
+.stubSub {
+  margin: 0 0 $spacing-4;
   font-size: $font-size-sm;
   line-height: $line-height-base;
   color: $color-text-light;
-}
-
-// 44px tap target around an 18px glyph; pulls into the corner so the text keeps its width
-.close {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin: -$spacing-3 (-$spacing-3) 0 0;
-  border: 0;
-  border-radius: $radius-full;
-  background: none;
-  color: $color-text-muted;
-  cursor: pointer;
-  transition: color $transition-fast, background-color $transition-fast;
-
-  &:hover {
-    color: $color-text;
-    background-color: $color-background-alt;
-  }
-
-  @include focus-ring;
-}
-
-.cta {
-  min-height: 44px;
-}
-
-.body {
-  padding-top: $spacing-4;
-  border-top: 1px solid $color-border-light;
 }

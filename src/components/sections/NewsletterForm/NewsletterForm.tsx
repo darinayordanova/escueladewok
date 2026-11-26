@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 
+import { markPromptDone } from '@/components/layout/NewsletterPrompt/promptStorage';
 import Button from '@/components/ui/Button/Button';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
 import Input from '@/components/ui/Input/Input';
@@ -19,6 +20,8 @@ export interface NewsletterFormProps {
   onSent?: () => void;
   /** Put the cursor in the email field on mount (the prompt opening on request). */
   focusOnMount?: boolean;
+  /** Button text in place of the default "Subscribe". */
+  submitLabel?: string;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,7 +30,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * Email + RGPD consent (an unticked box) + the short legal notice.
  * Checked on submit, never while typing; each error sits under its own field.
  */
-export default function NewsletterForm({ source, tone = 'light', onSent, focusOnMount }: NewsletterFormProps) {
+export default function NewsletterForm({ source, tone = 'light', onSent, focusOnMount, submitLabel }: NewsletterFormProps) {
   const t = useTranslations('newsletter');
   const locale = useLocale();
   const uid = useId();
@@ -65,6 +68,7 @@ export default function NewsletterForm({ source, tone = 'light', onSent, focusOn
       });
       if (!res.ok) throw new Error('Request failed');
       setStatus('sent');
+      markPromptDone(source); // subscribed anywhere: the first-visit prompt never shows again
       onSent?.();
     } catch {
       setStatus('error'); // everything typed stays
@@ -99,7 +103,7 @@ export default function NewsletterForm({ source, tone = 'light', onSent, focusOn
           fieldClassName={styles.email}
         />
         <Button type="submit" className={styles.submit} isLoading={status === 'sending'} disabled={status === 'sending'}>
-          {status === 'sending' ? t('sending') : t('submit')}
+          {status === 'sending' ? t('sending') : (submitLabel ?? t('submit'))}
         </Button>
       </div>
 

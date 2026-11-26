@@ -25,19 +25,7 @@ export default async function Footer() {
 
   return (
     <footer className={styles.footer}>
-      {/* ── Newsletter ────────────────────────────────────────────────────── */}
-      <section className={styles.newsletter} aria-labelledby="footer-newsletter-title" data-newsletter-footer>
-        <div className={`container ${styles.newsletterInner}`}>
-          <div className={styles.newsletterIntro}>
-            <h2 id="footer-newsletter-title" className={styles.newsletterTitle}>{tNews('title')}</h2>
-            <p className={styles.newsletterSub}>{tNews('sub')}</p>
-          </div>
-          <NewsletterForm source="footer" tone="dark" />
-        </div>
-      </section>
-
       <div className={`container ${styles.grid}`}>
-
         {/* ── Brand ─────────────────────────────────────────────────────── */}
         <div className={styles.brand}>
           <Link href="/" className={styles.logoLink} aria-label="Wok Lab — home">
@@ -52,10 +40,22 @@ export default async function Footer() {
           <p className={styles.tagline}>{t('tagline')}</p>
 
           <div className={styles.social}>
-            <a href="https://www.instagram.com/woklab.es" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/woklab.es"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialLink}
+              aria-label="Instagram"
+            >
               <Instagram size={20} />
             </a>
-            <a href="https://www.facebook.com/profile.php?id=61573209041792" target="_blank" rel="noopener noreferrer" className={styles.socialLink} aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/profile.php?id=61573209041792"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialLink}
+              aria-label="Facebook"
+            >
               <Facebook size={20} />
             </a>
           </div>
@@ -83,38 +83,62 @@ export default async function Footer() {
           </address>
         </div>
 
-        {/* ── Pages nav ─────────────────────────────────────────────────── */}
-        <nav aria-label="Footer — pages">
-          <p className={styles.colHeading}>{t('pages')}</p>
-          <ul className={styles.linkList}>
-            {([
-              ['/', tNav('home')],
-              ['/courses', tNav('courses')],
-              ['/calendar', tNav('calendar')],
-              ['/corporate', tNav('corporate')],
-              ['/about', tNav('about')],
-              ['/contact', tNav('contact')],
-            ] as [string, string][]).map(([href, label]) => (
-              <li key={href}>
-                <Link href={href} className={styles.link}>{label}</Link>
+        {/* ── Pages + legal, stacked in one column ───────────────────────── */}
+        <div className={styles.navs}>
+          <nav aria-label="Footer — pages">
+            <p className={styles.colHeading}>{t('pages')}</p>
+            <ul className={styles.linkList}>
+              {(
+                [
+                  ['/', tNav('home')],
+                  ['/courses', tNav('courses')],
+                  ['/calendar', tNav('calendar')],
+                  ['/corporate', tNav('corporate')],
+                  ['/about', tNav('about')],
+                  ['/contact', tNav('contact')],
+                ] as [string, string][]
+              ).map(([href, label]) => (
+                <li key={href}>
+                  <Link href={href} className={styles.link}>
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* ── Legal nav ─────────────────────────────────────────────────── */}
+          <nav aria-label="Footer — legal">
+            <p className={styles.colHeading}>{t('legal')}</p>
+            <ul className={styles.linkList}>
+              <li>
+                <Link href="/terms" className={styles.link}>
+                  {tLegal('terms')}
+                </Link>
               </li>
-            ))}
-          </ul>
-        </nav>
+              <li>
+                <Link href="/privacy" className={styles.link}>
+                  {tLegal('privacy')}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
 
-        {/* ── Legal nav ─────────────────────────────────────────────────── */}
-        <nav aria-label="Footer — legal">
-          <p className={styles.colHeading}>{t('legal')}</p>
-          <ul className={styles.linkList}>
-            <li>
-              <Link href="/terms" className={styles.link}>{tLegal('terms')}</Link>
-            </li>
-            <li>
-              <Link href="/privacy" className={styles.link}>{tLegal('privacy')}</Link>
-            </li>
-          </ul>
-        </nav>
-
+        {/* ── Newsletter ────────────────────────────────────────────────── */}
+        <section
+          className={styles.newsletter}
+          aria-labelledby="footer-newsletter-title"
+          data-newsletter-footer
+        >
+          <div className={styles.newsletterIntro}>
+            <h2 id="footer-newsletter-title" className={styles.newsletterTitle}>
+              {tNews('title')}
+            </h2>
+            <p className={styles.newsletterSub}>{tNews('sub')}</p>
+          </div>
+          <NewsletterForm source="footer" tone="dark" />
+        </section>
       </div>
 
       {/* ── Bottom bar ────────────────────────────────────────────────────── */}

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   try {
     const result = await confirmSubscription(token);
     if (!result) return NextResponse.json({ error: 'Invalid or expired link' }, { status: 400 });
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, welcomeCode: result.welcomeCode ?? null });
   } catch (err) {
     console.error('[/api/subscribe/confirm]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to confirm' }, { status: 500 });

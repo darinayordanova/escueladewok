@@ -49,7 +49,12 @@ export default function MobileBookingBar({ summary, note, ctaLabel, targetId, af
   const hidden = targetVisible || beforeStart;
 
   return (
-    <div className={[styles.bar, hidden ? styles.hidden : ''].filter(Boolean).join(' ')} inert={hidden}>
+    <div
+      className={[styles.bar, hidden ? styles.hidden : ''].filter(Boolean).join(' ')}
+      inert={hidden}
+      // Read by the newsletter prompt, which sits above the bar while it shows
+      data-booking-bar={hidden ? 'hidden' : 'shown'}
+    >
       <p className={styles.summary}>
         <span className={styles.price}>{summary}</span>
         {note && <span className={styles.note}>{note}</span>}
