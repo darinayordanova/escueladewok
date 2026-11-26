@@ -1,11 +1,16 @@
 import { getTranslations } from 'next-intl/server';
+import type { CSSProperties } from 'react';
 
-import VoucherPreview from '@/components/sections/VoucherBuilder/VoucherPreview';
+import { Star } from '@/components/sections/ChristmasLanding/art';
+import ExampleVoucher from '@/components/sections/ChristmasLanding/ExampleVoucher';
 import Button from '@/components/ui/Button/Button';
 import { formatPrice } from '@/lib/format';
 import { christmasDates, VOUCHER_OPTIONS } from '@/lib/vouchers';
 
 import styles from './ChristmasPromo.module.scss';
+
+/** Gold stars on the red, as on the Christmas page: [left %, top %, width px]. */
+const STARS = [[3, 18, 16], [44, 10, 12], [48, 78, 18], [96, 22, 14], [92, 84, 12]];
 
 /** Homepage block pointing to the Christmas voucher page — shown 1 November to 25 December only. */
 export default async function ChristmasPromo({ locale }: { locale: string }) {
@@ -15,14 +20,17 @@ export default async function ChristmasPromo({ locale }: { locale: string }) {
 
   return (
     <section className={styles.section}>
+      {STARS.map(([left, top, size], i) => (
+        <Star key={i} className={styles.star} style={{ left: `${left}%`, top: `${top}%`, width: size } as CSSProperties} />
+      ))}
       <div className={`container ${styles.inner}`}>
         <div className={styles.voucher}>
-          <VoucherPreview voucherKey="classVoucher" amount={89} format="digital" theme="christmas" to="" from="" message="" locale={locale} bare />
+          <ExampleVoucher locale={locale} />
         </div>
         <div>
           <h2 className={styles.title}>{t('title')}</h2>
           <p className={styles.sub}>{t('sub', { price: formatPrice(lowest, 'EUR', locale) })}</p>
-          <Button href="/christmas">{t('cta')}</Button>
+          <Button href="/christmas" color="white">{t('cta')}</Button>
         </div>
       </div>
     </section>

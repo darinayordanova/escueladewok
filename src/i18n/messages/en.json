@@ -484,7 +484,7 @@
       "digital": {
         "tag": "Digital",
         "title": "In their inbox on Christmas morning.",
-        "text": "Choose 25 December as the send date and it arrives at 9:00 (Madrid time). Or send it straight away, or on any day in the next 30.",
+        "text": "Choose 25 December as the send date and it arrives at 9:00. Or send it straight away, or on any day in the next 30.",
         "textLater": "From 25 November you can choose 25 December as the send date, and it arrives at 9:00 (Madrid time). Or send it straight away.",
         "pdf": "A PDF to print or forward",
         "message": "With your message on it",
@@ -503,6 +503,11 @@
         "design": "The same Christmas design",
         "postBy": "Order by {date} for it to arrive before Christmas.",
         "late": "Printed cards ordered now arrive after Christmas. Choose email for Christmas morning."
+      },
+      "example": {
+        "to": "Laura",
+        "from": "Dani",
+        "message": "Merry Christmas! Let's cook something delicious together."
       }
     },
     "includes": {
@@ -578,9 +583,9 @@
       "courses": "View courses"
     },
     "promo": {
-      "title": "Christmas gift vouchers",
-      "sub": "A three-hour Asian cooking class in Madrid, from {price}. Emailed on Christmas morning or posted as a printed card.",
-      "cta": "See Christmas vouchers"
+      "title": "This Christmas, gift an unforgettable experience",
+      "sub": "A three-hour Asian cooking class in central Madrid, from {price}. By email on Christmas morning or as a printed card.",
+      "cta": "Choose a voucher"
     }
   }
 }

@@ -1,0 +1,34 @@
+@use '@/styles/mixins' as *;
+
+// The fallback sets the size; the animation sits exactly over it
+.root {
+  position: relative;
+}
+
+.fallback {
+  @include motion {
+    transition: opacity 300ms ease;
+  }
+
+  .root[data-ready='true'] & {
+    opacity: 0;
+  }
+}
+
+// --lottie-scale enlarges an animation drawn with empty space around it, to match its fallback
+.player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(var(--lottie-scale, 1));
+
+  @include motion {
+    transition: opacity 300ms ease;
+  }
+
+  .root[data-ready='true'] & {
+    opacity: 1;
+  }
+}

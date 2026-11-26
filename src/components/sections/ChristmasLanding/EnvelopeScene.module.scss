@@ -122,8 +122,9 @@
 .back {
   z-index: 1;
   height: var(--env-h, 270px);
-  border-radius: 12px;
-  background-color: #3A0508;
+  // Square top corners, so the flap's corners meet the envelope's exactly
+  border-radius: 2px 2px 10px 10px;
+  background-color: #5E0710;
   box-shadow: 0 40px 70px -24px rgba(0, 0, 0, 0.8);
 }
 
@@ -131,7 +132,7 @@
   z-index: 20;
   height: var(--env-h, 270px);
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 0 0 10px 10px;
   pointer-events: none;
 }
 
@@ -143,27 +144,18 @@
 
 .flap {
   z-index: 21;
-  height: calc(var(--env-h, 270px) * 0.56);
+  height: var(--flap-h, 150px);
   transform-origin: 50% 0;
-  transform-style: preserve-3d;
   pointer-events: none;
-}
 
-.flapFront,
-.flapBack {
-  position: absolute;
-  inset: 0;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  backface-visibility: hidden;
-}
+  path {
+    fill: #C4192C;
+  }
 
-.flapFront {
-  background-color: #C4192C;
-}
-
-.flapBack {
-  background-color: #7A0A16;
-  transform: rotateY(180deg);
+  // Folded open: the inside of the flap
+  &[data-side='inside'] path {
+    fill: #7A0A16;
+  }
 }
 
 // ─── Cards ────────────────────────────────────────────────────────────────────

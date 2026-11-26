@@ -1,29 +1,40 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-// Pale sage, the Christmas voucher's own ground (lib/voucherThemes)
+// The Christmas page's red, so the block reads as its doorway
 .section {
+  position: relative;
+  overflow: hidden;
   padding-block: $spacing-16;
-  background-color: #EEF2EC;
+  background: $festive-red;
 
   @include respond-to('lg') {
     padding-block: $spacing-20;
   }
 }
 
+.star {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+}
+
 .inner {
+  position: relative;
   display: grid;
   gap: $spacing-10;
   align-items: center;
 
   @include respond-to('lg') {
-    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     gap: $spacing-16;
   }
 }
 
 .voucher {
   max-width: 540px;
+  filter: drop-shadow(0 24px 32px rgba(0, 0, 0, 0.35));
+  transform: rotate(-2deg);
 }
 
 .title {
@@ -33,13 +44,13 @@
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
   letter-spacing: $letter-spacing-heading;
-  color: $color-text;
+  color: #fff;
 }
 
 .sub {
-  max-width: 460px;
+  max-width: 560px;
   margin: 0 0 $spacing-8;
   font-size: $font-size-lg;
   line-height: $line-height-base;
-  color: $color-text-light;
+  color: rgba(255, 255, 255, 0.85);
 }

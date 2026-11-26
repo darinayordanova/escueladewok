@@ -7,7 +7,7 @@ import { Link } from '@/i18n/navigation';
 import type { VoucherKey } from '@/lib/vouchers';
 import type { VoucherTheme } from '@/lib/voucherThemes';
 
-import { EnvelopeFront, PriceCard, Star, type PriceCardCopy } from './art';
+import { EnvelopeFlap, EnvelopePocket, PriceCard, Star, type PriceCardCopy } from './art';
 import styles from './EnvelopeScene.module.scss';
 
 export interface SceneCard {
@@ -36,6 +36,18 @@ const FINAL_R = [-2, 1.5, -1.5, 2];
 /** The voucher's height as a share of its width (595 × 283 pt). */
 const CARD_RATIO = 283.46 / 595.28;
 const FAN_SCALE = 0.85;
+/** Envelope height and flap height as shares of its width (art.tsx: 300 × 186, flap 104). */
+const ENV_RATIO = 186 / 300;
+const FLAP_RATIO = 104 / 186;
+
+// Scroll progress for each card: rising out of the envelope, then settling into the row
+const riseWindow = (i: number) => [0.26 + 0.025 * i, 0.48 + 0.025 * i] as const;
+const settleWindow = (i: number) => [0.56 + 0.03 * i, 0.86] as const;
+/**
+ * When every card moves in front of the envelope — all at once, so no card ever jumps over
+ * another. Every card has risen clear of the pocket by then (the last finishes at 0.555).
+ */
+const IN_FRONT_AT = settleWindow(0)[0];
 
 // The night sky: left %, top %, size px, twinkle delay s
 const STARS = [
@@ -72,12 +84,13 @@ export default function EnvelopeScene({ cards, scrollPrompt, eyebrow, title, sub
       const height = stage.clientHeight;
       const wide = width >= 1000;
       const envW = Math.min(460, width * 0.84);
-      const envH = envW * 0.62;
+      const envH = envW * ENV_RATIO;
       const envTop = height * 0.6 - envH / 2;
       const cardW = wide ? Math.min(250, (width - 96 - 66) / 4) : Math.min(240, (width - 32 - 14) / 2);
       m = { width, height, wide, envW, envH, envTop, cardW, cardH: cardW * CARD_RATIO, gap: wide ? 22 : 14 };
       stage.style.setProperty('--env-w', `${envW}px`);
       stage.style.setProperty('--env-h', `${envH}px`);
+      stage.style.setProperty('--flap-h', `${envH * FLAP_RATIO}px`);
       stage.style.setProperty('--env-top', `${envTop}px`);
       stage.style.setProperty('--card-w', `${cardW}px`);
     };
@@ -88,17 +101,22 @@ export default function EnvelopeScene({ cards, scrollPrompt, eyebrow, title, sub
       const envOpacity = String(1 - segment(p, 0.64, 0.9));
       back.style.transform = front.style.transform = `translateY(${envY}px)`;
       back.style.opacity = front.style.opacity = flap.style.opacity = envOpacity;
-      const angle = 180 * easeInOut(segment(p, 0.05, 0.28));
-      flap.style.transform = `translateY(${envY}px) perspective(1100px) rotateX(${-angle}deg)`;
-      // Closed, the flap covers the pocket; open, it stands behind the cards
-      flap.style.zIndex = angle > 90 ? '1' : '21';
+      // The flap folds up over its top edge: a flat flip (scaleY 1 → -1) keeps its edges crisp
+      // and its hinge exactly on the envelope's top edge. Past halfway its inside shows.
+      const fold = Math.cos(Math.PI * easeInOut(segment(p, 0.05, 0.28)));
+      flap.style.transform = `translateY(${envY}px) scaleY(${fold})`;
+      flap.dataset.side = fold < 0 ? 'inside' : 'outside';
+      // Closed, the flap covers the pocket; open, it stands behind the cards (it is a flat line at the switch)
+      flap.style.zIndex = fold < 0 ? '1' : '21';
+      const inFront = p >= IN_FRONT_AT;
 
       const startScale = Math.min(1, (m.envW * 0.34) / m.cardW);
       cardEls.forEach((card, i) => {
-        const riseT = segment(p, 0.26 + 0.025 * i, 0.48 + 0.025 * i);
-        const rise = easeOutBack(riseT);
-        const settle = easeInOut(segment(p, 0.56 + 0.03 * i, 0.86));
-        const y0 = m.envTop + m.envH * 0.55 - i * 2;
+        const rise = easeOutBack(segment(p, ...riseWindow(i)));
+        const settle = easeInOut(segment(p, ...settleWindow(i)));
+        // Inside, each card's top sits just below the pocket's V (art.tsx: 106 of 186), so none
+        // shows through the opening before it rises
+        const y0 = m.envTop + m.envH * (110 / 186) + (m.cardH * startScale) / 2;
         // Fanned out, the tilted card clears the pocket's edge completely, so bringing it
         // in front of the envelope (below) never shows a corner jumping over the pocket
         const tilt = (Math.abs(FAN_R[i]) * Math.PI) / 180;
@@ -118,10 +136,9 @@ export default function EnvelopeScene({ cards, scrollPrompt, eyebrow, title, sub
         const rotate = lerp(lerp(0, FAN_R[i], rise), FINAL_R[i], settle);
         const scale = lerp(lerp(startScale, FAN_SCALE, rise), 1, settle);
         card.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${rotate}deg) scale(${scale})`;
-        // Same order throughout (each card above the one before), so a rising card never slips
-        // under the cards already out. Behind the pocket (z 20) until it starts settling,
-        // when it has cleared the pocket and moves in front of the envelope.
-        card.style.zIndex = String((settle > 0 ? 30 : 10) + i);
+        // Same order throughout (each card above the one before), behind the pocket (z 20)
+        // until all of them move in front together
+        card.style.zIndex = String((inFront ? 30 : 10) + i);
       });
 
       prompt.style.opacity = String(1 - segment(p, 0.03, 0.16));
@@ -181,11 +198,8 @@ export default function EnvelopeScene({ cards, scrollPrompt, eyebrow, title, sub
           ))}
 
           <div className={styles.back} data-part="back" />
-          <div className={styles.front} data-part="front"><EnvelopeFront className={styles.fill} /></div>
-          <div className={styles.flap} data-part="flap">
-            <div className={styles.flapFront} />
-            <div className={styles.flapBack} />
-          </div>
+          <div className={styles.front} data-part="front"><EnvelopePocket className={styles.fill} /></div>
+          <div className={styles.flap} data-part="flap" data-side="outside"><EnvelopeFlap className={styles.fill} /></div>
 
           {cards.map((card) => (
             <Link key={card.voucherKey} href={card.href} className={styles.card} data-part="card" aria-label={card.label}>

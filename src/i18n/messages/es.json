@@ -484,7 +484,7 @@
       "digital": {
         "tag": "Digital",
         "title": "En su bandeja la mañana de Navidad.",
-        "text": "Elige el 25 de diciembre como fecha de envío y llega a las 9:00 (hora de Madrid). O envíalo al momento, o cualquier día de los próximos 30.",
+        "text": "Elige el 25 de diciembre como fecha de envío y llega a las 9:00. O envíalo al momento, o cualquier día de los próximos 30.",
         "textLater": "A partir del 25 de noviembre puedes elegir el 25 de diciembre como fecha de envío, y llega a las 9:00 (hora de Madrid). O envíalo al momento.",
         "pdf": "Un PDF para imprimir o reenviar",
         "message": "Con tu mensaje",
@@ -503,6 +503,11 @@
         "design": "El mismo diseño de Navidad",
         "postBy": "Pídela hasta el {date} para que llegue antes de Navidad.",
         "late": "Las tarjetas impresas que se pidan ahora llegan después de Navidad. Elige email para la mañana de Navidad."
+      },
+      "example": {
+        "to": "Laura",
+        "from": "Dani",
+        "message": "¡Feliz Navidad! Cocinemos algo rico juntos."
       }
     },
     "includes": {
@@ -578,9 +583,9 @@
       "courses": "Ver cursos"
     },
     "promo": {
-      "title": "Vales regalo para Navidad",
-      "sub": "Una clase de cocina asiática de tres horas en Madrid, desde {price}. Por email la mañana de Navidad o en tarjeta impresa por correo.",
-      "cta": "Ver los vales de Navidad"
+      "title": "Esta Navidad, regala una experiencia inolvidable",
+      "sub": "Una clase de cocina asiática de tres horas en el centro de Madrid, desde {price}. Por email la mañana de Navidad o en tarjeta impresa.",
+      "cta": "Elegir un vale"
     }
   }
 }

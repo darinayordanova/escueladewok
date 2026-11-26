@@ -4,9 +4,9 @@ import type { CSSProperties } from 'react';
 
 import CourseFAQ from '@/components/sections/CourseFAQ/CourseFAQ';
 import VoucherBuilder from '@/components/sections/VoucherBuilder/VoucherBuilder';
-import VoucherPreview from '@/components/sections/VoucherBuilder/VoucherPreview';
 import Button from '@/components/ui/Button/Button';
 import { ArrowRight, Check } from '@/components/ui/icons';
+import Lottie from '@/components/ui/Lottie/Lottie';
 import Reveal from '@/components/ui/Reveal/Reveal';
 import { formatPrice } from '@/lib/format';
 import { urlFor } from '@/lib/sanity/image';
@@ -14,11 +14,14 @@ import { christmasDates, PHYSICAL_FEE, VOUCHER_OPTIONS, type VoucherKey } from '
 import type { VoucherTheme } from '@/lib/voucherThemes';
 import type { Course, Locale } from '@/types';
 
-import { EnvelopeFront, Star } from './art';
+import { EnvelopeFlap, EnvelopePocket, Star } from './art';
 import styles from './ChristmasLanding.module.scss';
 import EnvelopeScene from './EnvelopeScene';
+import ExampleVoucher from './ExampleVoucher';
 
 const BUILDER_ID = 'make';
+/** "Talk to us" in the team band: the team-building class, at its enquiry form. */
+const TEAM_CLASS_HREF = '/courses/culinary-connections-the-team-build-experience#book';
 const STEPS = ['choose', 'personalise', 'send', 'cook'] as const;
 const INCLUDES = ['welcome', 'ingredients', 'cooking', 'dinner', 'leftovers'] as const;
 const QUESTIONS = ['redeem', 'valid', 'difference', 'preview', 'otherDay'] as const;
@@ -30,6 +33,10 @@ const CARD_THEMES: Record<VoucherKey, VoucherTheme> = {
   classVoucher: 'christmas',
   classVoucherForTwo: 'birthday',
 };
+
+// The hero tree's Lottie animation (.lottie or .json in /public/animations). Until it's set,
+// the hero shows the still tree, which also stays as the fallback once it is.
+const TREE_ANIMATION: string | null = '/animations/Stars_Slowly_Twinkle_v2.json';
 
 // Stars around the tree: left %, top %, size px
 const STARS = [[6, 20, 18], [90, 28, 14], [2, 56, 12], [94, 62, 20], [20, 4, 12], [80, 6, 16], [10, 84, 14]];
@@ -50,7 +57,8 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
     new Date(`${iso}T12:00:00Z`).toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
   const lowest = Math.min(...VOUCHER_OPTIONS.map((option) => option.amount));
   const classPhoto = courses.find((course) => course.image && course.cuisine === 'chinese')?.image ?? courses.find((course) => course.image)?.image;
-  const voucher = <VoucherPreview voucherKey="classVoucher" amount={89} format="digital" theme="christmas" to="" from="" message="" locale={locale} bare />;
+  const treeImage = <Image src="/images/vouchers/christmas-tree.png" alt={t('hero.treeAlt')} width={600} height={773} priority className={styles.treeImage} />;
+  const voucher = <ExampleVoucher locale={locale} />;
 
   return (
     <>
@@ -64,10 +72,10 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
             </h1>
             <p className={styles.heroSub}>{t('hero.sub', { price: price(lowest) })}</p>
             <div className={styles.heroActions}>
-              <Button href={`#${BUILDER_ID}`} color="white" size="lg">
+              <Button href={`#${BUILDER_ID}`} color="white" size="md">
                 {t('choose')} <ArrowRight size={18} />
               </Button>
-              <Button href="#how" variant="outline" size="lg" className={styles.lineButton}>{t('hero.how')}</Button>
+              <Button href="#how" variant="outline" size="md" className={styles.lineButton}>{t('hero.how')}</Button>
             </div>
             <ul className={styles.pills}>
               <li>{t('hero.pillPrice', { price: price(lowest) })}</li>
@@ -78,7 +86,11 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
 
           <div className={styles.tree}>
             <span className={styles.disc} aria-hidden="true" />
-            <Image src="/images/vouchers/christmas-tree.png" alt={t('hero.treeAlt')} width={600} height={773} priority className={styles.treeImage} />
+            {TREE_ANIMATION ? (
+              <Lottie src={TREE_ANIMATION} fallback={treeImage} priority className={styles.treeAnimation} />
+            ) : (
+              treeImage
+            )}
             {STARS.map(([left, top, size], i) => (
               <Star
                 key={i}
@@ -176,10 +188,12 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
 
             <Reveal as="article" className={styles.panel}>
               <div className={`${styles.panelStage} ${styles.stagePrinted}`} aria-hidden="true">
+                {/* An opened envelope with the printed card in front of it */}
                 <div className={styles.envelope}>
+                  <EnvelopeFlap className={styles.envelopeFlap} />
                   <div className={styles.envelopeBack} />
+                  <EnvelopePocket className={styles.envelopeFront} />
                   <div className={styles.envelopeCard}>{voucher}</div>
-                  <EnvelopeFront className={styles.envelopeFront} />
                 </div>
               </div>
               <div className={styles.panelCopy}>
@@ -239,7 +253,7 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
             <h2 className={styles.teamTitle}>{t('team.title')}</h2>
             <p className={styles.teamText}>{t('team.text')}</p>
           </div>
-          <Button href="/corporate" color="white">{t('team.cta')}</Button>
+          <Button href={TEAM_CLASS_HREF} color="white">{t('team.cta')}</Button>
         </div>
       </section>
 

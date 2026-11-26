@@ -26,6 +26,9 @@ $color-availability-high: #52B86A;
 $color-availability-medium: #E8923A;
 $color-availability-low: #D94040;
 
+// Christmas — the deep red ground of the Christmas page and its homepage block
+$festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%, #6E0811 100%);
+
 // ─── Typography ───────────────────────────────────────────────────────────────
 $font-heading: var(--font-heading), Georgia, serif;
 $font-paragraph: var(--font-paragraph), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

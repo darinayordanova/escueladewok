@@ -1,8 +1,6 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
-$festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%, #6E0811 100%);
-
 .cover {
   object-fit: cover;
 }
@@ -106,9 +104,9 @@ $festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%
 .heroTitle {
   margin: 0 0 $spacing-6;
   font-family: $font-heading;
-  font-size: clamp(44px, 6.4vw, 84px);
-  font-weight: $font-weight-bold;
-  line-height: 1.02;
+  font-size: clamp(1.5rem, 1.6rem + 2vw, 4.5rem);
+  font-weight: $font-weight-medium;
+  line-height: 0.98;
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
@@ -134,7 +132,7 @@ $festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-3;
-  margin-block: $spacing-8 $spacing-6;
+  margin-block: $spacing-12 $spacing-10;
 }
 
 // White outline button on red
@@ -198,14 +196,18 @@ $festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%
   transform: translate(-50%, -50%);
 }
 
+// The Lottie tree sits where the still one does; the animation brings its own motion.
+// Its tree fills about 3/4 of the animation's frame, so it's scaled up to the still tree's size.
+.treeAnimation {
+  --lottie-scale: 1.48;
+  position: relative;
+  width: 100%;
+}
+
 .treeImage {
   position: relative;
   width: 100%;
   height: auto;
-
-  @include motion {
-    animation: tree-in 1s cubic-bezier(0.2, 1.2, 0.4, 1) both, float 6s 1s ease-in-out infinite;
-  }
 }
 
 .star {
@@ -252,7 +254,7 @@ $festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%
 }
 
 .stagePrinted {
-  background: radial-gradient(circle at 50% 60%, #FFFFFF, $color-background-alt 60%, #E2D3D3);
+  background: radial-gradient(circle at 50% 60%, $color-background-alt, $color-border 60%, $color-text-muted);
 }
 
 .phone {
@@ -378,50 +380,67 @@ $festive-red: radial-gradient(70% 90% at 78% 45%, #A31020 0%, $color-primary 55%
   }
 }
 
-// Printed card coming out of a red envelope
+// Printed card in front of an opened envelope (art.tsx: envelope 300 × 186, flap 104)
 .envelope {
   position: relative;
   width: 300px;
-  height: 230px;
-  margin-top: 90px;
+  height: 290px;
+  margin-top: 20px;
 }
 
+.envelopeFlap,
 .envelopeBack,
 .envelopeFront {
   position: absolute;
-  bottom: 0;
   left: 0;
+  display: block;
   width: 300px;
-  height: 190px;
-  border-radius: 10px;
+}
+
+// Folded open above the envelope: the flap's inside, pointing up
+.envelopeFlap {
+  top: 0;
+  height: 104px;
+  transform: scaleY(-1);
+
+  path {
+    fill: #7A0A16;
+  }
 }
 
 .envelopeBack {
-  background-color: #6B0710;
-  box-shadow: 0 30px 40px -20px rgba(0, 0, 0, 0.5);
+  top: 104px;
+  height: 186px;
+  border-radius: 2px 2px 10px 10px;
+  background-color: #5E0710;
+  box-shadow: 0 30px 40px -20px rgba(0, 0, 0, 0.45);
 }
 
 .envelopeFront {
-  z-index: 3;
+  top: 104px;
+  height: 186px;
   overflow: hidden;
+  border-radius: 0 0 10px 10px;
 }
 
 .envelopeCard {
   position: absolute;
-  top: -40px;
-  left: 22px;
-  z-index: 2;
-  width: 256px;
-  transform: rotate(-3deg);
+  top: 150px;
+  left: -14px;
+  width: 328px;
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.3));
+  transform: rotate(-4deg);
 }
 
+// On view, the card slides up from the envelope into place
 @include motion {
   .panel[data-inview='false'] .envelopeCard {
-    transform: translateY(110px) rotate(0);
+    opacity: 0;
+    transform: translateY(40px) rotate(0);
   }
 
   .panel[data-inview='true'] .envelopeCard {
-    animation: card-out 1.2s 300ms cubic-bezier(0.2, 1.1, 0.4, 1) both;
+    transition: opacity 500ms ease 200ms, transform 900ms cubic-bezier(0.2, 1.1, 0.4, 1) 200ms;
   }
 }
 
@@ -738,7 +757,7 @@ $step-pace: 350ms;
 
 .closeText {
   max-width: 34em;
-  margin: $spacing-3 0 $spacing-8;
+  margin: $spacing-6 0 $spacing-8;
   font-size: $font-size-lg;
   color: rgba(#fff, 0.88);
 }
@@ -813,8 +832,3 @@ $step-pace: 350ms;
   }
 }
 
-@keyframes card-out {
-  from {
-    transform: translateY(110px) rotate(0);
-  }
-}
