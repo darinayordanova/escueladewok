@@ -20,7 +20,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * Bump this whenever the consent wording in messages/*.json (newsletter.consent)
  * changes, so each subscriber's record shows which text they agreed to.
  */
-export const CONSENT_VERSION = '2026-11-26';
+export const CONSENT_VERSION = '2026-11-26c';
 
 /** Don't send another confirmation email to the same address within this window. */
 const RESEND_COOLDOWN_MS = 2 * 60 * 1000;

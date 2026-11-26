@@ -6,6 +6,7 @@ import { getMessages, getTranslations } from 'next-intl/server';
 
 import Footer from '@/components/layout/Footer/Footer';
 import Header from '@/components/layout/Header/Header';
+import NewsletterPrompt from '@/components/layout/NewsletterPrompt/NewsletterPrompt';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import CartDrawer from '@/components/ui/CartDrawer/CartDrawer';
 import { CartProvider } from '@/context/CartContext';
@@ -105,6 +106,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <Header />
         <main>{children}</main>
         <Footer />
+        <NewsletterPrompt />
         <CartDrawer />
       </CartProvider>
     </NextIntlClientProvider>

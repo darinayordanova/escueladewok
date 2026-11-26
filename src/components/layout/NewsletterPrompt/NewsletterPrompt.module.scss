@@ -1,0 +1,117 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// A corner card, not a modal: no backdrop, the page stays usable around it.
+.prompt {
+  position: fixed;
+  left: $spacing-3;
+  right: $spacing-3;
+  bottom: $spacing-3;
+  z-index: $z-sticky;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  max-height: calc(100dvh - #{$spacing-6});
+  overflow-y: auto;
+  padding: $spacing-5;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-lg;
+  background-color: $color-background;
+  box-shadow: $shadow-xl;
+
+  @include respond-to('md') {
+    left: $spacing-6;
+    right: auto;
+    bottom: $spacing-6;
+    width: 380px;
+  }
+
+  // Arrives once: fades up 12px. Under reduced motion it is simply there.
+  @include motion {
+    animation: prompt-in 520ms $ease-out both;
+    transition: opacity 120ms ease, transform 120ms ease;
+  }
+}
+
+// Steps aside (the footer's form is on screen)
+.away {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+@keyframes prompt-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: $spacing-3;
+  align-items: start;
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-full;
+  background-color: rgba($color-primary, 0.08);
+  color: $color-primary;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  padding-top: 2px;
+}
+
+.title {
+  margin: 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-snug;
+  color: $color-text;
+}
+
+.sub {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+// 44px tap target around an 18px glyph; pulls into the corner so the text keeps its width
+.close {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -$spacing-3 (-$spacing-3) 0 0;
+  border: 0;
+  border-radius: $radius-full;
+  background: none;
+  color: $color-text-muted;
+  cursor: pointer;
+  transition: color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    color: $color-text;
+    background-color: $color-background-alt;
+  }
+
+  @include focus-ring;
+}
+
+.cta {
+  min-height: 44px;
+}
+
+.body {
+  padding-top: $spacing-4;
+  border-top: 1px solid $color-border-light;
+}
