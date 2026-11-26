@@ -1,0 +1,35 @@
+import { getTranslations } from 'next-intl/server';
+import { Resend } from 'resend';
+
+import type { Locale } from '@/types';
+
+import { button, emailLayout, eyebrow, heading, note, paragraph } from './layout';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
+const REPLY_TO = process.env.OWNER_EMAIL ?? 'info@woklab.es';
+
+/** The double opt-in email: one button to the confirm page. */
+export async function sendSubscribeConfirmationEmail({ to, locale, confirmUrl }: { to: string; locale: Locale; confirmUrl: string }) {
+  const t = await getTranslations({ locale, namespace: 'newsletter' });
+
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to,
+    replyTo: REPLY_TO,
+    subject: t('emailSubject'),
+    html: emailLayout({
+      locale,
+      preheader: t('emailPreheader'),
+      body: [
+        eyebrow('Wok Lab'),
+        heading(t('emailHeading')),
+        paragraph(t('emailBody')),
+        button(t('emailButton'), confirmUrl),
+        note(t('emailIgnore')),
+      ].join(''),
+    }),
+  });
+
+  if (error) throw new Error(`Subscribe confirmation email failed: ${error.message}`);
+}

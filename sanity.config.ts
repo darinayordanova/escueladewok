@@ -44,6 +44,7 @@ export default defineConfig({
             // ─── Collections ────────────────────────────────────────────────
             S.documentTypeListItem('course').title('Courses'),
             S.documentTypeListItem('courseSession').title('Bookings'),
+            S.documentTypeListItem('subscriber').title('Subscribers'),
           ]),
     }),
     visionTool({ defaultApiVersion: '2025-01-01' }),
@@ -60,6 +61,6 @@ export default defineConfig({
     types: schemaTypes,
     // Hide singleton types from the "create new document" menu
     templates: (prev) =>
-      prev.filter((template) => !singletons.has(template.schemaType)),
+      prev.filter((template) => !singletons.has(template.schemaType) && template.schemaType !== 'subscriber'),
   },
 });

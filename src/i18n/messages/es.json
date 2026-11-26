@@ -747,5 +747,33 @@
       "cta": "Elegir un vale",
       "subToday": "Una clase de cocina asiática de tres horas para dos en el centro de Madrid, desde {price}. Envíalo por email ahora y llega en unos minutos, a tiempo para hoy."
     }
+  },
+  "newsletter": {
+    "title": "Novedades de Wok Lab",
+    "sub": "Ofertas de temporada, clases nuevas y aviso cuando queden las últimas plazas. Sin spam: como mucho un aviso automático por semana.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "submit": "Suscribirme",
+    "sending": "Enviando…",
+    "consent": "Quiero recibir emails de Wok Lab con promociones de temporada, nuevas clases y avisos de últimas plazas. Puedo darme de baja en cualquier momento.",
+    "notice": "Responsable: Yutian Xing (Wok Lab). Finalidad: enviarte las comunicaciones que eliges. Legitimación: tu consentimiento. Destinatarios: Resend, nuestro proveedor de email (EE. UU.). Derechos: acceso, rectificación, supresión y otros, escribiendo a info@woklab.es. Más información en la <link>Política de Privacidad</link>.",
+    "consentRequired": "Marca la casilla para suscribirte.",
+    "invalidEmail": "Revisa tu email.",
+    "success": "¡Casi listo! Te hemos enviado un email para confirmar tu suscripción.",
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "confirmTitle": "Confirma tu suscripción",
+    "confirmSub": "Pulsa el botón para empezar a recibir nuestras novedades en {email}.",
+    "confirmButton": "Confirmar suscripción",
+    "confirming": "Confirmando…",
+    "confirmedTitle": "¡Ya estás dentro!",
+    "confirmedSub": "Te avisaremos de promociones, clases nuevas y últimas plazas. Puedes darte de baja desde cualquier email.",
+    "invalidTitle": "Este enlace ya no funciona",
+    "invalidSub": "Puede que haya caducado. Vuelve a suscribirte desde el pie de página y te enviaremos uno nuevo.",
+    "emailSubject": "Confirma tu suscripción a Wok Lab",
+    "emailPreheader": "Un clic y listo.",
+    "emailHeading": "Confirma tu suscripción",
+    "emailBody": "Has pedido recibir novedades de Wok Lab: promociones de temporada, nuevas clases y avisos de últimas plazas. Confírmalo con el botón:",
+    "emailButton": "Confirmar suscripción",
+    "emailIgnore": "Si no has sido tú, ignora este email: no te suscribiremos. El enlace caduca en 7 días."
   }
 }

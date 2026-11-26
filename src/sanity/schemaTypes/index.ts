@@ -5,6 +5,7 @@ import { course } from './course';
 import { courseSession } from './courseSession';
 import { homepage } from './homepage';
 import { privacyPage } from './privacyPage';
+import { subscriber } from './subscriber';
 import { termsPage } from './termsPage';
 import { localeBlockContent } from './objects/localeBlockContent';
 import { localeString } from './objects/localeString';
@@ -39,4 +40,5 @@ export const schemaTypes = [
   privacyPage,
   courseSession,
   giftVoucher,
+  subscriber,
 ];
