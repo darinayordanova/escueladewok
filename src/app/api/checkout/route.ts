@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 
 import { addMinutesToTime, isBookingOpen } from '@/lib/courses/timeslots';
+import { privateId } from '@/lib/sanity/privateId';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { getStripe } from '@/lib/stripe/client';
 
@@ -151,6 +152,7 @@ export async function POST(request: Request) {
         await sanityWriteClient.patch(existing._id).setIfMissing({ attendees: [] }).append('attendees', attendees).commit();
       } else {
         await sanityWriteClient.create({
+          _id: privateId('courseSession'),
           _type: 'courseSession',
           course: { _type: 'reference', _ref: item.courseId },
           courseTitle: item.courseTitle,

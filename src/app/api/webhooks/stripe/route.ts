@@ -9,6 +9,7 @@ import {
   sendVoucherRecipientEmail,
 } from '@/lib/email';
 import { generateVoucherPdf } from '@/lib/pdf/voucherPdf';
+import { privateId } from '@/lib/sanity/privateId';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { postPrintedVoucherToSlack } from '@/lib/slack/printedVoucher';
 import { getStripe } from '@/lib/stripe/client';
@@ -268,6 +269,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
 
   // 4. Save to Sanity
   const sanityDoc = await sanityWriteClient.create({
+    _id: privateId('giftVoucher'),
     _type: 'giftVoucher',
     code: promoCode.code,
     voucherType: voucherKey,
