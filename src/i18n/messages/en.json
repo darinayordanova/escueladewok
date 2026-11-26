@@ -125,7 +125,7 @@
     "bookingClosedTitle": "Booking closed",
     "bookingClosedSub": "Online booking for this class has closed. Please choose another date.",
     "proceedToPayment": "Proceed to payment",
-    "processing": "Redirecting to payment…",
+    "processing": "One moment…",
     "checkout": {
       "title": "Your details",
       "name": "Full name",
@@ -329,7 +329,7 @@
     "remove": "Remove",
     "total": "Total",
     "checkout": "Checkout",
-    "processing": "Redirecting to payment…",
+    "processing": "One moment…",
     "addToCart": "Add to cart",
     "buyNow": "Book now",
     "errorBookingClosed": "Booking has closed for {course}. Please remove it and choose another date.",

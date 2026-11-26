@@ -43,6 +43,9 @@ interface CourseBookingValue {
   addToCart: () => void;
   checkout: () => Promise<void>;
   isCheckingOut: boolean;
+  /** The newsletter box beside "Buy now" */
+  newsletterOptIn: boolean;
+  setNewsletterOptIn: (checked: boolean) => void;
   joinWaitlist: (email: string) => Promise<void>;
 }
 
@@ -96,6 +99,7 @@ export function CourseBookingProvider({
   });
   const [guests, setGuestsState] = useState(1);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
 
   const slotOpen = useCallback(
     (date: string, time: string) => isBookingOpen(date, time, bookingCounts[`${date}|${time}`] ?? 0, now),
@@ -195,6 +199,7 @@ export function CourseBookingProvider({
         body: JSON.stringify({
           items: [{ ...buildCartItem(), quantity: guests }],
           locale,
+          newsletter: newsletterOptIn,
           cancelPath: `/${locale}/courses/${course.courseSlug}?date=${selectedDate}&time=${selectedTime}`,
         }),
       });
@@ -243,6 +248,8 @@ export function CourseBookingProvider({
     addToCart,
     checkout,
     isCheckingOut,
+    newsletterOptIn,
+    setNewsletterOptIn,
     joinWaitlist,
   };
 

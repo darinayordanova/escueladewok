@@ -13,6 +13,7 @@ import { privateId } from '@/lib/sanity/privateId';
 import { sanityWriteClient } from '@/lib/sanity/writeClient';
 import { postPrintedVoucherToSlack } from '@/lib/slack/printedVoucher';
 import { getStripe } from '@/lib/stripe/client';
+import { requestSubscription } from '@/lib/subscribers';
 import { formatVoucherDate, formatVoucherTypeName, voucherAmount, voucherExpiry, voucherSendAt, type VoucherFormat, type VoucherKey } from '@/lib/vouchers';
 import { isVoucherTheme, type VoucherTheme } from '@/lib/voucherThemes';
 import type { Locale } from '@/types';
@@ -164,6 +165,13 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
   const currency = session.currency?.toUpperCase() ?? '';
 
   await Promise.allSettled([
+    // Ticked the newsletter box beside the pay button: send the double opt-in email.
+    // The booking is already saved, so confirming won't issue a first-purchase code.
+    meta.newsletter_opt_in === '1' && customerEmail
+      ? requestSubscription({ email: customerEmail, locale, source: 'checkout', skipIfConfirmed: true }).catch((err) =>
+          console.error('Failed to start newsletter opt-in:', err instanceof Error ? err.message : err),
+        )
+      : undefined,
     sendConfirmationEmail({
       to: customerEmail,
       recipientName: customerName,
@@ -298,6 +306,12 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer, locale, format, sendAt, sendOn };
 
   await Promise.allSettled([
+    // The buyer ticked the newsletter box: send the double opt-in email (to the buyer, never the recipient)
+    meta.newsletter_opt_in === '1' && customerEmail
+      ? requestSubscription({ email: customerEmail, locale, source: 'checkout', skipIfConfirmed: true }).catch((err) =>
+          console.error('[voucher] newsletter opt-in failed:', err instanceof Error ? err.message : err),
+        )
+      : undefined,
     sendVoucherBuyerEmail(sharedData).catch((err) => console.error('[voucher] buyer email failed:', err)),
     // Only when the buyer gave the recipient's address; otherwise the buyer passes it on
     recipientEmail

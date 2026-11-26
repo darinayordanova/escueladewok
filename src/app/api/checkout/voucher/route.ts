@@ -31,6 +31,8 @@ interface VoucherCheckoutBody {
   sendMyself?: boolean;
   locale: string;
   cancelPath: string;
+  /** Ticked the newsletter box beside the pay button */
+  newsletter?: boolean;
 }
 
 const PRODUCT_NAMES: Record<VoucherKey, string> = {
@@ -138,6 +140,8 @@ export async function POST(request: Request) {
         recipient_email: recipientEmail,
         send_date: sendDate,
         locale,
+        // The webhook starts the newsletter's double opt-in once the payment succeeds
+        ...(body.newsletter === true ? { newsletter_opt_in: '1' } : {}),
       },
       success_url: `${origin}/${locale}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}`,

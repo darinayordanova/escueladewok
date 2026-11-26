@@ -125,7 +125,7 @@
     "bookingClosedTitle": "Reservas cerradas",
     "bookingClosedSub": "Las reservas online para esta clase están cerradas. Por favor, elige otra fecha.",
     "proceedToPayment": "Continuar al pago",
-    "processing": "Redirigiendo al pago…",
+    "processing": "Un momento…",
     "checkout": {
       "title": "Tus datos",
       "name": "Nombre completo",
@@ -329,7 +329,7 @@
     "remove": "Eliminar",
     "total": "Total",
     "checkout": "Pagar",
-    "processing": "Redirigiendo al pago…",
+    "processing": "Un momento…",
     "addToCart": "Añadir al carrito",
     "buyNow": "Reservar ahora",
     "errorBookingClosed": "Las reservas para {course} están cerradas. Elimínalo y elige otra fecha.",

@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 
+import CheckoutOptIn from '@/components/sections/NewsletterForm/CheckoutOptIn';
 import Button from '@/components/ui/Button/Button';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
 import DatePicker from '@/components/ui/DatePicker/DatePicker';
@@ -51,6 +52,7 @@ export default function VoucherBuilder({ locale, initial }: VoucherBuilderProps)
   const [maxSendDate] = useState(() => voucherSendMaxDate());
   const [errors, setErrors] = useState<{ to?: string; from?: string; recipientEmail?: string; submit?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const toRef = useRef<HTMLInputElement>(null);
   const fromRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -89,6 +91,7 @@ export default function VoucherBuilder({ locale, initial }: VoucherBuilderProps)
           message,
           ...(weSend ? { recipientEmail: recipientEmail.trim(), sendDate } : { sendMyself: isDigital }),
           locale,
+          newsletter: newsletterOptIn,
           cancelPath: `/${locale}/vouchers`,
         }),
       });
@@ -241,6 +244,7 @@ export default function VoucherBuilder({ locale, initial }: VoucherBuilderProps)
           {!submitting && <ChevronRight size={20} />}
         </Button>
         {errors.submit && <p className={styles.submitError} role="alert">{errors.submit}</p>}
+        <CheckoutOptIn checked={newsletterOptIn} onChange={setNewsletterOptIn} />
         <p className={styles.small}>{t('form.terms')}</p>
       </form>
 

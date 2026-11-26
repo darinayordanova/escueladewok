@@ -1,0 +1,11 @@
+@use '@/styles/variables' as *;
+
+.optIn {
+  align-items: flex-start;
+}
+
+.label {
+  font-size: $font-size-sm;
+  line-height: $line-height-snug;
+  color: $color-text-light;
+}

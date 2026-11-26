@@ -41,19 +41,32 @@ interface SubscriberDoc {
   welcomeCodeExpiresAt?: string;
 }
 
-export type SubscribeResult = 'sent' | 'throttled' | 'invalid';
+export type SubscribeResult = 'sent' | 'throttled' | 'invalid' | 'already';
 
 /**
  * Step 1 of double opt-in: record the consent and send the confirmation email.
  * Nobody is added to Resend until they click the link.
  * Also used to re-subscribe someone who unsubscribed: they confirm again.
  */
-export async function requestSubscription({ email: rawEmail, locale, source }: { email: string; locale: Locale; source: string }): Promise<SubscribeResult> {
+export async function requestSubscription({
+  email: rawEmail,
+  locale,
+  source,
+  skipIfConfirmed = false,
+}: {
+  email: string;
+  locale: Locale;
+  source: string;
+  /** Checkout: an existing subscriber ticking the box again shouldn't get a confirmation email */
+  skipIfConfirmed?: boolean;
+}): Promise<SubscribeResult> {
   const email = normalizeEmail(rawEmail);
   if (!isValidEmail(email)) return 'invalid';
 
   const _id = subscriberId(email);
   const existing = await sanityWriteClient.getDocument<SubscriberDoc>(_id);
+
+  if (skipIfConfirmed && existing?.status === 'confirmed') return 'already';
 
   if (existing?.confirmationSentAt && Date.now() - new Date(existing.confirmationSentAt).getTime() < RESEND_COOLDOWN_MS) {
     return 'throttled';

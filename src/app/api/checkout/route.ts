@@ -25,6 +25,8 @@ interface CheckoutBody {
   items: CheckoutItem[];
   locale: string;
   cancelPath: string;
+  /** Ticked the newsletter box beside the pay button */
+  newsletter?: boolean;
 }
 
 export async function POST(request: Request) {
@@ -36,13 +38,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { items, locale, cancelPath } = body;
+  const { items, locale, cancelPath, newsletter } = body;
 
   if (!items?.length || !locale) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  if (items.length > 8) {
+  // Stripe allows 50 metadata keys: 3 common + 6 per session, so 7 sessions at most
+  if (items.length > 7) {
     return NextResponse.json({ error: 'Cart too large' }, { status: 400 });
   }
 
@@ -96,8 +99,10 @@ export async function POST(request: Request) {
       };
     });
 
-    // ── Build metadata (max 50 keys: 2 common + 6 per item) ──────────────────
+    // ── Build metadata (max 50 keys: 3 common + 6 per item) ──────────────────
     const metadata: Record<string, string> = { locale, item_count: String(items.length) };
+    // The webhook starts the newsletter's double opt-in once the payment succeeds
+    if (newsletter === true) metadata.newsletter_opt_in = '1';
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const endTime = item.endTime || addMinutesToTime(item.startTime, item.duration);

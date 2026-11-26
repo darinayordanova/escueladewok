@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Close } from '@/components/ui/icons';
+import { useEffect, useRef, useState } from 'react';
+
+import CheckoutOptIn from '@/components/sections/NewsletterForm/CheckoutOptIn';
 import Button from '@/components/ui/Button/Button';
+import { Close } from '@/components/ui/icons';
 import Stepper from '@/components/ui/Stepper/Stepper';
 import { cartKey, useCart } from '@/context/CartContext';
 import { Link } from '@/i18n/navigation';
@@ -16,6 +18,7 @@ export default function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice, clearCart } = useCart();
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading'>('idle');
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Trap focus + close on Escape
@@ -54,6 +57,7 @@ export default function CartDrawer() {
             quantity: item.quantity,
           })),
           locale,
+          newsletter: newsletterOptIn,
           cancelPath: '/courses',
         }),
       });
@@ -136,6 +140,7 @@ export default function CartDrawer() {
               >
                 {checkoutStatus === 'loading' ? t('processing') : t('checkout')}
               </Button>
+              <CheckoutOptIn checked={newsletterOptIn} onChange={setNewsletterOptIn} />
             </div>
           </>
         )}

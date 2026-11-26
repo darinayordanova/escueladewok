@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
+import CheckoutOptIn from '@/components/sections/NewsletterForm/CheckoutOptIn';
 import Button from '@/components/ui/Button/Button';
 import { ChevronRight } from '@/components/ui/icons';
 import Input from '@/components/ui/Input/Input';
@@ -11,6 +12,7 @@ import QuantityStepper from '@/components/ui/QuantityStepper/QuantityStepper';
 import StatusDot from '@/components/ui/StatusDot/StatusDot';
 import { availabilityLevel, dayPart, todayISO } from '@/lib/courses/timeslots';
 import { formatPrice } from '@/lib/format';
+
 
 import styles from './BookingWidget.module.scss';
 import { useCourseBooking } from './CourseBookingContext';
@@ -242,6 +244,12 @@ function Session({
               {!booking.isCheckingOut && <ChevronRight size={20} />}
             </Button>
           </div>
+
+          <CheckoutOptIn
+            className={styles.optIn}
+            checked={booking.newsletterOptIn}
+            onChange={booking.setNewsletterOptIn}
+          />
         </>
       )}
 
