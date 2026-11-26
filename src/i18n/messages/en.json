@@ -747,5 +747,33 @@
       "cta": "Choose a voucher",
       "subToday": "A three-hour Asian cooking class for two in central Madrid, from {price}. Email it now and it arrives in minutes, in time for today."
     }
+  },
+  "newsletter": {
+    "title": "Wok Lab news",
+    "sub": "Seasonal offers, new classes and a heads-up when the last spots are left. No spam: at most one automatic email a week.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@email.com",
+    "submit": "Subscribe",
+    "sending": "Sending…",
+    "consent": "I want to receive emails from Wok Lab about seasonal promotions, new classes and last-spot alerts. I can unsubscribe at any time.",
+    "notice": "Controller: Yutian Xing (Wok Lab). Purpose: sending you the emails you choose. Legal basis: your consent. Recipients: Resend, our email provider (USA). Rights: access, rectification, erasure and others, by writing to info@woklab.es. More in our <link>Privacy Policy</link>.",
+    "consentRequired": "Tick the box to subscribe.",
+    "invalidEmail": "Please check your email.",
+    "success": "Almost there! We have sent you an email to confirm your subscription.",
+    "error": "Something went wrong. Please try again.",
+    "confirmTitle": "Confirm your subscription",
+    "confirmSub": "Press the button to start receiving our news at {email}.",
+    "confirmButton": "Confirm subscription",
+    "confirming": "Confirming…",
+    "confirmedTitle": "You're in!",
+    "confirmedSub": "We'll let you know about promotions, new classes and last spots. You can unsubscribe from any email.",
+    "invalidTitle": "This link no longer works",
+    "invalidSub": "It may have expired. Subscribe again from the footer and we will send you a new one.",
+    "emailSubject": "Confirm your Wok Lab subscription",
+    "emailPreheader": "One click and you are done.",
+    "emailHeading": "Confirm your subscription",
+    "emailBody": "You asked to receive news from Wok Lab: seasonal promotions, new classes and last-spot alerts. Please confirm with the button:",
+    "emailButton": "Confirm subscription",
+    "emailIgnore": "If this wasn't you, just ignore this email: we won't subscribe you. The link expires in 7 days."
   }
 }
