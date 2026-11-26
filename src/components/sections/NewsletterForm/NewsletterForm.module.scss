@@ -1,0 +1,141 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  min-width: 0;
+  // The row below follows the form's own width, so it fits a footer column and a small card alike
+  container-type: inline-size;
+}
+
+// Email and button on one line when the form is 440px wide or more; stacked, button full width, below
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+
+  @container (min-width: 440px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.email {
+  flex: 1;
+}
+
+.submit {
+  min-height: $control-height;
+  width: 100%;
+
+  @container (min-width: 440px) {
+    width: auto;
+    // Line the button up with the field box, not with its label above
+    margin-top: calc(#{$font-size-xs} * #{$line-height-snug} + #{$spacing-2});
+  }
+}
+
+.consentField {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+// The consent text runs to two or three lines: the box sits by its first line
+.form .consent {
+  align-items: flex-start;
+  width: auto;
+
+  @media (pointer: coarse) {
+    min-height: 44px; // tap target
+  }
+}
+
+.form .consentLabel {
+  color: $color-text-light;
+}
+
+.notice {
+  font-size: $font-size-xs;
+  line-height: $line-height-base;
+  color: $color-text-muted;
+}
+
+.noticeLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: $color-primary;
+  }
+
+  @include focus-ring;
+}
+
+.error {
+  font-size: $font-size-sm;
+  color: $color-error;
+}
+
+.status {
+  font-size: $font-size-sm;
+  color: $color-error;
+
+  // Stays in the accessibility tree, so the message is read out when it appears
+  &:empty {
+    @include visually-hidden;
+  }
+}
+
+.sent {
+  padding: $spacing-4 $spacing-5;
+  border-radius: $radius-lg;
+  background-color: $color-success-light;
+  color: $color-success-dark;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-base;
+}
+
+// Honeypot: off screen, out of the tab order
+.trap {
+  @include visually-hidden;
+}
+
+// ─── On the footer's dark ground ──────────────────────────────────────────────
+
+.dark {
+  .email label {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .consentLabel {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .notice {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .noticeLink {
+    @include focus-ring($color: rgba(255, 255, 255, 0.6));
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  .error,
+  .status,
+  .email [role='alert'] {
+    color: #f19a90;
+  }
+
+  &.sent {
+    background-color: rgba($color-success, 0.16);
+    color: #bfe3c8;
+  }
+}

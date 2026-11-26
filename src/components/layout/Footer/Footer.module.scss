@@ -156,3 +156,49 @@
   color: rgba(255, 255, 255, 0.3);
   text-align: center;
 }
+
+// ─── Newsletter band ──────────────────────────────────────────────────────────
+
+.newsletter {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.newsletterInner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-8;
+  padding-top: $spacing-16;
+  padding-bottom: $spacing-12;
+
+  @include respond-to('lg') {
+    // Same columns as the grid below, so the form starts on the pages column's line
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: $spacing-12;
+    align-items: start;
+
+    > :last-child {
+      grid-column: 2 / -1;
+    }
+  }
+}
+
+.newsletterIntro {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  max-width: 420px;
+}
+
+.newsletterTitle {
+  margin: 0;
+  font-size: $font-size-h5;
+  line-height: $line-height-snug;
+  color: #fff;
+}
+
+.newsletterSub {
+  margin: 0;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: rgba(255, 255, 255, 0.65);
+}

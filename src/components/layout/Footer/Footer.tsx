@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 
+import NewsletterForm from '@/components/sections/NewsletterForm/NewsletterForm';
 import { Facebook, Instagram, Mail, MapPin, Phone } from '@/components/ui/icons';
 import { Link } from '@/i18n/navigation';
 import { sanityClient } from '@/lib/sanity/client';
@@ -12,10 +13,11 @@ import styles from './Footer.module.scss';
 export default async function Footer() {
   const locale = (await getLocale()) as Locale;
 
-  const [t, tNav, tLegal, contact] = await Promise.all([
+  const [t, tNav, tLegal, tNews, contact] = await Promise.all([
     getTranslations('footer'),
     getTranslations('navigation'),
     getTranslations('legal'),
+    getTranslations('newsletter'),
     sanityClient.fetch<ContactPage>(contactPageQuery),
   ]);
 
@@ -23,6 +25,17 @@ export default async function Footer() {
 
   return (
     <footer className={styles.footer}>
+      {/* ── Newsletter ────────────────────────────────────────────────────── */}
+      <section className={styles.newsletter} aria-labelledby="footer-newsletter-title" data-newsletter-footer>
+        <div className={`container ${styles.newsletterInner}`}>
+          <div className={styles.newsletterIntro}>
+            <h2 id="footer-newsletter-title" className={styles.newsletterTitle}>{tNews('title')}</h2>
+            <p className={styles.newsletterSub}>{tNews('sub')}</p>
+          </div>
+          <NewsletterForm source="footer" tone="dark" />
+        </div>
+      </section>
+
       <div className={`container ${styles.grid}`}>
 
         {/* ── Brand ─────────────────────────────────────────────────────── */}
