@@ -24,6 +24,8 @@ interface LottieProps {
   /** Still image shown until the animation is ready, if it fails, and for reduced motion. Sets the size. */
   fallback: ReactNode;
   loop?: boolean;
+  /** Playback speed: 1 as drawn, 0.5 half speed. */
+  speed?: number;
   /** Above the fold: start downloading the animation and its renderer with the page. */
   priority?: boolean;
   className?: string;
@@ -33,7 +35,7 @@ interface LottieProps {
  * Lottie animation over a still fallback. The fallback holds the space and stays for
  * people who prefer reduced motion, so the animation never shifts the layout.
  */
-export default function Lottie({ src, fallback, loop = true, priority = false, className }: LottieProps) {
+export default function Lottie({ src, fallback, loop = true, speed = 1, priority = false, className }: LottieProps) {
   if (priority) {
     // <link rel="preload"> in the page's head. Same mode as the player's own fetch, so it reuses them.
     preload(src, { as: 'fetch', crossOrigin: 'anonymous', media: MOTION_OK });
@@ -68,7 +70,7 @@ export default function Lottie({ src, fallback, loop = true, priority = false, c
     <div className={`${styles.root} ${className ?? ''}`} data-ready={ready}>
       <div className={styles.fallback}>{fallback}</div>
       {!reducedMotion && (
-        <DotLottieReact src={src} autoplay loop={loop} dotLottieRefCallback={setPlayer} className={styles.player} aria-hidden="true" />
+        <DotLottieReact src={src} autoplay loop={loop} speed={speed} dotLottieRefCallback={setPlayer} className={styles.player} aria-hidden="true" />
       )}
     </div>
   );

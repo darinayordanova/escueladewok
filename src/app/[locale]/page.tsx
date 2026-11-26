@@ -11,6 +11,7 @@ import HowItWorks from '@/components/sections/HowItWorks/HowItWorks';
 import PhotoGallery from '@/components/sections/PhotoGallery/PhotoGallery';
 import Testimonials from '@/components/sections/Testimonials/Testimonials';
 import UpcomingClasses from '@/components/sections/UpcomingClasses/UpcomingClasses';
+import ValentinesPromo from '@/components/sections/ValentinesPromo/ValentinesPromo';
 import Link from '@/components/ui/Link/Link';
 import { sanityClient } from '@/lib/sanity/client';
 import { allCoursesQuery, featuredCoursesQuery, homepageQuery } from '@/lib/sanity/queries';
@@ -53,7 +54,9 @@ export default async function HomePage({ params }: HomePageProps) {
   return (
     <>
       {homepage && <Hero data={homepage} locale={locale as Locale} />}
+      {/* Seasonal blocks: each shows only in its own season */}
       <ChristmasPromo locale={locale} />
+      <ValentinesPromo locale={locale} />
  <section className="bg-alt py-10 py-md-16">
         <div className="container">
           <FeaturedSection

@@ -13,10 +13,28 @@
   }
 }
 
+// Twinkling, each star at its own pace (--t) and point in the cycle (--d)
 .star {
   position: absolute;
   height: auto;
   pointer-events: none;
+
+  @include motion {
+    animation: twinkle var(--t) var(--d) ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .inner {

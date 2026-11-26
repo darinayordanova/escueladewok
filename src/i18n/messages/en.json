@@ -492,7 +492,11 @@
         "notification": "You've been given a cooking class",
         "notificationFrom": "Wok Lab · now",
         "mailTitle": "A gift for you",
-        "mailButton": "Book my class"
+        "mailButton": "Book my class",
+        "titleReyes": "In their inbox on Three Kings' morning.",
+        "textReyes": "Choose 6 January as the send date and it arrives at 9:00. Or send it straight away.",
+        "textReyesToday": "Send it now and it arrives in minutes, ready to give today.",
+        "lastMinuteReyes": "Still works on 6 January"
       },
       "printed": {
         "tag": "Printed card",
@@ -502,7 +506,8 @@
         "bow": "Ready to wrap or put under the tree",
         "design": "The same Christmas design",
         "postBy": "Order by {date} for it to arrive before Christmas.",
-        "late": "Printed cards ordered now arrive after Christmas. Choose email for Christmas morning."
+        "late": "Printed cards ordered now arrive after Christmas. Choose email for Christmas morning.",
+        "lateReyes": "Printed cards ordered now won't arrive by 6 January. Choose email to give it on time."
       },
       "example": {
         "to": "Laura",
@@ -585,7 +590,162 @@
     "promo": {
       "title": "This Christmas, gift an unforgettable experience",
       "sub": "A three-hour Asian cooking class in central Madrid, from {price}. By email on Christmas morning or as a printed card.",
-      "cta": "Choose a voucher"
+      "cta": "Choose a voucher",
+      "subReyes": "A three-hour Asian cooking class in central Madrid, from {price}. Still in time for Three Kings' Day: email it today or schedule it for 6 January."
+    }
+  },
+  "valentines": {
+    "meta": {
+      "title": "Valentine's gift vouchers for cooking classes in Madrid",
+      "description": "Give an Asian cooking class for two in Madrid this Valentine's Day. Vouchers from €25, emailed on 14 February or posted as a printed card."
+    },
+    "choose": "Choose a voucher",
+    "hero": {
+      "eyebrow": "Valentine's at Wok Lab",
+      "title": "Cook something <mark>together</mark> this Valentine's.",
+      "sub": "A three-hour Asian cooking class for two at our school in central Madrid, then dinner at the table. Gift vouchers from {price}.",
+      "how": "How it works",
+      "pillPrice": "From {price}",
+      "pillFormats": "Email or printed card",
+      "pillValid": "Valid for 12 months",
+      "artAlt": "A bamboo steamer, steaming"
+    },
+    "scene": {
+      "prompt": "Scroll to open",
+      "eyebrow": "Gift vouchers",
+      "title": "Four ways to give a class",
+      "sub": "Pick one to make it yours.",
+      "hint": "Keep scrolling",
+      "cardLabel": "{name}, {price}: make this voucher"
+    },
+    "cards": {
+      "giftCard25": {
+        "name": "A little something",
+        "detail": "Towards any class"
+      },
+      "giftCard50": {
+        "name": "A good start",
+        "detail": "Towards any class"
+      },
+      "classVoucher": {
+        "name": "One class",
+        "detail": "1 person · 3 hours"
+      },
+      "classVoucherForTwo": {
+        "name": "Class for two",
+        "detail": "2 people · 3 hours"
+      }
+    },
+    "formats": {
+      "eyebrow": "Two formats",
+      "title": "By email or printed. You choose.",
+      "digital": {
+        "tag": "Digital",
+        "title": "In their inbox on Valentine's morning.",
+        "text": "Choose 14 February as the send date and it arrives at 9:00. Or send it straight away, or on any day in the next 30.",
+        "textLater": "From 15 January you can choose 14 February as the send date, and it arrives at 9:00 (Madrid time). Or send it straight away.",
+        "pdf": "A PDF to print or forward",
+        "message": "With your message on it",
+        "lastMinute": "Still works on the day",
+        "notification": "You've been given a cooking class",
+        "notificationFrom": "Wok Lab · now",
+        "mailTitle": "A gift for you",
+        "mailButton": "Book my class",
+        "textToday": "Send it now and it arrives in minutes, ready to give today."
+      },
+      "printed": {
+        "tag": "Printed card",
+        "title": "A card to open.",
+        "text": "We print the voucher and post it in an envelope to any address in Spain. Printing and postage: {fee}.",
+        "keep": "Something to hold and keep",
+        "bow": "Ready to slip in with flowers or a card",
+        "design": "The Valentine's design",
+        "postBy": "Order by {date} for it to arrive before Valentine's Day.",
+        "late": "Printed cards ordered now arrive after Valentine's Day. Choose email for the morning of the 14th."
+      },
+      "example": {
+        "to": "Marta",
+        "from": "Javi",
+        "message": "Happy Valentine's! Our next date is in the kitchen."
+      }
+    },
+    "includes": {
+      "eyebrow": "The class",
+      "title": "What a class includes",
+      "welcome": "A welcome drink when they arrive",
+      "ingredients": "All the ingredients, tools and an apron",
+      "cooking": "Two and a half hours at the wok, with a head chef and an assistant",
+      "dinner": "Dinner at the table, with a glass of wine or beer",
+      "leftovers": "Containers to take any leftovers home",
+      "note": "Up to 6 people a class. Over-16s can come on their own; younger cooks come with an adult.",
+      "photoAlt": "Vegetables cooking in a wok over the flame"
+    },
+    "builder": {
+      "eyebrow": "Your voucher",
+      "title": "Make it yours",
+      "sub": "Choose the amount, write their name and your message, and decide how it arrives. The preview is exactly what they get."
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "As easy as it sounds",
+      "choose": {
+        "title": "Choose",
+        "text": "The amount and the format."
+      },
+      "personalise": {
+        "title": "Personalise",
+        "text": "Their name and your message."
+      },
+      "send": {
+        "title": "Send",
+        "text": "By email, or by post in an envelope."
+      },
+      "cook": {
+        "title": "You cook",
+        "text": "Book a date within 12 months and put on the aprons."
+      }
+    },
+    "date": {
+      "eyebrow": "Date night",
+      "title": "Your next date, at the wok",
+      "text": "Skip the restaurant and book a class for the two of you: three hours cooking side by side, then dinner at the table with a glass of wine."
+    },
+    "faq": {
+      "eyebrow": "Gift vouchers",
+      "title": "Questions,",
+      "accent": "answered.",
+      "redeem": {
+        "q": "How do they use the voucher?",
+        "a": "They choose a class and a date on woklab.es and enter the voucher code at checkout."
+      },
+      "valid": {
+        "q": "How long is it valid?",
+        "a": "12 months from the day you buy it."
+      },
+      "difference": {
+        "q": "What if the class costs more than the voucher?",
+        "a": "They pay the difference at checkout. A class is €89 a person."
+      },
+      "preview": {
+        "q": "Can I see the voucher before I pay?",
+        "a": "Yes. The preview above changes as you type the names and your message."
+      },
+      "otherDay": {
+        "q": "Can it arrive on another day?",
+        "a": "Yes. Pick any day in the next 30 days and it arrives at 9:00 (Madrid time). Or tick that you'll give it yourself, and we email the PDF to you."
+      }
+    },
+    "close": {
+      "title": "Happy Valentine's",
+      "text": "From all of us at Wok Lab.",
+      "buy": "Buy a gift voucher",
+      "courses": "View courses"
+    },
+    "promo": {
+      "title": "This Valentine's, cook something together",
+      "sub": "A three-hour Asian cooking class for two in central Madrid. By email on 14 February or as a printed card. Vouchers from {price}.",
+      "cta": "Choose a voucher",
+      "subToday": "A three-hour Asian cooking class for two in central Madrid, from {price}. Email it now and it arrives in minutes, in time for today."
     }
   }
 }

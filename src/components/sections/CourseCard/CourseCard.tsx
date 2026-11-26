@@ -26,10 +26,12 @@ interface CourseCardProps {
   locale: Locale;
   /** A specific class date. Without it the card shows the course's general facts. */
   session?: CourseCardSession;
+  /** Sends straight to the course's booking form, with a "Book now" button. */
+  book?: boolean;
 }
 
 /** Public course card — a scheduled class (courses page) or a course overview (homepage). */
-export default function CourseCard({ course, locale, session }: CourseCardProps) {
+export default function CourseCard({ course, locale, session, book = false }: CourseCardProps) {
   const t = useTranslations('courses');
   const tDetail = useTranslations('courseDetail');
   const { title, slug, description, image, price, currency, duration, maxParticipants, cuisine } = course;
@@ -40,7 +42,7 @@ export default function CourseCard({ course, locale, session }: CourseCardProps)
   ];
 
   let meta = <CourseCardFacts items={facts} />;
-  let ctaLabel = t('viewCourse');
+  let ctaLabel = book ? t('bookNow') : t('viewCourse');
   let unavailable = false;
 
   if (session) {
@@ -74,7 +76,7 @@ export default function CourseCard({ course, locale, session }: CourseCardProps)
       href={
         session
           ? `/courses/${slug.current}?date=${session.date}&time=${session.startTime}`
-          : `/courses/${slug.current}`
+          : `/courses/${slug.current}${book ? '#book' : ''}`
       }
       title={title[locale]}
       description={description?.[locale] ? portableTextToString(description[locale]) : undefined}

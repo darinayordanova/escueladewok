@@ -59,6 +59,15 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
   const classPhoto = courses.find((course) => course.image && course.cuisine === 'chinese')?.image ?? courses.find((course) => course.image)?.image;
   const treeImage = <Image src="/images/vouchers/christmas-tree.png" alt={t('hero.treeAlt')} width={600} height={773} priority className={styles.treeImage} />;
   const voucher = <ExampleVoucher locale={locale} />;
+  // After 25 December the gift is for Reyes (6 January): the email copy follows the dates
+  const reyes = dates.afterChristmas ? 'Reyes' : '';
+  const digitalText = dates.canScheduleChristmas
+    ? 'text'
+    : !dates.afterChristmas
+      ? 'textLater'
+      : dates.canScheduleReyes
+        ? 'textReyes'
+        : 'textReyesToday';
 
   return (
     <>
@@ -174,12 +183,12 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
               </div>
               <div className={styles.panelCopy}>
                 <span className={styles.tag}>{t('formats.digital.tag')}</span>
-                <h3 className={styles.panelTitle}>{t('formats.digital.title')}</h3>
+                <h3 className={styles.panelTitle}>{t(`formats.digital.title${reyes}`)}</h3>
                 <p className={styles.panelText}>
-                  {dates.canScheduleChristmas ? t('formats.digital.text') : t('formats.digital.textLater')}
+                  {t(`formats.digital.${digitalText}`)}
                 </p>
                 <ul className={styles.ticks}>
-                  {(['pdf', 'message', 'lastMinute'] as const).map((key) => (
+                  {(['pdf', 'message', `lastMinute${reyes}`] as const).map((key) => (
                     <li key={key}><Check size={18} />{t(`formats.digital.${key}`)}</li>
                   ))}
                 </ul>
@@ -206,7 +215,7 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
                   ))}
                 </ul>
                 <p className={`${styles.note} ${dates.postInTime ? '' : styles.noteLate}`}>
-                  {dates.postInTime ? t('formats.printed.postBy', { date: shortDate(dates.postBy) }) : t('formats.printed.late')}
+                  {dates.postInTime ? t('formats.printed.postBy', { date: shortDate(dates.postBy) }) : t(`formats.printed.late${reyes}`)}
                 </p>
               </div>
             </Reveal>

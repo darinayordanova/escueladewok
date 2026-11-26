@@ -1,0 +1,88 @@
+@use '@/styles/variables' as *;
+
+// ─── Price card: a small voucher ──────────────────────────────────────────────
+// Same proportions as the real voucher (595 × 283 pt, design panel 180 pt wide).
+// Sized in em off the card's own font-size (1em = 1/16 of its width), so it scales as one piece.
+
+.card {
+  display: flex;
+  width: 16em;
+  aspect-ratio: 595.28 / 283.46;
+  overflow: hidden;
+  border-radius: 0.5em;
+  background-color: #fff;
+  box-shadow: 0 1.4em 2.6em -0.8em rgba(0, 0, 0, 0.45);
+  text-align: left;
+  container-type: inline-size;
+}
+
+.panel {
+  position: relative;
+  flex-shrink: 0;
+  width: 30.24%; // 180 / 595.28
+  background: var(--voucher-panel) left top / 100% 100% no-repeat;
+}
+
+.art {
+  position: absolute;
+  height: auto;
+}
+
+.logo {
+  position: relative;
+  display: block;
+  width: 62%;
+  height: auto;
+  margin: 12% 0 0 12%;
+
+  // White logo on dark designs, as on the real voucher
+  .dark & {
+    filter: brightness(0) invert(1);
+  }
+}
+
+.details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 0.9em;
+  color: $color-text;
+  font-family: $font-paragraph;
+  line-height: 1.2;
+}
+
+.amount {
+  font-family: $font-heading;
+  font-size: 2.9em;
+  font-weight: $font-weight-bold;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: $color-primary;
+
+  span {
+    margin-left: 0.06em;
+    font-size: 0.5em;
+    vertical-align: 0.6em;
+  }
+}
+
+.name {
+  margin-top: 0.35em;
+  font-size: max(12px, 0.9em);
+  font-weight: $font-weight-bold;
+}
+
+.detail {
+  margin-top: 0.1em;
+  font-size: max(12px, 0.7em);
+  color: $color-text-muted;
+}
+
+// Small cards (two across on a phone) keep just the amount and the name
+@container (max-width: 220px) {
+  .detail {
+    display: none;
+  }
+}

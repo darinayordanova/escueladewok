@@ -94,18 +94,49 @@ export function voucherTotal(key: VoucherKey, format: VoucherFormat): number {
 /** The Christmas season's dates, worked out from today in Madrid. */
 export function christmasDates(now = new Date()) {
   const today = madridToday(now);
-  const year = today.slice(0, 4);
-  const christmas = `${year}-12-25`;
-  const postBy = `${year}-12-15`;
+  const year = Number(today.slice(0, 4));
+  // The season runs into January (to Reyes), so early January still belongs to last year's Christmas
+  const inNewYear = today <= `${year}-01-06`;
+  const seasonYear = inNewYear ? year - 1 : year;
+  const christmas = `${seasonYear}-12-25`;
+  const postBy = `${seasonYear}-12-15`;
+  const reyes = `${seasonYear + 1}-01-06`;
   return {
     christmas,
     postBy,
+    reyes,
+    /** 25 December to 6 January: Christmas can no longer be scheduled, so the gift is now for Reyes. */
+    afterChristmas: today >= christmas,
+    /** 6 January can still be picked as the send date (send dates start tomorrow). */
+    canScheduleReyes: today < reyes && reyes <= voucherSendMaxDate(now),
     /** Printed cards ordered today still arrive before Christmas. */
     postInTime: today <= postBy,
-    /** 25 December is inside the scheduling window, so it can be picked as the send date. */
-    canScheduleChristmas: today <= christmas && christmas <= voucherSendMaxDate(now),
-    /** When the homepage shows the Christmas block: 1 November to 25 December. */
-    isSeason: today >= `${year}-11-01` && today <= christmas,
+    /** 25 December is inside the scheduling window (send dates start tomorrow), so it can be picked. */
+    canScheduleChristmas: today < christmas && christmas <= voucherSendMaxDate(now),
+    /** When the homepage shows the Christmas block: 1 November to 6 January. */
+    isSeason: inNewYear || today >= `${year}-11-01`,
+  };
+}
+
+// ─── Valentine's ──────────────────────────────────────────────────────────────
+
+/** The Valentine's season's dates, worked out from today in Madrid. */
+export function valentinesDates(now = new Date()) {
+  const today = madridToday(now);
+  const year = today.slice(0, 4);
+  const valentines = `${year}-02-14`;
+  const postBy = `${year}-02-07`;
+  return {
+    valentines,
+    postBy,
+    /** Printed cards ordered today still arrive before Valentine's Day. */
+    postInTime: today <= postBy,
+    /** 14 February is inside the scheduling window (send dates start tomorrow), so it can be picked. */
+    canScheduleValentines: today < valentines && valentines <= voucherSendMaxDate(now),
+    /** 14 February itself: too late to schedule, but an email sent now arrives in minutes. */
+    isValentinesDay: today === valentines,
+    /** When the homepage shows the Valentine's block: 15 January to 14 February. */
+    isSeason: today >= `${year}-01-15` && today <= valentines,
   };
 }
 

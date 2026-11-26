@@ -31,7 +31,10 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    return [{ source: '/:locale(en|es)/navidad', destination: '/:locale/christmas', permanent: false }];
+    return [
+      { source: '/:locale(en|es)/navidad', destination: '/:locale/christmas', permanent: false },
+      { source: '/:locale(en|es)/san-valentin', destination: '/:locale/valentines', permanent: false },
+    ];
   },
   async headers() {
     return [
