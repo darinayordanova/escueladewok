@@ -1,8 +1,9 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-import { loadGtm, updateGtmConsent } from '@/lib/analytics/gtm';
+import { loadGtm, trackGtmPageView, updateGtmConsent } from '@/lib/analytics/gtm';
 import { useConsent } from '@/lib/analytics/useConsent';
 
 /** Google's own cookies, cleared when the visitor withdraws that category. */
@@ -27,6 +28,7 @@ function clearGoogleCookies(pattern: RegExp) {
 export default function GoogleTagManager() {
   const consent = useConsent();
   const wasLoaded = useRef(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (consent === 'unknown' || consent === null) return;
@@ -36,6 +38,7 @@ export default function GoogleTagManager() {
       if (!anyGranted) return;
       loadGtm(consent);
       wasLoaded.current = true;
+      trackGtmPageView(); // the page they were on when they accepted
       return;
     }
 
@@ -43,6 +46,14 @@ export default function GoogleTagManager() {
     if (!consent.analytics) clearGoogleCookies(ANALYTICS_COOKIE);
     if (!consent.ads) clearGoogleCookies(ADS_COOKIE);
   }, [consent]);
+
+  // Client-side navigations don't reload the page: count each one. The short wait
+  // lets Next.js set the new page's <title> first.
+  useEffect(() => {
+    if (!wasLoaded.current) return;
+    const timer = window.setTimeout(trackGtmPageView, 100);
+    return () => window.clearTimeout(timer);
+  }, [pathname]);
 
   return null;
 }
