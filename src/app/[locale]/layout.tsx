@@ -10,6 +10,7 @@ import Header from '@/components/layout/Header/Header';
 import MetaPixel from '@/components/layout/MetaPixel/MetaPixel';
 import NewsletterPrompt from '@/components/layout/NewsletterPrompt/NewsletterPrompt';
 import ScrollToTop from '@/components/layout/ScrollToTop';
+import WebAnalytics from '@/components/layout/WebAnalytics/WebAnalytics';
 import CartDrawer from '@/components/ui/CartDrawer/CartDrawer';
 import { CartProvider } from '@/context/CartContext';
 import { routing } from '@/i18n/routing';
@@ -111,6 +112,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <NewsletterPrompt />
         <CookieBanner />
         <MetaPixel />
+        <WebAnalytics />
         <CartDrawer />
       </CartProvider>
     </NextIntlClientProvider>
