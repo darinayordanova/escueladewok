@@ -6,6 +6,7 @@ import { getMessages, getTranslations } from 'next-intl/server';
 
 import CookieBanner from '@/components/layout/CookieBanner/CookieBanner';
 import Footer from '@/components/layout/Footer/Footer';
+import GoogleTagManager from '@/components/layout/GoogleTagManager/GoogleTagManager';
 import Header from '@/components/layout/Header/Header';
 import MetaPixel from '@/components/layout/MetaPixel/MetaPixel';
 import NewsletterPrompt from '@/components/layout/NewsletterPrompt/NewsletterPrompt';
@@ -111,6 +112,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <Footer />
         <NewsletterPrompt />
         <CookieBanner />
+        <GoogleTagManager />
         <MetaPixel />
         <WebAnalytics />
         <CartDrawer />
