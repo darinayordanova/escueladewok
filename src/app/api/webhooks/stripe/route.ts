@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 
+import { schedulePreClassEmails } from '@/lib/bookings/preClassEmails';
 import {
   sendConfirmationEmail,
   sendOwnerNotificationEmail,
@@ -34,6 +35,9 @@ export async function POST(request: Request) {
     console.error('Stripe webhook signature verification failed:', message);
     return NextResponse.json({ error: `Webhook error: ${message}` }, { status: 400 });
   }
+
+  // Test-mode checkouts are never saved to Sanity (see /api/checkout), so there's nothing to update
+  if (!event.livemode) return NextResponse.json({ received: true, ignored: 'test mode' });
 
   switch (event.type) {
     case 'checkout.session.completed':
@@ -137,6 +141,7 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
           [`attendees[_key == "${key}"].customerEmail`]:          customerEmail,
           [`attendees[_key == "${key}"].customerPhone`]:          customerPhone,
           [`attendees[_key == "${key}"].dietaryRestrictions`]:    dietaryRestrictions,
+          [`attendees[_key == "${key}"].locale`]:                 locale,
         }).commit(),
       ),
     ),
@@ -165,6 +170,10 @@ async function handleSessionCompleted(session: Stripe.Checkout.Session) {
   const currency = session.currency?.toUpperCase() ?? '';
 
   await Promise.allSettled([
+    // A class less than ~2 days away gets its pre-class email scheduled now; later ones wait for the daily cron
+    schedulePreClassEmails({ stripeSessionId: session.id }).catch((err) =>
+      console.error('Failed to schedule pre-class email:', err instanceof Error ? err.message : err),
+    ),
     // Ticked the newsletter box beside the pay button: send the double opt-in email.
     // The booking is already saved, so confirming won't issue a first-purchase code.
     meta.newsletter_opt_in === '1' && customerEmail
@@ -222,6 +231,9 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   const customField = (key: string) => session.custom_fields?.find((f) => f.key === key)?.text?.value ?? '';
   const recipientName    = meta.recipient_name || customField('recipient_name') || customerName;
   const senderName       = meta.sender_name || customerName;
+  // A printed card is posted to the recipient, and Stripe's "billing same as shipping" box is ticked
+  // by default, so the billing name is often the recipient's. Use the "From" name they typed instead.
+  const buyerName        = format === 'physical' ? senderName : customerName;
   const recipientEmail   = meta.recipient_email || customField('recipient_email');
   // Emailed to the recipient at 9:00 Madrid time on the chosen date, or straight away
   const sendAt           = recipientEmail ? voucherSendAt(meta.send_date) : undefined;
@@ -283,7 +295,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
     voucherType: voucherKey,
     amount,
     currency,
-    buyerName: customerName,
+    buyerName,
     buyerEmail: customerEmail,
     senderName,
     recipientName,
@@ -303,7 +315,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   });
 
   // 5. Send emails
-  const sharedData = { buyerName: customerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer, locale, format, sendAt, sendOn };
+  const sharedData = { buyerName, buyerEmail: customerEmail, recipientName, recipientEmail, voucherTypeName, code: promoCode.code, amount, currency, validUntil: expiresAtDisplay, pdfBuffer, locale, format, sendAt, sendOn };
 
   await Promise.allSettled([
     // The buyer ticked the newsletter box: send the double opt-in email (to the buyer, never the recipient)
@@ -330,7 +342,7 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
           recipientName,
           senderName,
           message: recipientMessage || undefined,
-          buyerName: customerName,
+          buyerName,
           buyerEmail: customerEmail,
           shippingLines,
           shippingPhone,
@@ -342,22 +354,26 @@ async function handleVoucherSessionCompleted(session: Stripe.Checkout.Session) {
   await sanityWriteClient.patch(sanityDoc._id).set({ sentAt: new Date().toISOString() }).commit();
 }
 
+// An abandoned checkout is removed rather than kept as a nameless "cancelled" row.
+// A session it leaves with no attendees (it was the only one) is deleted too.
 async function handleSessionExpired(session: Stripe.Checkout.Session) {
   const sessions = await sanityWriteClient.fetch<{ _id: string; attendeeKeys: string[] }[]>(
-    `*[_type == "courseSession" && defined(attendees[stripeSessionId == $sessionId])] {
+    `*[_type == "courseSession" && defined(attendees[stripeSessionId == $sessionId && status == "pending"])] {
       _id,
-      "attendeeKeys": attendees[stripeSessionId == $sessionId][]._key
+      "attendeeKeys": attendees[stripeSessionId == $sessionId && status == "pending"][]._key
     }`,
     { sessionId: session.id },
   );
 
   await Promise.all(
-    sessions.flatMap(({ _id, attendeeKeys }) =>
-      attendeeKeys.map((key) =>
-        sanityWriteClient.patch(_id).set({
-          [`attendees[_key == "${key}"].status`]: 'cancelled',
-        }).commit(),
-      ),
-    ),
+    sessions.map(async ({ _id, attendeeKeys }) => {
+      const updated = await sanityWriteClient
+        .patch(_id)
+        .unset(attendeeKeys.map((key) => `attendees[_key == "${key}"]`))
+        .commit<{ attendees?: unknown[] }>();
+      if (!updated.attendees?.length) {
+        await sanityWriteClient.delete(_id).catch((err) => console.error(`Could not delete empty session ${_id}:`, err));
+      }
+    }),
   );
 }

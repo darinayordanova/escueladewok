@@ -135,6 +135,9 @@ export async function POST(request: Request) {
       expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
     });
 
+    // Test-mode checkouts (cs_test_…) are never saved, so they can't clutter the live sessions
+    if (!stripeSession.livemode) return NextResponse.json({ url: stripeSession.url });
+
     // ── Create pending attendees in Sanity ────────────────────────────────────
     for (const item of items) {
       const endTime = item.endTime || addMinutesToTime(item.startTime, item.duration);

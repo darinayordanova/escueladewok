@@ -115,6 +115,14 @@ export const course = defineType({
       description: 'Optional PDF brochure — shown as a download link on corporate course pages',
     }),
     defineField({
+      name: 'recipes',
+      title: 'Recipe book (PDF)',
+      type: 'file',
+      group: 'details',
+      options: { accept: 'application/pdf' },
+      description: 'Sent to everyone who took the class, in the thank-you email the morning after. Name it WokLab_TitleInES_TitleInEN.pdf',
+    }),
+    defineField({
       name: 'timeSlots',
       title: 'Time Slots',
       type: 'array',

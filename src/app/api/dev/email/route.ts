@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 
-import { buildConfirmationEmail, buildVoucherBuyerEmail, buildVoucherRecipientEmail } from '@/lib/email';
+import { buildConfirmationEmail, buildPostClassEmail, buildPreClassEmail, buildVoucherBuyerEmail, buildVoucherRecipientEmail } from '@/lib/email';
 import { SITE_URL } from '@/lib/seo';
 import { formatVoucherTypeName } from '@/lib/vouchers';
 import type { Locale } from '@/types';
 
 // Dev-only route — blocked in production. Shows a customer email without sending it.
-// http://localhost:3000/api/dev/email?type=booking|booking2|buyer|recipient&locale=en|es
+// http://localhost:3000/api/dev/email?type=booking|booking2|preclass|preclass2|postclass|postclass2|buyer|recipient&locale=en|es
 // In the inbox, images load from the live site; here they load from this dev server.
 export async function GET(request: Request) {
   if (process.env.NODE_ENV === 'production') {
@@ -36,7 +36,32 @@ export async function GET(request: Request) {
   ];
 
   const email =
-    type === 'buyer'
+    type === 'postclass' || type === 'postclass2'
+      ? buildPostClassEmail({
+          recipientName: 'Jane Smith',
+          courseName: classes[0].courseName,
+          // postclass2: a course without a recipe book, and no upcoming classes
+          recipes: type === 'postclass' ? { url: 'https://cdn.sanity.io/files/example.pdf', filename: 'WokLab_El-Alma-de-Hanoi_The-Soul-of-Hanoi.pdf' } : undefined,
+          reviewUrl: 'https://g.page/r/example/review',
+          nextClasses:
+            type === 'postclass'
+              ? [
+                  { courseName: 'Soul of Seoul: Bold Korean Flavors', date: '2026-12-09', startTime: '19:30', url: '#' },
+                  { courseName: 'The Art of the Steamer: Mastering Bao & Dim Sum', date: '2026-12-12', startTime: '11:00', url: '#' },
+                ]
+              : [],
+          locale,
+        })
+      : type === 'preclass' || type === 'preclass2'
+      ? buildPreClassEmail({
+          recipientName: 'Jane Smith',
+          ...classes[0],
+          // preclass2: with what they wrote in the allergies box at checkout
+          dietaryRestrictions: type === 'preclass2' ? 'Vegetarian, allergic to peanuts' : '',
+          when: 'tomorrow',
+          locale,
+        })
+      : type === 'buyer'
       ? buildVoucherBuyerEmail({ ...voucher, buyerEmail: 'jane@example.com' })
       : type === 'recipient'
         ? buildVoucherRecipientEmail(voucher)

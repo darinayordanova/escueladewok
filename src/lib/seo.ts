@@ -81,6 +81,9 @@ export const STUDIO_GEO = {
   longitude: -3.7137,
 } as const;
 
+/** Opens the "write a review" box on the studio's Google profile (from Google Business Profile → "Ask for reviews"). */
+export const GOOGLE_REVIEW_URL = 'https://g.page/r/CY8vTG6iyNIUEAE/review';
+
 /** Social profile URLs for the LocalBusiness `sameAs` property. */
 export const SOCIAL_LINKS = [
   'https://www.instagram.com/woklab.es',

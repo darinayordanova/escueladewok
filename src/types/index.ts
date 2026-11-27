@@ -273,6 +273,17 @@ export interface Attendee {
   amount: number;
   currency: string;
   bookedAt: string;
+  dietaryRestrictions?: string;
+  /** The language they booked in */
+  locale?: Locale;
+  /** When the pre-class email is or was sent */
+  preClassEmailAt?: string;
+  preClassEmailId?: string;
+  /** "YYYY-MM-DD HH:MM" of the class the email was scheduled for */
+  preClassEmailFor?: string;
+  /** When the thank-you email (recipes, review) is or was sent */
+  postClassEmailAt?: string;
+  postClassEmailId?: string;
 }
 
 export interface CourseSession {

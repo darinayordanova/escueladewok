@@ -515,3 +515,277 @@ export async function sendConfirmationEmail(data: ConfirmationEmailData) {
   if (error) throw new Error(`Failed to send confirmation email: ${error.message}`);
   return result;
 }
+
+// ─── Pre-class reminder (24 hours before) ─────────────────────────────────────
+
+export interface PreClassEmailData {
+  to: string;
+  recipientName: string;
+  courseName: string;
+  /** "YYYY-MM-DD" */
+  courseDate: string;
+  timeRange: string;
+  quantity: number;
+  /** What they wrote in the allergies box at checkout, if anything */
+  dietaryRestrictions?: string;
+  /** The class is tomorrow (the usual case), or today (booked less than a day before) */
+  when: 'today' | 'tomorrow';
+  locale: Locale;
+  /** ISO time for Resend to send it; omitted to send straight away */
+  sendAt?: string;
+}
+
+const PRE_CLASS_TEXT: Record<Locale, {
+  subject: (course: string, when: 'today' | 'tomorrow') => string;
+  preheader: string;
+  eyebrow: (when: 'today' | 'tomorrow') => string;
+  heading: (name: string) => string;
+  intro: (course: string, when: 'today' | 'tomorrow', time: string) => string;
+  date: string;
+  time: string;
+  guests: string;
+  askTitle: string;
+  ask: string;
+  questions: string[];
+  youToldUs: (text: string) => string;
+  noReply: string;
+  whereTitle: string;
+  metro: string;
+  directions: string;
+  wearTitle: string;
+  wear: string;
+  signOff: string;
+}> = {
+  en: {
+    subject: (course, when) => `${when === 'today' ? 'Today' : 'Tomorrow'} at Wok Lab: ${course}`,
+    preheader: 'Allergies, spice level, how to find us and what to wear.',
+    eyebrow: (when) => (when === 'today' ? 'Your class is today' : 'Your class is tomorrow'),
+    heading: (name) => (name ? `Almost wok time, ${name}!` : 'Almost wok time!'),
+    intro: (course, when, time) =>
+      `<strong>${course}</strong> is ${when} at <strong>${time}</strong>. Here's a quick question so we can get your station ready, and everything you need to find us.`,
+    date: 'Date',
+    time: 'Time',
+    guests: 'Guests',
+    askTitle: 'Tell us about your tastes',
+    ask: 'Reply to this email and let us know, for you and anyone coming with you:',
+    questions: [
+      '<strong>Allergies or intolerances</strong>: nuts, shellfish, gluten, soy, sesame…',
+      '<strong>Diet</strong>: vegetarian, vegan, no pork, no alcohol…',
+      '<strong>Spice tolerance</strong>: mild, medium, or bring on the heat?',
+    ],
+    youToldUs: (text) => `At checkout you told us: <em>“${text}”</em>. Anything to add, or anyone else in your group?`,
+    noReply: "If there's nothing to tell us, no need to reply.",
+    whereTitle: 'How to get there',
+    metro: 'By metro: <strong>Noviciado</strong> (line 2) or <strong>Plaza de España</strong> (lines 2, 3 and 10). Both are a short walk away.',
+    directions: 'Open in Google Maps',
+    wearTitle: 'What to wear',
+    wear: "Comfortable clothes that you don't mind getting a little splashed, and closed-toe shoes. If you have long hair, bring something to tie it back.",
+    signOff: 'See you in the kitchen,<br />The Wok Lab team',
+  },
+  es: {
+    subject: (course, when) => `${when === 'today' ? 'Hoy' : 'Mañana'} en Wok Lab: ${course}`,
+    preheader: 'Alergias, nivel de picante, cómo llegar y qué ponerte.',
+    eyebrow: (when) => (when === 'today' ? 'Tu clase es hoy' : 'Tu clase es mañana'),
+    heading: (name) => (name ? `¡Ya casi es hora de wok, ${name}!` : '¡Ya casi es hora de wok!'),
+    intro: (course, when, time) =>
+      `<strong>${course}</strong> es ${when === 'today' ? 'hoy' : 'mañana'} a las <strong>${time}</strong>. Te hacemos una pregunta rápida para preparar tu puesto, y aquí tienes todo lo necesario para llegar.`,
+    date: 'Fecha',
+    time: 'Hora',
+    guests: 'Personas',
+    askTitle: 'Cuéntanos tus gustos',
+    ask: 'Responde a este email y cuéntanos, sobre ti y sobre quien venga contigo:',
+    questions: [
+      '<strong>Alergias o intolerancias</strong>: frutos secos, marisco, gluten, soja, sésamo…',
+      '<strong>Dieta</strong>: vegetariana, vegana, sin cerdo, sin alcohol…',
+      '<strong>Tolerancia al picante</strong>: suave, medio, ¿o cuanto más mejor?',
+    ],
+    youToldUs: (text) => `Al pagar nos indicaste: <em>«${text}»</em>. ¿Quieres añadir algo, o hay alguien más en tu grupo?`,
+    noReply: 'Si no hay nada que contarnos, no hace falta que respondas.',
+    whereTitle: 'Cómo llegar',
+    metro: 'En metro: <strong>Noviciado</strong> (línea 2) o <strong>Plaza de España</strong> (líneas 2, 3 y 10). Las dos están a pocos minutos a pie.',
+    directions: 'Abrir en Google Maps',
+    wearTitle: 'Qué ponerte',
+    wear: 'Ropa cómoda que no te importe manchar un poco y calzado cerrado. Si tienes el pelo largo, trae algo para recogértelo.',
+    signOff: 'Nos vemos en la cocina,<br />El equipo de Wok Lab',
+  },
+};
+
+export function buildPreClassEmail(data: Omit<PreClassEmailData, 'to' | 'sendAt'>) {
+  const locale: Locale = data.locale === 'es' ? 'es' : 'en';
+  const t = PRE_CLASS_TEXT[locale];
+  const course = escapeHtml(data.courseName);
+  const startTime = data.timeRange.split(/\s*[–-]\s*/)[0] ?? data.timeRange;
+  const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+  const dietary = data.dietaryRestrictions?.trim();
+
+  const body = [
+    eyebrow(t.eyebrow(data.when)),
+    heading(t.heading(escapeHtml(firstName(data.recipientName)))),
+    paragraph(t.intro(course, data.when, startTime)),
+    detailsTable([
+      [t.date, capitalise(longDate(data.courseDate, locale))],
+      [t.time, data.timeRange],
+      [t.guests, String(data.quantity)],
+    ]),
+    subheading(t.askTitle),
+    dietary ? paragraph(t.youToldUs(escapeHtml(dietary))) : '',
+    paragraph(t.ask),
+    steps(t.questions),
+    note(t.noReply),
+    subheading(t.whereTitle),
+    paragraph(`<strong>Wok Lab</strong><br />${STUDIO_LINE}`),
+    paragraph(t.metro),
+    button(t.directions, DIRECTIONS_URL),
+    subheading(t.wearTitle),
+    paragraph(t.wear),
+    signOff(t.signOff),
+  ].join('');
+
+  return { subject: t.subject(data.courseName, data.when), html: emailLayout({ locale, preheader: t.preheader, body }) };
+}
+
+export async function sendPreClassEmail(data: PreClassEmailData) {
+  const { data: result, error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.to,
+    replyTo: REPLY_TO,
+    ...(data.sendAt ? { scheduledAt: data.sendAt } : {}),
+    ...buildPreClassEmail(data),
+  });
+
+  if (error) throw new Error(`Failed to send pre-class email: ${error.message}`);
+  return result;
+}
+
+/** Stop a scheduled email. An email already sent (or already cancelled) can't be, and that's fine. */
+export async function cancelScheduledEmail(id: string) {
+  const { error } = await resend.emails.cancel(id);
+  return error ? { ok: false as const, message: error.message } : { ok: true as const };
+}
+
+// ─── Post-class thank-you (the morning after) ─────────────────────────────────
+
+export interface NextClass {
+  courseName: string;
+  /** "YYYY-MM-DD" */
+  date: string;
+  startTime: string;
+  url: string;
+}
+
+export interface PostClassEmailData {
+  to: string;
+  recipientName: string;
+  courseName: string;
+  /** The course's recipe book, attached and linked; some courses have none */
+  recipes?: { url: string; filename: string };
+  reviewUrl: string;
+  nextClasses: NextClass[];
+  locale: Locale;
+  /** ISO time for Resend to send it; omitted to send straight away */
+  sendAt?: string;
+}
+
+const POST_CLASS_TEXT: Record<Locale, {
+  subject: (course: string, hasRecipes: boolean) => string;
+  preheader: (hasRecipes: boolean) => string;
+  eyebrow: string;
+  heading: (name: string) => string;
+  intro: (course: string) => string;
+  recipesTitle: string;
+  recipes: string;
+  recipesButton: string;
+  reviewTitle: string;
+  review: string;
+  reviewButton: string;
+  nextTitle: string;
+  next: string;
+  noNext: string;
+  allClasses: string;
+  signOff: string;
+}> = {
+  en: {
+    subject: (course, hasRecipes) => (hasRecipes ? `Your recipes from ${course}` : 'Thank you for cooking with us!'),
+    preheader: (hasRecipes) => (hasRecipes ? 'Thank you for joining us. Your recipe book is inside.' : 'Thank you for joining us at Wok Lab.'),
+    eyebrow: 'Thank you',
+    heading: (name) => (name ? `Thanks for joining us, ${name}!` : 'Thanks for joining us!'),
+    intro: (course) => `We hope you had as much fun at <strong>${course}</strong> as we did. It was a pleasure cooking with you.`,
+    recipesTitle: 'Your recipes',
+    recipes: "Everything we cooked, so you can make it again at home. The recipe book is attached as a PDF, in Spanish and English.",
+    recipesButton: 'Download the recipes',
+    reviewTitle: 'Enjoyed the class?',
+    review: "A review on Google helps other people find us, and means a lot to our small team. It only takes a minute.",
+    reviewButton: 'Leave a Google review',
+    nextTitle: 'Your next class',
+    next: 'Ready for another round? Coming up soon:',
+    noNext: 'Ready for another round? New dates are added all the time.',
+    allClasses: 'See all classes',
+    signOff: 'Hope to see you again soon,<br />The Wok Lab team',
+  },
+  es: {
+    subject: (course, hasRecipes) => (hasRecipes ? `Tus recetas de ${course}` : '¡Gracias por cocinar con nosotros!'),
+    preheader: (hasRecipes) => (hasRecipes ? 'Gracias por venir. Dentro tienes tu recetario.' : 'Gracias por venir a Wok Lab.'),
+    eyebrow: 'Gracias',
+    heading: (name) => (name ? `¡Gracias por venir, ${name}!` : '¡Gracias por venir!'),
+    intro: (course) => `Esperamos que hayas disfrutado de <strong>${course}</strong> tanto como nosotros. Fue un placer cocinar contigo.`,
+    recipesTitle: 'Tus recetas',
+    recipes: 'Todo lo que cocinamos, para que puedas repetirlo en casa. Tienes el recetario adjunto en PDF, en español e inglés.',
+    recipesButton: 'Descargar las recetas',
+    reviewTitle: '¿Te gustó la clase?',
+    review: 'Una reseña en Google ayuda a que otras personas nos encuentren, y significa mucho para nuestro pequeño equipo. Solo lleva un minuto.',
+    reviewButton: 'Dejar una reseña en Google',
+    nextTitle: 'Tu próxima clase',
+    next: '¿Repetimos? Estas son las próximas clases:',
+    noNext: '¿Repetimos? Añadimos nuevas fechas constantemente.',
+    allClasses: 'Ver todas las clases',
+    signOff: 'Esperamos verte pronto,<br />El equipo de Wok Lab',
+  },
+};
+
+export function buildPostClassEmail(data: Omit<PostClassEmailData, 'to' | 'sendAt'>) {
+  const locale: Locale = data.locale === 'es' ? 'es' : 'en';
+  const t = POST_CLASS_TEXT[locale];
+  const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+  const hasRecipes = Boolean(data.recipes);
+
+  const body = [
+    eyebrow(t.eyebrow),
+    heading(t.heading(escapeHtml(firstName(data.recipientName)))),
+    paragraph(t.intro(escapeHtml(data.courseName))),
+    ...(data.recipes
+      ? [subheading(t.recipesTitle), paragraph(t.recipes), button(t.recipesButton, data.recipes.url)]
+      : []),
+    subheading(t.reviewTitle),
+    paragraph(t.review),
+    button(t.reviewButton, data.reviewUrl),
+    subheading(t.nextTitle),
+    paragraph(data.nextClasses.length ? t.next : t.noNext),
+    data.nextClasses.length
+      ? detailsTable(
+          data.nextClasses.map((c) => [
+            `${capitalise(longDate(c.date, locale))}<br />${c.startTime}`,
+            `<a href="${c.url}" style="color:#860A15;text-decoration:none;">${escapeHtml(c.courseName)}</a>`,
+          ]),
+        )
+      : '',
+    button(t.allClasses, siteLink(locale, '/courses')),
+    signOff(t.signOff),
+  ].join('');
+
+  return { subject: t.subject(data.courseName, hasRecipes), html: emailLayout({ locale, preheader: t.preheader(hasRecipes), body }) };
+}
+
+export async function sendPostClassEmail(data: PostClassEmailData) {
+  const { data: result, error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: data.to,
+    replyTo: REPLY_TO,
+    // Resend fetches the PDF from the Sanity CDN
+    ...(data.recipes ? { attachments: [{ path: data.recipes.url, filename: data.recipes.filename }] } : {}),
+    ...(data.sendAt ? { scheduledAt: data.sendAt } : {}),
+    ...buildPostClassEmail(data),
+  });
+
+  if (error) throw new Error(`Failed to send post-class email: ${error.message}`);
+  return result;
+}
