@@ -24,7 +24,7 @@ const BUILDER_ID = 'make';
 /** The classes suggested as a date, by slug, in order. */
 const DATE_CLASSES = ['the-art-of-the-steamer-mastering-bao-and-dim-sum', 'japanese-classics-katsu-and-gyoza'];
 const STEPS = ['choose', 'personalise', 'send', 'cook'] as const;
-const INCLUDES = ['welcome', 'ingredients', 'cooking', 'dinner', 'leftovers'] as const;
+const INCLUDES = ['welcome', 'ingredients', 'cooking', 'dinner'] as const;
 const QUESTIONS = ['redeem', 'valid', 'difference', 'preview', 'otherDay'] as const;
 
 // Each card in the envelope wears one of the real voucher designs

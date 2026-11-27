@@ -211,8 +211,8 @@
     },
     "faq": {
       "eyebrow": "Antes de venir",
-      "title": "Preguntas,",
-      "accent": "respondidas."
+      "title": "Preguntas y",
+      "accent": "respuestas."
     },
     "perPersonLabel": "por persona"
   },
@@ -340,8 +340,8 @@
     "pageTitle": "Tarjetas Regalo",
     "pageDescription": "Regala una clase de cocina en Wok Lab. Elige un importe, escribe una nota y envíala por email o como tarjeta impresa.",
     "options": {
-      "giftCard25": "Para cualquier clase",
-      "giftCard50": "Para cualquier clase",
+      "giftCard25": "Vale descuento",
+      "giftCard50": "Vale descuento",
       "classVoucher": "Una clase de cocina",
       "classVoucherForTwo": "Una clase para dos"
     },
@@ -366,7 +366,7 @@
       "checkout": "Continuar al pago",
       "processing": "Abriendo el pago…",
       "error": "No hemos podido abrir el pago. Inténtalo de nuevo.",
-      "terms": "Válido 12 meses en cualquier clase. Pago seguro con Stripe.",
+      "terms": "Válido hasta 12 meses en cualquier clase. Pago seguro con Stripe.",
       "design": "Diseño",
       "recipientEmail": "Email del destinatario",
       "recipientEmailPlaceholder": "su@email.com",
@@ -445,12 +445,12 @@
     "choose": "Elegir un vale",
     "hero": {
       "eyebrow": "Navidad en Wok Lab",
-      "title": "Regala una <mark>experiencia</mark>, no una cosa.",
-      "sub": "Una clase de cocina asiática de tres horas en nuestra escuela del centro de Madrid y después la cena en la mesa. Vales regalo desde {price}.",
+      "title": "Regala una <mark>experiencia</mark>.",
+      "sub": "Una clase de cocina asiática de tres horas en nuestra escuela del centro de Madrid.<br></br>Vales regalo desde {price}.",
       "how": "Cómo funciona",
       "pillPrice": "Desde {price}",
       "pillFormats": "Por email o tarjeta impresa",
-      "pillValid": "Válido 12 meses",
+      "pillValid": "Valido hasta 12 meses",
       "treeAlt": "Un árbol de Navidad decorado con farolillos rojos"
     },
     "scene": {
@@ -464,11 +464,11 @@
     "cards": {
       "giftCard25": {
         "name": "Un detalle",
-        "detail": "Para cualquier clase"
+        "detail": "Vale descuento "
       },
       "giftCard50": {
         "name": "Un buen comienzo",
-        "detail": "Para cualquier clase"
+        "detail": "Vale descuento "
       },
       "classVoucher": {
         "name": "Una clase",
@@ -522,8 +522,8 @@
       "welcome": "Una bebida de bienvenida al llegar",
       "ingredients": "Todos los ingredientes, utensilios y un delantal",
       "cooking": "Dos horas y media en el wok, con un chef principal y un ayudante",
-      "dinner": "La cena en la mesa, con una copa de vino o cerveza",
-      "leftovers": "Envases para llevarse lo que sobre",
+      "dinner": "Al finalizar la clase de cocina asiática, nos sentaremos a disfrutar de nuestras propias creaciones culinarias, con una copa de vino o una cerveza incluida",
+     
       "note": "Hasta 6 personas por clase. A partir de 16 años pueden venir solos; los menores, con un adulto.",
       "photoAlt": "Verduras salteándose en un wok al fuego"
     },
@@ -558,7 +558,8 @@
       "cta": "Hablar con nosotros"
     },
     "faq": {
-      "title": "Preguntas,",
+      "title": "Preguntas y",
+      "accent": "respuestas.",
       "redeem": {
         "q": "¿Cómo se usa el vale?",
         "a": "Eligen una clase y una fecha en woklab.es e introducen el código del vale al pagar."
@@ -579,8 +580,7 @@
         "q": "¿Puede llegar otro día?",
         "a": "Sí. Elige cualquier día de los próximos 30 y llega a las 9:00 (hora de Madrid). O marca que se lo darás tú y te enviamos el PDF a ti."
       },
-      "eyebrow": "Vales regalo",
-      "accent": "resueltas."
+      "eyebrow": "Vales regalo"
     },
     "close": {
       "title": "Felices fiestas",
@@ -608,7 +608,7 @@
       "how": "Cómo funciona",
       "pillPrice": "Desde {price}",
       "pillFormats": "Por email o tarjeta impresa",
-      "pillValid": "Válido 12 meses",
+      "pillValid": "Válido hasta 12 meses",
       "artAlt": "Una vaporera de bambú humeando"
     },
     "scene": {
@@ -622,11 +622,11 @@
     "cards": {
       "giftCard25": {
         "name": "Un detalle",
-        "detail": "Para cualquier clase"
+        "detail": "Vale descuento"
       },
       "giftCard50": {
         "name": "Un buen comienzo",
-        "detail": "Para cualquier clase"
+        "detail": "Vale descuento"
       },
       "classVoucher": {
         "name": "Una clase",
@@ -638,8 +638,8 @@
       }
     },
     "formats": {
-      "eyebrow": "Dos formatos",
-      "title": "Por email o impreso. Tú eliges.",
+      "eyebrow": "Dos formatos disponibles",
+      "title": "Tarjeta regalo online o física. ¡Tú eliges!",
       "digital": {
         "tag": "Digital",
         "title": "En su bandeja la mañana de San Valentín.",
@@ -677,13 +677,12 @@
       "ingredients": "Todos los ingredientes, utensilios y un delantal",
       "cooking": "Dos horas y media en el wok, con un chef principal y un ayudante",
       "dinner": "La cena en la mesa, con una copa de vino o cerveza",
-      "leftovers": "Envases para llevarse lo que sobre",
-      "note": "Hasta 6 personas por clase. A partir de 16 años pueden venir solos; los menores, con un adulto.",
+      "note": "Máximo de 6 personas por clase. Los mayores de 16 años pueden asistir por su cuenta; los menores de esa edad deberán venir acompañados de un adulto.",
       "photoAlt": "Verduras salteándose en un wok al fuego"
     },
     "builder": {
       "eyebrow": "Tu vale",
-      "title": "Hazlo tuyo",
+      "title": "Personaliza tu experiencia",
       "sub": "Elige el importe, escribe su nombre y tu mensaje, y decide cómo llega. La vista previa es exactamente lo que recibe."
     },
     "how": {
@@ -713,8 +712,8 @@
     },
     "faq": {
       "eyebrow": "Vales regalo",
-      "title": "Preguntas,",
-      "accent": "resueltas.",
+      "title": "Preguntas y",
+      "accent": "respuestas.",
       "redeem": {
         "q": "¿Cómo se usa el vale?",
         "a": "Eligen una clase y una fecha en woklab.es e introducen el código del vale al pagar."

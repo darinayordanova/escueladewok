@@ -23,7 +23,7 @@ const BUILDER_ID = 'make';
 /** "Talk to us" in the team band: the team-building class, at its enquiry form. */
 const TEAM_CLASS_HREF = '/courses/culinary-connections-the-team-build-experience#book';
 const STEPS = ['choose', 'personalise', 'send', 'cook'] as const;
-const INCLUDES = ['welcome', 'ingredients', 'cooking', 'dinner', 'leftovers'] as const;
+const INCLUDES = ['welcome', 'ingredients', 'cooking', 'dinner'] as const;
 const QUESTIONS = ['redeem', 'valid', 'difference', 'preview', 'otherDay'] as const;
 
 // Each card in the envelope wears one of the real voucher designs
@@ -79,7 +79,7 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
             <h1 className={styles.heroTitle}>
               {t.rich('hero.title', { mark: (chunks) => <span className={styles.mark}>{chunks}</span> })}
             </h1>
-            <p className={styles.heroSub}>{t('hero.sub', { price: price(lowest) })}</p>
+            <p className={styles.heroSub}>{t.rich('hero.sub', { price: price(lowest), br: () => <br /> })}</p>
             <div className={styles.heroActions}>
               <Button href={`#${BUILDER_ID}`} color="white" size="md">
                 {t('choose')} <ArrowRight size={18} />
@@ -187,11 +187,7 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
                 <p className={styles.panelText}>
                   {t(`formats.digital.${digitalText}`)}
                 </p>
-                <ul className={styles.ticks}>
-                  {(['pdf', 'message', `lastMinute${reyes}`] as const).map((key) => (
-                    <li key={key}><Check size={18} />{t(`formats.digital.${key}`)}</li>
-                  ))}
-                </ul>
+                
               </div>
             </Reveal>
 
@@ -209,11 +205,7 @@ export default async function ChristmasLanding({ courses, locale, initial }: Chr
                 <span className={styles.tag}>{t('formats.printed.tag')}</span>
                 <h3 className={styles.panelTitle}>{t('formats.printed.title')}</h3>
                 <p className={styles.panelText}>{t('formats.printed.text', { fee: price(PHYSICAL_FEE) })}</p>
-                <ul className={styles.ticks}>
-                  {(['keep', 'bow', 'design'] as const).map((key) => (
-                    <li key={key}><Check size={18} />{t(`formats.printed.${key}`)}</li>
-                  ))}
-                </ul>
+                
                 <p className={`${styles.note} ${dates.postInTime ? '' : styles.noteLate}`}>
                   {dates.postInTime ? t('formats.printed.postBy', { date: shortDate(dates.postBy) }) : t(`formats.printed.late${reyes}`)}
                 </p>
