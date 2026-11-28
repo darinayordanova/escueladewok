@@ -40,3 +40,27 @@
   font-weight: $font-weight-semibold;
   font-variant-numeric: tabular-nums;
 }
+
+// Typed value: a plain number box inside the pill, underlined while editing
+.input {
+  width: 44px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: $radius-sm;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: $font-size-base;
+  outline: none;
+  transition: background-color $transition-fast;
+
+  // A soft grey box while editing; no border or red ring
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    background-color: $color-background-alt;
+    box-shadow: none;
+    outline: none;
+  }
+}

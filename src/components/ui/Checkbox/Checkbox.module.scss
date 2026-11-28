@@ -4,7 +4,8 @@
 .checkbox {
   position: relative;
   display: inline-flex;
-  align-items: center;
+  // The box sits on the label's first line, also when the label wraps
+  align-items: flex-start;
   gap: $spacing-2;
   width: fit-content;
   cursor: pointer;
@@ -24,6 +25,8 @@
   place-items: center;
   width: 18px;
   height: 18px;
+  // Centred on the first line: (line height 14px × 1.4 − 18px) / 2
+  margin-top: 1px;
   border: 1px solid $color-border;
   border-radius: $radius-sm;
   background-color: #fff;

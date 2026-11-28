@@ -1,0 +1,972 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Corporate events page. Photos take the course pages' two rounded corners; the formats lie
+// on a dark table as polaroids; the steps are the Christmas page's; the form sits in the dark card.
+
+$photo-radius: 0 50px 0 50px; // CourseHero's photo corners
+$gold: #FBE8EA; // light pink accent on dark and red grounds
+$step-pace: 350ms;
+
+.cover {
+  object-fit: cover;
+}
+
+// Highlighted words in italics, as on the Christmas page
+.mark {
+  font-style: italic;
+}
+
+.eyebrow {
+  @include eyebrow;
+  margin: 0 0 $spacing-3;
+  color: $color-primary-light;
+}
+
+.eyebrowOnDark {
+  color: rgba(#fff, 0.72);
+}
+
+// ─── Section rhythm ───────────────────────────────────────────────────────────
+
+.section {
+  padding-block: $spacing-16;
+
+  @include respond-to('lg') {
+    padding-block: $spacing-24;
+  }
+}
+
+.alt {
+  background-color: $color-background-alt;
+}
+
+// Sections linked from buttons stop below the sticky header
+.anchor {
+  scroll-margin-top: $header-height-sm;
+
+  @include respond-to('md') {
+    scroll-margin-top: $header-height;
+  }
+}
+
+.head {
+  max-width: 680px;
+  margin-bottom: $spacing-10;
+
+  @include respond-to('lg') {
+    margin-bottom: $spacing-12;
+  }
+}
+
+.title {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(34px, 4.6vw, 56px);
+  font-weight: $font-weight-bold;
+  line-height: 1.05;
+  letter-spacing: $letter-spacing-heading;
+  color: $color-text;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 34em;
+  margin: $spacing-4 0 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.tag {
+  font-size: 13px;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-snug;
+  color: $color-primary;
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+
+.hero {
+  padding-block: $spacing-12 $spacing-16;
+
+  @include respond-to('lg') {
+    display: flex;
+    align-items: center;
+    min-height: calc(100svh - #{$header-height});
+    padding-block: $spacing-12;
+  }
+}
+
+.heroGrid {
+  display: grid;
+  gap: $spacing-10;
+  width: 100%;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: $spacing-16;
+  }
+}
+
+.heroCopy {
+  @include motion {
+    animation: corporate-rise 700ms $ease-out both;
+  }
+}
+
+.heroTitle {
+  margin: 0 0 $spacing-6;
+  font-family: $font-heading;
+  font-size: clamp(2.5rem, 1.6rem + 3.4vw, 4.5rem);
+  font-weight: $font-weight-medium;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: $color-text;
+  text-wrap: balance;
+
+  .mark {
+    color: $color-primary;
+  }
+}
+
+.heroSub {
+  max-width: 32em;
+  margin: 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-3;
+  margin-block: $spacing-8;
+}
+
+// The Christmas hero's pills, on white
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 7px 14px;
+    border-radius: $radius-full;
+    background-color: $color-background-alt;
+    color: $color-text;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.heroPhoto {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: $photo-radius;
+  background-color: $color-background-alt;
+
+  @include motion {
+    animation: corporate-rise 700ms 120ms $ease-out both;
+  }
+}
+
+@keyframes corporate-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ─── Formats: three polaroids on a dark table ─────────────────────────────────
+
+.formatsSection {
+  overflow: hidden;
+  padding-top: $spacing-16;
+  background-color: $color-background-dark;
+  color: #fff;
+
+  @include respond-to('lg') {
+    padding-top: $spacing-24;
+  }
+}
+
+.formatsHead {
+  display: grid;
+  gap: $spacing-4;
+  margin-bottom: $spacing-12;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+    gap: $spacing-12;
+    margin-bottom: $spacing-16;
+  }
+}
+
+.formatsTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(44px, 7vw, 96px);
+  font-weight: $font-weight-medium;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.formatsLede {
+  max-width: 30em;
+  margin: 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: rgba(#fff, 0.75);
+}
+
+.polaroids {
+  display: grid;
+  gap: $spacing-12;
+  margin: 0;
+  padding: 0 0 $spacing-20;
+  list-style: none;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacing-8;
+  }
+
+  @include respond-to('lg') {
+    gap: $spacing-10;
+    padding-bottom: $spacing-24;
+  }
+}
+
+.polaroidItem {
+  display: flex;
+
+  // The middle one sits lower, like photos dropped on a table
+  @include respond-to('md') {
+    &:nth-child(2) {
+      margin-top: $spacing-12;
+    }
+  }
+}
+
+.polaroid {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 14px 14px 0;
+  background-color: #FDFBF8;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+  color: $color-text;
+  text-decoration: none;
+  transform: rotate(var(--tilt, 0deg));
+
+  @include motion {
+    transition: transform 450ms cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 450ms ease;
+  }
+
+  &:hover {
+    box-shadow: 0 34px 60px rgba(0, 0, 0, 0.55);
+    transform: rotate(0deg) translateY(-8px);
+
+    .polaroidPhoto img {
+      transform: scale(1.04);
+    }
+
+    .polaroidCta svg {
+      transform: translateX(4px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid $gold;
+    outline-offset: 6px;
+  }
+}
+
+.polaroidPhoto {
+  position: relative;
+  display: block;
+  aspect-ratio: 8 / 9;
+  overflow: hidden;
+  background-color: #2A1C1C;
+
+  img {
+    @include motion {
+      transition: transform 600ms $ease-out;
+    }
+  }
+}
+
+.polaroidNumber {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  font-family: $font-heading;
+  font-size: 64px;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+
+.polaroidBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: $spacing-2;
+  padding: $spacing-5 $spacing-2 $spacing-6;
+}
+
+.polaroidTitle {
+  font-family: $font-heading;
+  font-size: $font-size-h5;
+  font-weight: $font-weight-medium;
+  line-height: 1.1;
+}
+
+.polaroidText {
+  flex: 1;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+.polaroidCta {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin-top: $spacing-2;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+
+  svg {
+    @include motion {
+      transition: transform $transition-base;
+    }
+  }
+}
+
+// ─── The session: the Christmas page's steps ──────────────────────────────────
+// On view: the dashed line draws from step 1 to 4, and each number fills red and pops
+// as the line reaches it, with its text rising in behind.
+
+.sessionSection {
+  --ring: #fff;
+}
+
+.steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $spacing-10 $spacing-6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      right: 12.5%;
+      left: 12.5%;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, $color-primary 0 10px, transparent 10px 18px);
+      transform-origin: left;
+    }
+
+    @include motion {
+      &[data-inview='false']::before {
+        transform: scaleX(0);
+      }
+
+      &[data-inview='true']::before {
+        transition: transform calc(#{$step-pace} * 3) linear;
+      }
+    }
+  }
+}
+
+.step {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: $spacing-2;
+  text-align: center;
+}
+
+.stepNumber {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 2px solid $color-primary;
+  border-radius: 50%;
+  background-color: $color-primary;
+  box-shadow: 0 0 0 8px var(--ring);
+  color: #fff;
+  font-family: $font-heading;
+  font-size: 26px;
+  font-weight: $font-weight-bold;
+}
+
+.stepTitle {
+  margin: $spacing-2 0 0;
+  font-family: $font-heading;
+  font-size: $font-size-h6;
+  font-weight: $font-weight-bold;
+  color: $color-text;
+}
+
+.stepText {
+  max-width: 15em;
+  margin: 0;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+@include motion {
+  .steps[data-inview='false'] {
+    .stepNumber {
+      background-color: var(--ring);
+      color: $color-primary;
+      transform: scale(0.6);
+    }
+
+    .stepTitle,
+    .stepText {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .steps[data-inview='true'] {
+    .stepNumber {
+      transition:
+        background-color 300ms ease calc(var(--i) * #{$step-pace}),
+        color 300ms ease calc(var(--i) * #{$step-pace}),
+        transform 500ms cubic-bezier(0.3, 1.6, 0.5, 1) calc(var(--i) * #{$step-pace});
+    }
+
+    .stepTitle,
+    .stepText {
+      transition:
+        opacity 500ms ease calc(var(--i) * #{$step-pace} + 150ms),
+        transform 500ms $ease-out calc(var(--i) * #{$step-pace} + 150ms);
+    }
+  }
+}
+
+// ─── Menus ────────────────────────────────────────────────────────────────────
+
+.menusGrid {
+  display: grid;
+  gap: $spacing-12;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    align-items: center;
+    gap: $spacing-16;
+  }
+}
+
+// Beside the menus on a desktop only; on a phone the cards come straight after the heading
+.menusPhoto {
+  position: relative;
+  display: none;
+  aspect-ratio: 9 / 7;
+  margin-top: $spacing-10;
+  overflow: hidden;
+  border-radius: $photo-radius;
+
+  @include respond-to('lg') {
+    display: block;
+  }
+}
+
+// ─── Cook for Others ──────────────────────────────────────────────────────────
+
+.impact {
+  overflow: hidden;
+  padding-block: $spacing-16;
+  background: $festive-red;
+  color: #fff;
+
+  @include respond-to('lg') {
+    padding-block: $spacing-24;
+  }
+}
+
+.impactGrid {
+  display: grid;
+  gap: $spacing-16;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: $spacing-16;
+  }
+}
+
+.impactTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(40px, 5.6vw, 80px);
+  font-weight: $font-weight-medium;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+
+  .mark {
+    color: $gold;
+  }
+}
+
+.impactText {
+  max-width: 32em;
+  margin: $spacing-6 0 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: rgba(#fff, 0.9);
+}
+
+// Three short steps joined by a dashed line
+.impactSteps {
+  display: grid;
+  gap: $spacing-4;
+  margin: $spacing-10 0;
+  padding: 0;
+  list-style: none;
+
+  @include respond-to('md') {
+    position: relative;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: $spacing-6;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      // From the first circle's centre to the last one's (three columns, two gaps)
+      right: calc((100% - 2 * #{$spacing-6}) / 3 - 19px);
+      left: 19px;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, rgba(#fff, 0.5) 0 8px, transparent 8px 14px);
+    }
+  }
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    font-weight: $font-weight-semibold;
+    line-height: $line-height-snug;
+
+    @include respond-to('md') {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}
+
+.impactStepNumber {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #fff;
+  color: $color-primary;
+  font-family: $font-heading;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+}
+
+.impactVisual {
+  position: relative;
+  width: min(100%, 460px);
+  margin-inline: auto;
+}
+
+.impactPhoto {
+  position: relative;
+  aspect-ratio: 9 / 10;
+  overflow: hidden;
+  border-radius: $photo-radius;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+// ─── Enquiry: the dark card ───────────────────────────────────────────────────
+
+.enquirySection {
+  padding-block: $spacing-12 $spacing-16;
+
+  @include respond-to('lg') {
+    padding-block: $spacing-20 $spacing-24;
+  }
+}
+
+.enquiryCard {
+  display: grid;
+  gap: $spacing-10;
+  padding: clamp(20px, 5vw, 64px);
+  border-radius: 32px;
+  background-color: $color-background-dark;
+  color: #fff;
+
+  @include respond-to('lg') {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+    gap: $spacing-12;
+  }
+}
+
+// Stays in view beside the long form
+.enquiryCopy {
+  @include respond-to('lg') {
+    position: sticky;
+    top: calc(#{$header-height} + #{$spacing-8});
+  }
+}
+
+.enquiryEyebrow {
+  @include eyebrow;
+  margin: 0 0 $spacing-3;
+  color: $gold;
+}
+
+.enquiryTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(36px, 4.4vw, 56px);
+  font-weight: $font-weight-medium;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+
+  .mark {
+    color: $gold;
+  }
+}
+
+.enquiryLede {
+  margin: $spacing-5 0 0;
+  font-size: $font-size-lg;
+  line-height: $line-height-base;
+  color: rgba(#fff, 0.78);
+}
+
+.enquiryNote {
+  margin: $spacing-4 0 0;
+  font-size: $font-size-sm;
+  line-height: $line-height-base;
+  color: rgba(#fff, 0.6);
+}
+
+.contacts {
+  display: grid;
+  gap: $spacing-3;
+  margin: $spacing-8 0 0;
+  padding: $spacing-6 0 0;
+  border-top: 1px solid rgba(#fff, 0.14);
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    color: rgba(#fff, 0.85);
+
+    svg {
+      flex-shrink: 0;
+      color: $gold;
+    }
+  }
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
+    transition: text-decoration-color $transition-fast;
+
+    &:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+// ─── The form (CorporateEventForm) ────────────────────────────────────────────
+
+.formCard {
+  display: grid;
+  gap: $spacing-8;
+  min-width: 0;
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: 24px;
+  background-color: #fff;
+  color: $color-text;
+}
+
+// "1 · The event": a numbered part; a rule between parts
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  & + & {
+    padding-top: $spacing-8;
+    border-top: 1px solid $color-border-subtle;
+  }
+}
+
+.groupLegend {
+  display: flex;
+  float: left;
+  align-items: center;
+  gap: $spacing-3;
+  width: 100%;
+  margin-bottom: $spacing-5;
+  padding: 0;
+  font-family: $font-heading;
+  font-size: $font-size-h6;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+}
+
+.groupNumber {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: $color-primary;
+  color: #fff;
+  font-family: $font-paragraph;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+}
+
+.groupBody {
+  display: grid;
+  clear: both;
+  gap: $spacing-5;
+}
+
+.formRow,
+.formRow3 {
+  display: grid;
+  gap: $spacing-5;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.formRow3 {
+  @include respond-to('xl') {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// Chips wrap onto more lines rather than scroll, in the narrower form column
+.wrapGroup > div,
+.wrapChips {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.wrapChips label {
+  gap: 6px;
+}
+
+.field {
+  display: grid;
+  gap: $spacing-2;
+}
+
+.stepperRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  min-height: $control-height;
+}
+
+.stepperText {
+  font-size: $font-size-base;
+  color: $color-text-light;
+}
+
+.checkList {
+  display: grid;
+  gap: $spacing-3;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: $spacing-3;
+    padding: 0;
+  }
+}
+
+// "Show 3 more" under the first extras
+.moreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: $spacing-1;
+  padding: $spacing-1 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+
+  svg {
+    transition: transform $transition-fast;
+  }
+}
+
+.moreOpen {
+  transform: rotate(180deg);
+}
+
+.consents {
+  display: grid;
+  gap: $spacing-4;
+  padding-top: $spacing-6;
+  border-top: 1px solid $color-border-subtle;
+}
+
+.fieldError {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $color-error;
+}
+
+.privacyLink {
+  justify-self: start;
+  font-size: $font-size-sm;
+  color: $color-primary;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.submitRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    > button {
+      width: 100%;
+    }
+  }
+}
+
+.requiredNote {
+  margin: 0;
+  font-size: 13px;
+  color: $color-text-muted;
+}
+
+.formStatus {
+  margin: -$spacing-4 0 0;
+  font-size: $font-size-sm;
+  color: $color-text-light;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.sentCard {
+  justify-items: start;
+  gap: $spacing-4;
+}
+
+.sentTick {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: $color-success-light;
+  color: $color-success-dark;
+}
+
+.sentTitle {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: $font-size-h4;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+}
+
+.sentText {
+  margin: 0;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $color-text-light;
+}
+
+// ─── Questions ────────────────────────────────────────────────────────────────
+
+// CourseFAQ reads its edges from these (set by the course page there); match .container here
+.faqFrame {
+  --page-max-width: #{$max-width};
+  --section-px: #{$container-padding-mobile};
+
+  @include respond-to('md') {
+    --section-px: #{$container-padding};
+  }
+}

@@ -1,0 +1,295 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Two printed menus (the course page's menu card) stacked. The one behind sits up and to the
+// right, tilted, so its top edge shows; a swap swings the front card out to the left and
+// tucks it behind while the back one rises into place.
+
+$swap-time: 850ms;
+
+.wrap {
+  display: grid;
+  justify-items: center;
+  gap: $spacing-6;
+}
+
+.stack {
+  --back: translate(18px, -22px) rotate(3.5deg);
+  display: grid;
+  width: 100%;
+  max-width: 560px;
+  padding: 26px 22px 0 0;
+
+  @include respond-to('md') {
+    --back: translate(34px, -30px) rotate(4deg);
+    padding: 34px 38px 0 0;
+  }
+}
+
+// ─── The card (as CourseMenu's .paper, on a solid ground so the stack doesn't show through) ───
+
+.paper {
+  position: relative;
+  grid-area: 1 / 1;
+  padding: $spacing-10 $spacing-6;
+  overflow: hidden;
+  background-color: #FCFAF9;
+  border: 1px solid rgba($color-primary, 0.28);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 18px 45px rgba(78, 37, 41, 0.12);
+
+  @include respond-to('md') {
+    padding: 56px 60px;
+  }
+
+  // Inner printed rule
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba($color-primary, 0.18);
+    pointer-events: none;
+  }
+
+  // Faint ornament watermark
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('/images/pattern2.svg') center / min(380px, 80%) no-repeat;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+}
+
+.front {
+  z-index: 2;
+}
+
+.back {
+  z-index: 1;
+  transform: var(--back);
+  background-color: #F3ECEB;
+  cursor: pointer;
+
+  @include motion {
+    transition: transform $transition-base;
+  }
+
+  // The card behind leans out a little more on hover, asking to be picked
+  &:hover {
+    transform: var(--back) translate(6px, -6px) rotate(1deg);
+  }
+
+  .head,
+  .ornament,
+  .list {
+    opacity: 0.55;
+  }
+}
+
+.backHit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+// ─── The swap ─────────────────────────────────────────────────────────────────
+
+@include motion {
+  .goingBack {
+    animation: go-back $swap-time cubic-bezier(0.45, 0, 0.2, 1) both;
+  }
+
+  .comingForward {
+    animation: come-forward $swap-time cubic-bezier(0.45, 0, 0.2, 1) both;
+  }
+}
+
+@keyframes go-back {
+  0% {
+    z-index: 3;
+    transform: none;
+  }
+
+  45% {
+    z-index: 3;
+    transform: translate(-50%, 5%) rotate(-11deg);
+  }
+
+  55% {
+    z-index: 1;
+    transform: translate(-48%, 4%) rotate(-9deg) scale(0.97);
+  }
+
+  100% {
+    z-index: 1;
+    transform: var(--back);
+  }
+}
+
+@keyframes come-forward {
+  0% {
+    z-index: 1;
+    transform: var(--back);
+  }
+
+  45% {
+    z-index: 1;
+    transform: translate(14%, -8%) rotate(7deg) scale(0.98);
+  }
+
+  55% {
+    z-index: 2;
+    transform: translate(12%, -6%) rotate(6deg);
+  }
+
+  100% {
+    z-index: 2;
+    transform: none;
+  }
+}
+
+// ─── Inside the card ──────────────────────────────────────────────────────────
+
+.head {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.label {
+  @include eyebrow;
+  margin: 0 0 $spacing-2;
+  color: $color-primary;
+}
+
+.name {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.5rem);
+  font-weight: $font-weight-medium;
+  line-height: 1.05;
+  color: $color-text;
+}
+
+// Ornament flanked by fading rules
+.ornament {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 15px;
+  margin-block: $spacing-6 $spacing-4;
+
+  &::before,
+  &::after {
+    content: '';
+    height: 1px;
+    background-image: linear-gradient(to right, rgba($color-primary, 0), rgba($color-primary, 0.45));
+  }
+
+  &::after {
+    background-image: linear-gradient(to left, rgba($color-primary, 0), rgba($color-primary, 0.45));
+  }
+
+  img {
+    opacity: 0.9;
+  }
+}
+
+.list {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 15px;
+  padding: 20px 0;
+  border-top: 1px dashed rgba($color-primary, 0.18);
+
+  &:last-child {
+    border-bottom: 1px dashed rgba($color-primary, 0.18);
+  }
+}
+
+.number {
+  padding-top: 6px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-primary;
+}
+
+.dish {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  font-weight: $font-weight-medium;
+  line-height: 1.1;
+  color: $color-text;
+}
+
+.description {
+  margin: $spacing-1 0 0;
+  font-size: $font-size-sm;
+  font-style: italic;
+  line-height: 1.6;
+  color: $color-text-muted;
+}
+
+// ─── The swap button under the stack ──────────────────────────────────────────
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: 10px 18px;
+  border: 1px solid rgba($color-primary, 0.3);
+  border-radius: $radius-full;
+  background-color: #fff;
+  font: inherit;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  cursor: pointer;
+
+  @include motion {
+    transition: transform $transition-fast, border-color $transition-fast, background-color $transition-fast;
+  }
+
+  &:hover {
+    border-color: $color-primary;
+    transform: translateY(-2px);
+
+    .hintIcon {
+      transform: rotate(180deg);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 3px;
+  }
+}
+
+.hintIcon {
+  display: inline-flex;
+
+  @include motion {
+    transition: transform 500ms $ease-out;
+  }
+}

@@ -1,0 +1,110 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+@use '@/styles/forms' as *;
+
+.root {
+  position: relative;
+}
+
+// Closed: the same pill as Input and Select
+.control {
+  @include control-box;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible,
+  &.isOpen {
+    @include control-focus;
+    outline: none;
+  }
+}
+
+.value,
+.placeholder {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: $color-text-muted;
+}
+
+.chevron {
+  @include control-icon;
+  color: $color-text-muted;
+  transition: transform $transition-fast, color $transition-fast;
+
+  .isOpen & {
+    color: $color-primary;
+    transform: rotate(180deg);
+  }
+}
+
+.hasError {
+  @include control-error;
+}
+
+// Open: a white rounded panel, as the DatePicker's
+.list {
+  position: absolute;
+  top: calc(100% + #{$spacing-2});
+  left: 0;
+  z-index: $z-dropdown;
+  width: 100%;
+  min-width: 200px;
+  max-height: 280px;
+  margin: 0;
+  padding: $spacing-2;
+  overflow-y: auto;
+  list-style: none;
+  background-color: $color-background;
+  border: 1px solid $color-border-subtle;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  outline: none;
+
+  @include motion {
+    animation: dropdown-in 140ms ease;
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  padding: 10px $spacing-3;
+  border-radius: $radius-md;
+  color: $color-text;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+
+  &[aria-selected='true'] {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.isActive {
+  background-color: $color-background-alt;
+}
+
+.tick {
+  flex-shrink: 0;
+  color: $color-primary;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

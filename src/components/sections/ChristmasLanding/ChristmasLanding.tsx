@@ -20,8 +20,8 @@ import EnvelopeScene from './EnvelopeScene';
 import ExampleVoucher from './ExampleVoucher';
 
 const BUILDER_ID = 'make';
-/** "Talk to us" in the team band: the team-building class, at its enquiry form. */
-const TEAM_CLASS_HREF = '/courses/culinary-connections-the-team-build-experience#book';
+/** "Talk to us" in the team band: the corporate page's enquiry form. */
+const TEAM_CLASS_HREF = '/corporate#enquire';
 const STEPS = ['choose', 'personalise', 'send', 'cook'] as const;
 const INCLUDES = ['welcome', 'ingredients', 'cooking', 'dinner'] as const;
 const QUESTIONS = ['redeem', 'valid', 'difference', 'preview', 'otherDay'] as const;

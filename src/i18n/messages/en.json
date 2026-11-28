@@ -827,5 +827,255 @@
     "acceptAll": "Accept all",
     "save": "Save preferences",
     "close": "Close"
+  },
+  "corporatePage": {
+    "meta": {
+      "title": "Team-building cooking classes in Madrid",
+      "description": "Private Asian cooking classes for companies: in our Madrid kitchen, at your office or online. Groups of 8 to 30, three hours, two event menus."
+    },
+    "hero": {
+      "title": "The team that <mark>cooks together</mark>, stays together",
+      "sub": "Team-building cooking classes in Madrid.",
+      "facts": {
+        "group": "Groups of 8 to 30",
+        "duration": "3 hours",
+        "language": "In English or Spanish"
+      },
+      "request": "Request a proposal",
+      "menus": "See the menus",
+      "photoAlt": "A group around a table folding dumplings, with bowls of filling and dipping sauce",
+      "eyebrow": "Corporate events"
+    },
+    "formats": {
+      "title": "Pick your kitchen",
+      "lead": "The same chefs and recipes wherever you cook. Not sure which one fits? Tell us about your team and we suggest one.",
+      "wokLab": {
+        "tag": "Calle del Conde Duque, Madrid",
+        "title": "Cook in our kitchen",
+        "text": "Take over Wok Lab for a private session. The cooking stations, the dining table and the washing-up are ours.",
+        "photoAlt": "A chef showing a small group how to prepare a dish in the Wok Lab kitchen"
+      },
+      "office": {
+        "tag": "We come to you",
+        "title": "Cook at your office or venue",
+        "text": "Our chefs bring the woks, hobs and ingredients to your office, an offsite or an event space.",
+        "photoAlt": "A chef slicing cucumber beside a wok on a portable hob"
+      },
+      "online": {
+        "tag": "Live from our kitchen",
+        "title": "Cook along online",
+        "text": "A live class streamed from our kitchen. Your team cooks along from home, on the video platform you already use.",
+        "photoAlt": "Vegetables being stir-fried in a wok on a gas burner"
+      },
+      "eyebrow": "Three formats",
+      "pick": "Choose this format"
+    },
+    "session": {
+      "title": "How a three-hour session runs",
+      "lead": "Every event follows the same four steps, whatever the menu.",
+      "steps": {
+        "welcome": {
+          "title": "Meet the chefs",
+          "text": "Aprons on. The group splits into cooking stations and we walk through the ingredients."
+        },
+        "prep": {
+          "title": "Prep in teams",
+          "text": "Each station folds, chops and mixes its part of the menu."
+        },
+        "wok": {
+          "title": "Cook on the wok",
+          "text": "High heat and fast hands, with a chef beside every station."
+        },
+        "eat": {
+          "title": "Eat together",
+          "text": "Everyone sits down to share what the teams cooked."
+        }
+      },
+      "eyebrow": "The session"
+    },
+    "menus": {
+      "title": "Two menus for private events",
+      "lead": "Pick one when you request a proposal, or let us choose for your group. Tell us about allergies and diets and we adapt the dishes.",
+      "label": "Menu {number}",
+      "photoAlt": "A plate of freshly folded gyoza",
+      "foldFryFeast": {
+        "name": "Fold, Fry, Feast",
+        "dishes": {
+          "gyoza": {
+            "name": "Gyoza",
+            "text": "Hand-folded dumplings, juicy and full of flavour."
+          },
+          "springRolls": {
+            "name": "Spring rolls",
+            "text": "Golden, crispy rolls with a satisfying crunch."
+          },
+          "wontons": {
+            "name": "Deep-fried wontons",
+            "text": "Crunchy little parcels, made for dipping."
+          },
+          "mango": {
+            "name": "Mango sticky rice",
+            "text": "Sweet coconut sticky rice with ripe, juicy mango."
+          }
+        }
+      },
+      "spicePullSlurp": {
+        "name": "Spice, Pull, Slurp",
+        "dishes": {
+          "cucumber": {
+            "name": "Spicy cucumber salad",
+            "text": "Cool, crunchy cucumber with a garlicky, spicy kick."
+          },
+          "springRolls": {
+            "name": "Spring rolls",
+            "text": "Golden, crispy rolls with a satisfying crunch."
+          },
+          "noodles": {
+            "name": "Hand-pulled noodles",
+            "text": "Fresh noodles stretched by your own hands, chewy and springy."
+          },
+          "mango": {
+            "name": "Mango sticky rice",
+            "text": "Sweet coconut sticky rice with ripe, juicy mango."
+          }
+        }
+      },
+      "eyebrow": "The menus",
+      "hint": "Tap the menu behind to swap",
+      "show": "Show menu {number}: {name}"
+    },
+    "impact": {
+      "title": "Cook double. <mark>Give half.</mark>",
+      "text": "Your team can cook twice as much, and we donate half to local shelters in Madrid. Tick it in the form and we plan the extra portions into your session.",
+      "photoAlt": "A chef guiding a guest as she stir-fries vegetables in a wok",
+      "eyebrow": "Cook for Others",
+      "steps": {
+        "cook": "Your team cooks twice as much",
+        "pack": "We set half aside",
+        "give": "It goes to a shelter in Madrid"
+      },
+      "cta": "Add it to your request"
+    },
+    "enquiry": {
+      "title": "Let's plan your team's <mark>feast.</mark>",
+      "lead": "Tell us about your group. We reply by email with available dates and a price for your event.",
+      "price": "Price on request: it depends on the format, the group size and the menu.",
+      "form": {
+        "format": "Format",
+        "formats": {
+          "wokLab": "At Wok Lab",
+          "office": "At your office or venue",
+          "online": "Online",
+          "unsure": "Not sure yet"
+        },
+        "groupSize": "Group size",
+        "fewer": "One person fewer",
+        "more": "One person more",
+        "people": "{count} people",
+        "date": "Preferred date",
+        "menu": "Menu",
+        "menuHelp": "Help us choose",
+        "dietary": "Allergies, dietary requirements or other notes",
+        "dietaryHint": "For example: 2 vegetarians, 1 gluten-free, 1 nut allergy",
+        "name": "Full name",
+        "email": "Work email",
+        "phone": "Phone",
+        "message": "Anything else?",
+        "privacy": "I accept the <link>privacy policy</link> and agree to Wok Lab contacting me about this request.",
+        "submit": "Send request",
+        "sending": "Sending",
+        "invalid": "{count, plural, one {One field needs your attention.} other {# fields need your attention.}}",
+        "failed": "We couldn't send your request. Try again, or email {email}.",
+        "errors": {
+          "name": "Write your name",
+          "email": "Write an email address with an @",
+          "privacy": "Tick the box to agree to the privacy policy",
+          "date": "Pick a preferred date"
+        },
+        "sentTitle": "Your proposal request is in.",
+        "sentText": "We reply to {email} with available dates and a price.",
+        "again": "Send another request",
+        "groups": {
+          "event": "The event",
+          "when": "When",
+          "food": "Food",
+          "extras": "Extras",
+          "you": "You"
+        },
+        "altDate": "Alternative date",
+        "timeOfDay": "Time of day",
+        "times": {
+          "morning": "Morning",
+          "lunch": "Lunch",
+          "afternoon": "Afternoon",
+          "evening": "Evening",
+          "flexible": "Flexible"
+        },
+        "flexibleDates": "Our dates are flexible",
+        "language": "Class language",
+        "languages": {
+          "en": "English",
+          "es": "Spanish",
+          "both": "Both, for a mixed group"
+        },
+        "budget": "Budget per person",
+        "budgetHint": "Optional",
+        "extras": "Add to the event",
+        "extraOptions": {
+          "impact": "Cook for Others: double portions for Madrid shelters",
+          "drinks": "Extended drinks package",
+          "gifts": "Take-home gifts for guests",
+          "speech": "Time for a talk or presentation",
+          "invoice": "Company invoice needed"
+        },
+        "source": "How did you hear about us?",
+        "sources": {
+          "google": "Google",
+          "instagram": "Instagram",
+          "referral": "Colleague or referral",
+          "class": "Took a class",
+          "other": "Other"
+        },
+        "sourcePick": "Choose one",
+        "messageHint": "Goals for the day, accessibility needs, a surprise you are planning",
+        "marketing": "Send me occasional news and offers. Unsubscribe at any time.",
+        "required": "* Required. No payment needed to request a proposal.",
+        "extrasMore": "Show {count} more",
+        "extrasFewer": "Show fewer"
+      },
+      "eyebrow": "Request a proposal",
+      "address": "Calle del Conde Duque, Madrid"
+    },
+    "faq": {
+      "title": "Questions,",
+      "items": {
+        "experience": {
+          "q": "Does anyone need cooking experience?",
+          "a": "No. The chefs guide every step, from the first chop to the plate."
+        },
+        "diets": {
+          "q": "Can you cater for allergies and diets?",
+          "a": "Yes, for most allergies and diets when you tell us in advance. Note them in the form and we adapt the dishes."
+        },
+        "language": {
+          "q": "Is the class in English or Spanish?",
+          "a": "Either one, or both for a mixed team. Tell us in the notes."
+        },
+        "size": {
+          "q": "How many people can join?",
+          "a": "From 8 to 30 people. Tell us your number in the form."
+        },
+        "price": {
+          "q": "How much does it cost?",
+          "a": "The price depends on the format, the group size and the menu. Request a proposal and we send you a quote by email."
+        },
+        "where": {
+          "q": "Where is your kitchen?",
+          "a": "On Calle del Conde Duque in central Madrid, a short walk from the Noviciado and Plaza de España metro stations."
+        }
+      },
+      "eyebrow": "Team events",
+      "accent": "answered."
+    }
   }
 }
