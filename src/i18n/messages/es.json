@@ -523,7 +523,6 @@
       "ingredients": "Todos los ingredientes, utensilios y un delantal",
       "cooking": "Dos horas y media en el wok, con un chef principal y un ayudante",
       "dinner": "Al finalizar la clase de cocina asiática, nos sentaremos a disfrutar de nuestras propias creaciones culinarias, con una copa de vino o una cerveza incluida",
-     
       "note": "Hasta 6 personas por clase. A partir de 16 años pueden venir solos; los menores, con un adulto.",
       "photoAlt": "Verduras salteándose en un wok al fuego"
     },
@@ -828,5 +827,255 @@
     "acceptAll": "Aceptar todas",
     "save": "Guardar preferencias",
     "close": "Cerrar"
+  },
+  "corporatePage": {
+    "meta": {
+      "title": "Team building con clases de cocina en Madrid",
+      "description": "Clases privadas de cocina asiática para empresas: en nuestra cocina de Madrid, en vuestra oficina u online. Grupos de 8 a 30, tres horas, dos menús para eventos."
+    },
+    "hero": {
+      "title": "El equipo que <mark>cocina unido</mark>, permanece unido",
+      "sub": "Team building con clases de cocina en Madrid.",
+      "facts": {
+        "group": "Grupos de 8 a 30",
+        "duration": "3 horas",
+        "language": "En español o en inglés"
+      },
+      "request": "Pide una propuesta",
+      "menus": "Ver los menús",
+      "photoAlt": "Un grupo alrededor de una mesa cerrando empanadillas, con cuencos de relleno y salsa",
+      "eyebrow": "Eventos de empresa"
+    },
+    "formats": {
+      "title": "Elige tu cocina",
+      "lead": "Los mismos chefs y las mismas recetas, cocinéis donde cocinéis. ¿No sabes cuál encaja? Cuéntanos cómo es tu equipo y te proponemos uno.",
+      "wokLab": {
+        "tag": "Calle del Conde Duque, Madrid",
+        "title": "Cocinad en nuestra cocina",
+        "text": "Reservad Wok Lab para una sesión privada. Los puestos de cocina, la mesa y fregar los platos corren de nuestra cuenta.",
+        "photoAlt": "Un chef enseña a un grupo pequeño a preparar un plato en la cocina de Wok Lab"
+      },
+      "office": {
+        "tag": "Vamos nosotros",
+        "title": "Cocinad en vuestra oficina o espacio",
+        "text": "Nuestros chefs llevan los woks, los fuegos y los ingredientes a vuestra oficina, a un offsite o a un espacio de eventos.",
+        "photoAlt": "Un chef corta pepino junto a un wok sobre un fuego portátil"
+      },
+      "online": {
+        "tag": "En directo desde nuestra cocina",
+        "title": "Cocinad online",
+        "text": "Una clase en directo desde nuestra cocina. Tu equipo cocina a la vez desde casa, en la plataforma de vídeo que ya usáis.",
+        "photoAlt": "Verduras salteándose en un wok sobre un fuego de gas"
+      },
+      "eyebrow": "Tres formatos",
+      "pick": "Elegir este formato"
+    },
+    "session": {
+      "title": "Cómo son las tres horas de sesión",
+      "lead": "Cada evento sigue los mismos cuatro pasos, sea cual sea el menú.",
+      "steps": {
+        "welcome": {
+          "title": "Conoced a los chefs",
+          "text": "Delantales puestos. El grupo se reparte en puestos de cocina y repasamos los ingredientes."
+        },
+        "prep": {
+          "title": "Preparad en equipos",
+          "text": "Cada puesto dobla, corta y mezcla su parte del menú."
+        },
+        "wok": {
+          "title": "Cocinad al wok",
+          "text": "Fuego fuerte y manos rápidas, con un chef al lado de cada puesto."
+        },
+        "eat": {
+          "title": "Comed juntos",
+          "text": "Todos se sientan a compartir lo que han cocinado los equipos."
+        }
+      },
+      "eyebrow": "La sesión"
+    },
+    "menus": {
+      "title": "Dos menús para eventos privados",
+      "lead": "Elige uno al pedir la propuesta, o déjanos elegir para tu grupo. Cuéntanos las alergias y dietas y adaptamos los platos.",
+      "label": "Menú {number}",
+      "photoAlt": "Un plato de gyozas recién cerradas",
+      "foldFryFeast": {
+        "name": "Dobla, fríe, disfruta",
+        "dishes": {
+          "gyoza": {
+            "name": "Gyozas",
+            "text": "Empanadillas plegadas a mano, jugosas y llenas de sabor."
+          },
+          "springRolls": {
+            "name": "Rollitos de primavera",
+            "text": "Rollitos dorados y crujientes, de esos que suenan al morder."
+          },
+          "wontons": {
+            "name": "Wontons fritos",
+            "text": "Crujientes bolsitas pensadas para mojar en salsa."
+          },
+          "mango": {
+            "name": "Arroz glutinoso con mango",
+            "text": "Arroz glutinoso dulce al coco con mango maduro y jugoso."
+          }
+        }
+      },
+      "spicePullSlurp": {
+        "name": "Pica, estira, sorbe",
+        "dishes": {
+          "cucumber": {
+            "name": "Ensalada de pepino picante",
+            "text": "Pepino fresco y crujiente con un toque picante y de ajo."
+          },
+          "springRolls": {
+            "name": "Rollitos de primavera",
+            "text": "Rollitos dorados y crujientes, de esos que suenan al morder."
+          },
+          "noodles": {
+            "name": "Fideos estirados a mano",
+            "text": "Fideos frescos estirados por vuestras propias manos, elásticos y con mordida."
+          },
+          "mango": {
+            "name": "Arroz glutinoso con mango",
+            "text": "Arroz glutinoso dulce al coco con mango maduro y jugoso."
+          }
+        }
+      },
+      "eyebrow": "Los menús",
+      "hint": "Toca el menú de atrás para cambiarlo",
+      "show": "Ver el menú {number}: {name}"
+    },
+    "impact": {
+      "title": "Cocina el doble. <mark>Comparte la mitad.</mark>",
+      "text": "Tu equipo puede cocinar el doble y nosotros donamos la mitad a albergues de Madrid. Márcalo en el formulario y planificamos las raciones extra en vuestra sesión.",
+      "photoAlt": "Un chef guía a una invitada mientras saltea verduras en un wok",
+      "eyebrow": "Cocina para otros",
+      "steps": {
+        "cook": "Tu equipo cocina el doble",
+        "pack": "Apartamos la mitad",
+        "give": "Va a un albergue de Madrid"
+      },
+      "cta": "Añádelo a tu solicitud"
+    },
+    "enquiry": {
+      "title": "Planeemos el <mark>festín</mark> de tu equipo.",
+      "lead": "Cuéntanos cómo es tu grupo. Te respondemos por email con fechas disponibles y un precio para tu evento.",
+      "price": "Precio a consultar: depende del formato, del tamaño del grupo y del menú.",
+      "form": {
+        "format": "Formato",
+        "formats": {
+          "wokLab": "En Wok Lab",
+          "office": "En vuestra oficina o espacio",
+          "online": "Online",
+          "unsure": "Aún no lo sé"
+        },
+        "groupSize": "Tamaño del grupo",
+        "fewer": "Una persona menos",
+        "more": "Una persona más",
+        "people": "{count} personas",
+        "date": "Fecha preferida",
+        "menu": "Menú",
+        "menuHelp": "Ayudadnos a elegir",
+        "dietary": "Alergias, necesidades alimentarias u otras notas",
+        "dietaryHint": "Por ejemplo: 2 vegetarianos, 1 sin gluten, 1 alergia a los frutos secos",
+        "name": "Nombre completo",
+        "email": "Email de trabajo",
+        "phone": "Teléfono",
+        "message": "¿Algo más?",
+        "privacy": "Acepto la <link>política de privacidad</link> y que Wok Lab me contacte sobre esta solicitud.",
+        "submit": "Enviar solicitud",
+        "sending": "Enviando",
+        "invalid": "{count, plural, one {Revisa un campo.} other {Revisa # campos.}}",
+        "failed": "No hemos podido enviar tu solicitud. Vuelve a intentarlo o escríbenos a {email}.",
+        "errors": {
+          "name": "Escribe tu nombre",
+          "email": "Escribe un email con @",
+          "privacy": "Marca la casilla para aceptar la política de privacidad",
+          "date": "Elige una fecha preferida"
+        },
+        "sentTitle": "Hemos recibido tu solicitud de propuesta.",
+        "sentText": "Te respondemos a {email} con fechas disponibles y un precio.",
+        "again": "Enviar otra solicitud",
+        "groups": {
+          "event": "El evento",
+          "when": "Cuándo",
+          "food": "Comida",
+          "extras": "Extras",
+          "you": "Tus datos"
+        },
+        "altDate": "Fecha alternativa",
+        "timeOfDay": "Momento del día",
+        "times": {
+          "morning": "Mañana",
+          "lunch": "Comida",
+          "afternoon": "Tarde",
+          "evening": "Noche",
+          "flexible": "Flexible"
+        },
+        "flexibleDates": "Nuestras fechas son flexibles",
+        "language": "Idioma de la clase",
+        "languages": {
+          "en": "Inglés",
+          "es": "Español",
+          "both": "Los dos, para un grupo mixto"
+        },
+        "budget": "Presupuesto por persona",
+        "budgetHint": "Opcional",
+        "extras": "Añadir al evento",
+        "extraOptions": {
+          "impact": "Cocina para otros: raciones dobles para albergues de Madrid",
+          "drinks": "Paquete de bebidas ampliado",
+          "gifts": "Regalos para llevar a casa",
+          "speech": "Tiempo para una charla o presentación",
+          "invoice": "Necesitamos factura a nombre de la empresa"
+        },
+        "source": "¿Cómo nos conociste?",
+        "sources": {
+          "google": "Google",
+          "instagram": "Instagram",
+          "referral": "Un compañero o recomendación",
+          "class": "Hice una clase",
+          "other": "Otro"
+        },
+        "sourcePick": "Elige una opción",
+        "messageHint": "Objetivos del día, necesidades de accesibilidad, una sorpresa que estéis preparando",
+        "marketing": "Enviadme novedades y ofertas de vez en cuando. Puedo darme de baja cuando quiera.",
+        "required": "* Obligatorio. No hace falta pagar para pedir una propuesta.",
+        "extrasMore": "Ver {count} más",
+        "extrasFewer": "Ver menos"
+      },
+      "eyebrow": "Pide una propuesta",
+      "address": "Calle del Conde Duque, Madrid"
+    },
+    "faq": {
+      "title": "Preguntas y",
+      "items": {
+        "experience": {
+          "q": "¿Hace falta saber cocinar?",
+          "a": "No. Los chefs guían cada paso, desde el primer corte hasta el plato."
+        },
+        "diets": {
+          "q": "¿Os adaptáis a alergias y dietas?",
+          "a": "Sí, a la mayoría de alergias y dietas si nos avisas con antelación. Indícalas en el formulario y adaptamos los platos."
+        },
+        "language": {
+          "q": "¿La clase es en español o en inglés?",
+          "a": "En cualquiera de los dos, o en ambos para un equipo mixto. Dínoslo en las notas."
+        },
+        "size": {
+          "q": "¿Cuántas personas pueden venir?",
+          "a": "De 8 a 30 personas. Indica cuántos sois en el formulario."
+        },
+        "price": {
+          "q": "¿Cuánto cuesta?",
+          "a": "El precio depende del formato, del tamaño del grupo y del menú. Pide una propuesta y te enviamos el presupuesto por email."
+        },
+        "where": {
+          "q": "¿Dónde está vuestra cocina?",
+          "a": "En la calle del Conde Duque, en el centro de Madrid, a pocos minutos a pie de las estaciones de metro de Noviciado y Plaza de España."
+        }
+      },
+      "eyebrow": "Eventos de empresa",
+      "accent": "respuestas."
+    }
   }
 }

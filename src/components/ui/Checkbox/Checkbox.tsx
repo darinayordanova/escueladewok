@@ -1,11 +1,12 @@
-import { forwardRef, type InputHTMLAttributes } from 'react';
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
 
 import { Check } from '@/components/ui/icons';
 
 import styles from './Checkbox.module.scss';
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label: string;
+  /** Text, or text with a link in it (e.g. the privacy policy) */
+  label: ReactNode;
   /** Extra class for the label text, e.g. light text on a dark ground. */
   labelClassName?: string;
 }

@@ -4,7 +4,7 @@ import { routing } from '@/i18n/routing';
 import { requestSubscription } from '@/lib/subscribers';
 import type { Locale } from '@/types';
 
-const SOURCES = new Set(['footer', 'popup', 'checkout']);
+const SOURCES = new Set(['footer', 'popup', 'checkout', 'corporate']);
 
 export async function POST(request: Request) {
   let body: { email?: unknown; consent?: unknown; locale?: unknown; source?: unknown; website?: unknown };
