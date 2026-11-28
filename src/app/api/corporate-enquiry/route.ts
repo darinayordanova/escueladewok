@@ -1,8 +1,14 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 import en from '@/i18n/messages/en.json';
+import { checkAvailability } from '@/lib/corporate/availability';
+import { draftEnquiryReply } from '@/lib/corporate/draftReply';
 import { escapeHtml } from '@/lib/email/layout';
+import { postCorporateEnquiryToSlack } from '@/lib/slack/corporateEnquiry';
+
+// Room for Claude's draft and the Slack post, which run after the visitor gets their answer
+export const maxDuration = 60;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM ?? 'noreply@woklab.es';
@@ -98,20 +104,39 @@ export async function POST(request: Request) {
     ['Page language', body.locale === 'es' ? 'Spanish' : body.locale === 'en' ? 'English' : ''],
   ];
 
-  const rowsHtml = rows
-    .filter(([, value]) => value)
+  const filled = rows.filter(([, value]) => value);
+  const message = clean(body.message, 3000);
+  const subject = `Corporate enquiry: ${company || name}${groupSize ? ` (${groupSize} people)` : ''}`;
+
+  // After the response: Claude drafts a reply and the team gets both in Slack. A failure here never
+  // reaches the visitor; the email below is the team's copy either way.
+  after(async () => {
+    let draft = null;
+    try {
+      const calendar = await checkAvailability([isoDate(body.date), isoDate(body.altDate)]);
+      draft = await draftEnquiryReply({ rows: filled, message, language: body.locale === 'es' ? 'es' : 'en', calendar });
+    } catch (err) {
+      console.error('[/api/corporate-enquiry] draft failed', err);
+    }
+    try {
+      await postCorporateEnquiryToSlack({ title: subject, rows: filled, message, email, draft });
+    } catch (err) {
+      console.error('[/api/corporate-enquiry] Slack post failed', err);
+    }
+  });
+
+  const rowsHtml = filled
     .map(([label, value]) => {
       const cell = label === 'Email' ? `<a href="mailto:${escapeHtml(value)}">${escapeHtml(value)}</a>` : escapeHtml(value);
       return `<tr><td style="padding:8px 0;font-weight:600;width:170px;vertical-align:top">${label}</td><td style="padding:8px 0">${cell}</td></tr>`;
     })
     .join('');
-  const message = clean(body.message, 3000);
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: CONTACT_EMAIL,
     replyTo: email,
-    subject: `Corporate enquiry: ${company || name}${groupSize ? ` (${groupSize} people)` : ''}`,
+    subject,
     html: `<!DOCTYPE html>
 <html>
   <body style="font-family:sans-serif;color:#1a1a1a;padding:24px;">

@@ -49,3 +49,18 @@ export async function postSlackFile({
     json: { files: [{ id: file_id, title }], channel_id: channelId, initial_comment: message },
   });
 }
+
+/** Posts a message to a channel: `text` is the notification fallback, `blocks` what Slack shows. */
+export async function postSlackMessage({
+  token,
+  channelId,
+  text,
+  blocks,
+}: {
+  token: string;
+  channelId: string;
+  text: string;
+  blocks?: unknown[];
+}) {
+  await slackCall('chat.postMessage', token, { json: { channel: channelId, text, blocks, unfurl_links: false } });
+}
